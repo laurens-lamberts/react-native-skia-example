@@ -1299,9 +1299,10 @@
   dependencies:
     nanoid "^3.1.23"
 
-"@shopify/react-native-skia@https://firebasestorage.googleapis.com/v0/b/react-native-ui-kits.appspot.com/o/shopify-react-native-skia-0.1.43.tgz?alt=media&token=7a7da248-e206-4174-b856-14dfd54481fb":
-  version "0.1.43"
-  resolved "https://firebasestorage.googleapis.com/v0/b/react-native-ui-kits.appspot.com/o/shopify-react-native-skia-0.1.43.tgz?alt=media&token=7a7da248-e206-4174-b856-14dfd54481fb#db0a7fd33378504b628051fe6ada7eae1d832f03"
+"@shopify/react-native-skia@^0.1.123":
+  version "0.1.123"
+  resolved "https://registry.yarnpkg.com/@shopify/react-native-skia/-/react-native-skia-0.1.123.tgz#eaaf886cf1ca3b49f4ba79b826cd4b8f803b933e"
+  integrity sha512-Yn9nHYRuTz84eCbHbpTi8VbP33tQc1D6rDQNEj7fgV6aPusaN79XjnnxtPsZsO+nLlbkpI3q1x+2Ds3Qu1I8ZA==
   dependencies:
     react-reconciler "^0.26.2"
 

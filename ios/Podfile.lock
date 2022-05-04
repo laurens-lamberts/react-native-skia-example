@@ -288,32 +288,32 @@ PODS:
     - RCTTypeSafety
     - React
     - ReactCommon/turbomodule/core
-  - react-native-skia (0.1.43):
+  - react-native-skia (0.1.123):
     - React
     - React-callinvoker
     - React-Core
-    - react-native-skia/Api (= 0.1.43)
-    - react-native-skia/Jsi (= 0.1.43)
-    - react-native-skia/RNSkia (= 0.1.43)
-    - react-native-skia/SkiaHeaders (= 0.1.43)
-    - react-native-skia/Utils (= 0.1.43)
-  - react-native-skia/Api (0.1.43):
+    - react-native-skia/Api (= 0.1.123)
+    - react-native-skia/Jsi (= 0.1.123)
+    - react-native-skia/RNSkia (= 0.1.123)
+    - react-native-skia/SkiaHeaders (= 0.1.123)
+    - react-native-skia/Utils (= 0.1.123)
+  - react-native-skia/Api (0.1.123):
     - React
     - React-callinvoker
     - React-Core
-  - react-native-skia/Jsi (0.1.43):
+  - react-native-skia/Jsi (0.1.123):
     - React
     - React-callinvoker
     - React-Core
-  - react-native-skia/RNSkia (0.1.43):
+  - react-native-skia/RNSkia (0.1.123):
     - React
     - React-callinvoker
     - React-Core
-  - react-native-skia/SkiaHeaders (0.1.43):
+  - react-native-skia/SkiaHeaders (0.1.123):
     - React
     - React-callinvoker
     - React-Core
-  - react-native-skia/Utils (0.1.43):
+  - react-native-skia/Utils (0.1.123):
     - React
     - React-callinvoker
     - React-Core
@@ -571,7 +571,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 218a2503198ff28a085f8e16622a8d8f507c8019
   React-logger: f79dd3cc0f9b44f5611c6c7862badd891a862cf8
   react-native-safe-area-context: ebf8c413eb8b5f7c392a036a315eb7b46b96845f
-  react-native-skia: a49b7e640462a6297574652c1144f2d6644d1371
+  react-native-skia: 8a3e1b513020e2c9b0b4e49404f396d2a88f9ac7
   React-perflogger: 30ab8d6db10e175626069e742eead3ebe8f24fd5
   React-RCTActionSheet: 4b45da334a175b24dabe75f856b98fed3dfd6201
   React-RCTAnimation: d6237386cb04500889877845b3e9e9291146bc2e
