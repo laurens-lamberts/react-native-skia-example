@@ -1,4 +1,4 @@
-package com.skiareanimatedcrash.newarchitecture.modules;
+package com.laurens.skiaexample.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

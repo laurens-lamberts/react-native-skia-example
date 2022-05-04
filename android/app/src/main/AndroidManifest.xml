@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.skiareanimatedcrash">
+  package="com.laurens.skiaexample">
 
     <uses-permission android:name="android.permission.INTERNET" />
 

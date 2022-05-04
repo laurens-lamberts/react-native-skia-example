@@ -1,4 +1,4 @@
-package com.skiareanimatedcrash.newarchitecture.components;
+package com.laurens.skiaexample.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;
