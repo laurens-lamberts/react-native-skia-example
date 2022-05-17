@@ -21,7 +21,7 @@ const Example = ({activeExample}: ExampleProps) => {
     return <Component />;
   }
 
-  return <Text style={{margin: 12}}>No example loaded</Text>;
+  return <Text style={{margin: 12}}>No example loaded. Select one above.</Text>;
 };
 
 const App = () => {
@@ -39,6 +39,7 @@ const App = () => {
         }}>
         {examples.map((e, index) => (
           <View
+            key={e.name}
             style={{
               height: 50,
               width: 100,
