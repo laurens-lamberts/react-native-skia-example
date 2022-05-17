@@ -19,7 +19,7 @@ const getRandomColor = () => {
   return color;
 };
 
-const Screen = () => {
+const ExampleMount = () => {
   const [items, setItems] = useState([]);
   const [show, setShow] = useState(true);
   const [randomColor, setRandomColor] = useState(getRandomColor());
@@ -95,4 +95,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Screen;
+export default ExampleMount;
