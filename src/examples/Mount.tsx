@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const Tab = createBottomTabNavigator();
 
@@ -85,9 +86,10 @@ const Screen = () => {
 };
 
 const ExampleMount = () => {
+  const insets = useSafeAreaInsets();
   return (
     <NavigationContainer>
-      <Tab.Navigator>
+      <Tab.Navigator sceneContainerStyle={{marginTop: -insets.top}}>
         <Tab.Screen name="One" component={Screen} />
         <Tab.Screen name="Two" component={Screen} />
       </Tab.Navigator>

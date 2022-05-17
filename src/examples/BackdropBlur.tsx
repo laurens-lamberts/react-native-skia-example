@@ -11,8 +11,8 @@ import {SafeAreaView, Text, useWindowDimensions, View} from 'react-native';
 const BADGE_HEIGHT = 26;
 
 const ExampleBackdropBlur = () => {
-  const FACTOR = 0.38;
-  const PADDING = 6;
+  const FACTOR = 0.42;
+  const PADDING = 12;
 
   const badgeBorderRadius = 6;
 
@@ -23,15 +23,13 @@ const ExampleBackdropBlur = () => {
   const skiaImage = useImage(require('../assets/images/exampleImage.jpg'));
 
   return (
-    <>
+    <View style={{margin: PADDING}}>
       <View
         style={{
           width: imageSize,
           height: imageSize,
           borderRadius: 8,
           overflow: 'hidden',
-          marginHorizontal: PADDING,
-          marginTop: PADDING,
           flex: 0,
         }}>
         <Canvas
@@ -77,7 +75,7 @@ const ExampleBackdropBlur = () => {
           Test
         </Text>
       </View>
-    </>
+    </View>
   );
 };
 
