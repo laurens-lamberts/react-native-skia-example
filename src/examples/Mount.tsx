@@ -7,6 +7,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+
+const Tab = createBottomTabNavigator();
 
 const NUMBER_OF_ITEMS = 100;
 
@@ -19,7 +23,7 @@ const getRandomColor = () => {
   return color;
 };
 
-const ExampleMount = () => {
+const Screen = () => {
   const [items, setItems] = useState([]);
   const [show, setShow] = useState(true);
   const [randomColor, setRandomColor] = useState(getRandomColor());
@@ -34,7 +38,7 @@ const ExampleMount = () => {
   }, []);
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <>
       <TouchableOpacity
         style={{
           backgroundColor: randomColor,
@@ -76,7 +80,18 @@ const ExampleMount = () => {
           </View>
         </View>
       )}
-    </SafeAreaView>
+    </>
+  );
+};
+
+const ExampleMount = () => {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator>
+        <Tab.Screen name="One" component={Screen} />
+        <Tab.Screen name="Two" component={Screen} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 };
 

@@ -23,7 +23,7 @@ const ExampleBackdropBlur = () => {
   const skiaImage = useImage(require('../assets/images/exampleImage.jpg'));
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#AAA'}}>
+    <>
       <View
         style={{
           width: imageSize,
@@ -77,7 +77,7 @@ const ExampleBackdropBlur = () => {
           Test
         </Text>
       </View>
-    </SafeAreaView>
+    </>
   );
 };
 
