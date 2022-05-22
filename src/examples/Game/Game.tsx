@@ -1,0 +1,253 @@
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, Dimensions, View} from 'react-native';
+import {
+  AnimationState,
+  Group,
+  Rect,
+  SkiaClockValue,
+  SkiaReadonlyValue,
+  SkiaValue,
+  Text,
+  useCanvas,
+  useCanvasRef,
+  useClockValue,
+  useDerivedValue,
+  useValueEffect,
+} from '@shopify/react-native-skia';
+import {
+  ValueApi,
+  Canvas,
+  Circle,
+  Fill,
+  useTouchHandler,
+  useValue,
+} from '@shopify/react-native-skia';
+import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import {
+  BIRD_SIZE,
+  FALLING_SPEED,
+  FALL_ACCELERATE_FACTOR,
+  OBSTACLE_MINIMUM_GAP_SIZE,
+  SHOW_DEBUG,
+  VELOCITY_DECREASE,
+  VELOCITY_INCREASE,
+  VELOCITY_MAX,
+} from './Config';
+import Bird from './Bird';
+import Obstacle from './Obstacle';
+
+/* const {height} = Dimensions.get('window');
+
+const bottomBoundary = height - BIRD_SIZE - 20;
+
+interface PhysicsAnimationState extends AnimationState {}
+
+const runBouncing = (translate: SkiaValue<number>) => {
+  translate.animation = ValueApi.createAnimation<PhysicsAnimationState>(
+    (now, state) => {
+      if (state === undefined) {
+        return {
+          current: translate.current,
+          finished: false,
+        };
+      }
+      const newState = {
+        current: state.current,
+        finished: false,
+      };
+      return newState;
+    },
+  );
+}; */
+
+interface CanvasContentProps {
+  translateY: SkiaValue<number>;
+  clock: SkiaClockValue;
+  gameOver: () => void;
+  points: SkiaValue<number>;
+}
+const CanvasContent = ({
+  translateY,
+  clock,
+  gameOver,
+  points,
+}: CanvasContentProps) => {
+  const {size} = useCanvas();
+
+  const birdY = useValue(0);
+  const bottom = useDerivedValue(
+    () => size.current.height - BIRD_SIZE ?? 0,
+    [size],
+  );
+
+  useDerivedValue(() => {
+    birdY.current = bottom.current - translateY.current;
+  }, [bottom, translateY]);
+
+  return (
+    <Group>
+      <Fill color="rgba(67,183,192,1)" />
+      <Bird birdY={birdY} />
+      <Obstacle
+        canvasWidth={size.current.width}
+        canvasHeight={size.current.height}
+        birdY={birdY}
+        clock={clock}
+        gameOver={gameOver}
+        initialX={300}
+        points={points}
+        minimumGapSize={OBSTACLE_MINIMUM_GAP_SIZE} // TODO: decrease over time
+      />
+      {/* <Obstacle
+        canvasWidth={size.current.width}
+        canvasHeight={size.current.height}
+        birdY={birdY}
+        clock={clock}
+        gameOver={gameOver}
+        initialX={600}
+        points={points}
+        minimumGapSize={OBSTACLE_MINIMUM_GAP_SIZE} // TODO: decrease over time
+      /> */}
+    </Group>
+  );
+};
+
+const Flappy = () => {
+  const insets = useSafeAreaInsets();
+  // This unused state variable ensures Skia values can be drawn on screen
+  const [clockState, setClockState] = useState(-1);
+  const [resetOnNextTap, setResetOnNextTap] = useState(false);
+
+  const translateY = useValue(0);
+  const velocityY = useValue(0);
+  const fallingStart = useValue(0);
+  const taps = useValue(0);
+  const points = useValue(0);
+
+  const clock = useClockValue();
+
+  const reset = () => {
+    setResetOnNextTap(false);
+    //taps.current = 0;
+    //ref.current?.render();
+    clock.start();
+  };
+  const gameOver = () => {
+    clock.stop();
+    setResetOnNextTap(true);
+  };
+
+  // GAME LOOP
+  useValueEffect(clock, () => {
+    setClockState(clock.current);
+
+    if (translateY.current <= 0 && velocityY.current === 0) {
+      // Flappy is at the bottom
+      fallingStart.current = 0;
+      return;
+    }
+
+    let acceleratedFallingSpeed = FALLING_SPEED;
+    if (fallingStart.current > 0) {
+      acceleratedFallingSpeed *=
+        (fallingStart.current / translateY.current) * FALL_ACCELERATE_FACTOR +
+        1;
+    }
+
+    translateY.current =
+      translateY.current - acceleratedFallingSpeed + velocityY.current;
+
+    if (velocityY.current > 0) {
+      velocityY.current -= VELOCITY_DECREASE;
+    } else if (fallingStart.current === 0) {
+      fallingStart.current = translateY.current;
+    }
+    if (translateY.current < 0) translateY.current = 0;
+  });
+
+  const touchHandler = useTouchHandler({
+    onStart: ({}) => {
+      if (resetOnNextTap) {
+        reset();
+      }
+
+      taps.current++;
+      velocityY.current += VELOCITY_INCREASE;
+      if (velocityY.current > VELOCITY_MAX) velocityY.current = VELOCITY_MAX;
+      fallingStart.current = 0;
+    },
+  });
+
+  return (
+    <SafeAreaView style={{flex: 1}} edges={['bottom']}>
+      <Canvas
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+        }}
+        debug={SHOW_DEBUG}
+        onTouch={touchHandler}>
+        <CanvasContent
+          translateY={translateY}
+          clock={clock}
+          gameOver={gameOver}
+          points={points}
+        />
+        {SHOW_DEBUG && (
+          <>
+            <Text
+              x={10}
+              y={insets.top}
+              text={'taps: ' + taps.current.toString()}
+              familyName="serif"
+              size={16}
+            />
+            <Text
+              x={10}
+              y={insets.top + 20}
+              text={'clock: ' + Math.round(clock.current).toString() + ' ms'}
+              familyName="serif"
+              size={16}
+            />
+            <Text
+              x={10}
+              y={insets.top + 40}
+              text={
+                'translate: ' + Math.round(translateY.current).toString() + ' y'
+              }
+              familyName="serif"
+              size={16}
+            />
+            <Text
+              x={10}
+              y={insets.top + 60}
+              text={
+                'velocity: ' + Math.round(velocityY.current).toString() + ' y'
+              }
+              familyName="serif"
+              size={16}
+            />
+            <Text
+              x={10}
+              y={insets.top + 80}
+              text={
+                'falling: ' + Math.round(fallingStart.current).toString() + ' y'
+              }
+              familyName="serif"
+              size={16}
+            />
+            <Text
+              x={10}
+              y={insets.top + 120}
+              text={'points: ' + points.current.toString()}
+              familyName="serif"
+              size={16}
+            />
+          </>
+        )}
+      </Canvas>
+    </SafeAreaView>
+  );
+};
+
+export default Flappy;

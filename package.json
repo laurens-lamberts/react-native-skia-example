@@ -12,7 +12,7 @@
   "dependencies": {
     "@react-navigation/bottom-tabs": "^6.3.1",
     "@react-navigation/native": "^6.0.10",
-    "@shopify/react-native-skia": "^0.1.124",
+    "@shopify/react-native-skia": "0.1.125",
     "react": "17.0.2",
     "react-native": "0.68.1",
     "react-native-safe-area-context": "^4.2.5",

@@ -6,10 +6,12 @@ import {
 } from 'react-native-safe-area-context';
 import BackdropBlur from './src/examples/BackdropBlur';
 import Mount from './src/examples/Mount';
+import Game from './src/examples/Game/Game';
 
 const examples = [
   {name: 'Mount', component: Mount},
   {name: 'BackdropBlur', component: BackdropBlur},
+  {name: 'Game', component: Game},
 ];
 
 interface ExampleProps {
@@ -25,7 +27,7 @@ const Example = ({activeExample}: ExampleProps) => {
 };
 
 const App = () => {
-  const [activeExample, setActiveExample] = useState(-1);
+  const [activeExample, setActiveExample] = useState(2);
   const insets = useSafeAreaInsets();
 
   return (
