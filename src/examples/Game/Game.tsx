@@ -108,6 +108,14 @@ const CanvasContent = ({
         points={points}
         minimumGapSize={OBSTACLE_MINIMUM_GAP_SIZE} // TODO: decrease over time
       /> */}
+      <Text
+        x={size.current.width / 2 - 8} // TODO: actual center
+        y={120}
+        text={points.current.toString()}
+        familyName="serif"
+        size={40}
+        color="white"
+      />
     </Group>
   );
 };
@@ -234,13 +242,6 @@ const Flappy = () => {
               text={
                 'falling: ' + Math.round(fallingStart.current).toString() + ' y'
               }
-              familyName="serif"
-              size={16}
-            />
-            <Text
-              x={10}
-              y={insets.top + 120}
-              text={'points: ' + points.current.toString()}
               familyName="serif"
               size={16}
             />

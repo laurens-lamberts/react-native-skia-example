@@ -145,15 +145,6 @@ const Obstacle = ({
             familyName="serif"
             size={16}
           />
-          <Text
-            x={10}
-            y={186}
-            text={
-              'firstResetClock: ' + firstResetClock.current.toString() + ' ms'
-            }
-            familyName="serif"
-            size={16}
-          />
         </>
       )}
     </Group>
