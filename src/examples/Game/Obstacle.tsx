@@ -71,6 +71,9 @@ const Obstacle = ({
         (progress - resetOffset) * OBSTACLE_SPEED * 0.1;
     }
 
+    // dummy for testing
+    newX = canvasWidth - progress * OBSTACLE_SPEED * 0.1;
+
     if (newX < 0 - OBSTACLE_WIDTH) {
       // Reset the obstacle to a position out of screen
       if (firstResetClock.current === 0)
