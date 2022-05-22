@@ -116,7 +116,7 @@ const Flappy = () => {
   const insets = useSafeAreaInsets();
   // This unused state variable ensures Skia values can be drawn on screen
   const [clockState, setClockState] = useState(-1);
-  const [resetOnNextTap, setResetOnNextTap] = useState(false);
+  const resetOnNextTap = useValue(0);
 
   const translateY = useValue(0);
   const velocityY = useValue(0);
@@ -127,14 +127,15 @@ const Flappy = () => {
   const clock = useClockValue();
 
   const reset = () => {
-    setResetOnNextTap(false);
+    resetOnNextTap.current = 0;
+    points.current = 0;
     //taps.current = 0;
     //ref.current?.render();
     clock.start();
   };
   const gameOver = () => {
     clock.stop();
-    setResetOnNextTap(true);
+    resetOnNextTap.current = 1;
   };
 
   // GAME LOOP
@@ -167,7 +168,7 @@ const Flappy = () => {
 
   const touchHandler = useTouchHandler({
     onStart: ({}) => {
-      if (resetOnNextTap) {
+      if (resetOnNextTap.current === 1) {
         reset();
       }
 
