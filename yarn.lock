@@ -1299,10 +1299,10 @@
   dependencies:
     nanoid "^3.1.23"
 
-"@shopify/react-native-skia@0.1.125":
-  version "0.1.125"
-  resolved "https://registry.yarnpkg.com/@shopify/react-native-skia/-/react-native-skia-0.1.125.tgz#40f0920c62502d76b10173773bcabbab6543d285"
-  integrity sha512-Igv+KngAsbfD7oZwaKPuJPSNJqkmnhSI0vrs0PjkmHGh0pnxW2AtNj7ohFgXUdSnQAI5hww1lVH650UZ9/mhtQ==
+"@shopify/react-native-skia@^0.1.128":
+  version "0.1.128"
+  resolved "https://registry.yarnpkg.com/@shopify/react-native-skia/-/react-native-skia-0.1.128.tgz#caf0d7948beb74646505065fb9f6c3a37b7d7aa6"
+  integrity sha512-oknOk4eSrbnhDZCju/4nDEsVbgEjmswvPjYCgtUbjZ2IwciuZ2bMi23yjZ5sI/QD7Y6p0Lz3yYQPADcEUr3x3w==
   dependencies:
     react-reconciler "^0.26.2"
 
