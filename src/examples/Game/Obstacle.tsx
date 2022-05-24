@@ -1,5 +1,6 @@
 import {
   Group,
+  Points,
   Rect,
   SkiaClockValue,
   SkiaReadonlyValue,
@@ -10,6 +11,7 @@ import {
   useDerivedValue,
   useValue,
   useValueEffect,
+  vec,
 } from '@shopify/react-native-skia';
 import React, {useState} from 'react';
 import {useWindowDimensions} from 'react-native';
@@ -122,6 +124,13 @@ const Obstacle = ({
     }
   });
 
+  const bottomObstacleStroke = [
+    vec(x.current, canvasHeight),
+    vec(x.current, GAP_Y_BOTTOM.current),
+    vec(x.current + OBSTACLE_WIDTH, GAP_Y_BOTTOM.current),
+    vec(x.current + OBSTACLE_WIDTH, canvasHeight),
+  ];
+
   return (
     <Group>
       <Group>
@@ -151,15 +160,12 @@ const Obstacle = ({
           height={GAP_BOTTOM_HEIGHT}
           color="rgba(102,182,50,1)"
         />
-        <Rect
-          x={x}
-          y={GAP_Y_BOTTOM.current}
-          width={OBSTACLE_WIDTH}
-          height={GAP_BOTTOM_HEIGHT}
+        <Points
+          points={bottomObstacleStroke}
+          mode="polygon"
           color="#666"
-          strokeWidth={3}
           style="stroke"
-          strokeJoin="bevel"
+          strokeWidth={3}
         />
       </Group>
       {SHOW_DEBUG && (
