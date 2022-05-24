@@ -38,6 +38,7 @@ import {
   VELOCITY_INCREASE,
   VELOCITY_MAX,
   FLOOR_HEIGHT,
+  GRASS_HEIGHT,
 } from './Config';
 import Bird from './Bird';
 import Obstacle from './Obstacle';
@@ -103,6 +104,27 @@ const CanvasContent = ({
         initialX={300}
         points={points}
         minimumGapSize={OBSTACLE_MINIMUM_GAP_SIZE} // TODO: decrease over time
+      />
+      <Rect
+        x={0}
+        y={size.current.height - FLOOR_HEIGHT}
+        width={size.current.width}
+        height={FLOOR_HEIGHT}
+        color="rgba(219,211,143,1)"
+      />
+      <Rect
+        x={0}
+        y={size.current.height - FLOOR_HEIGHT + 3}
+        width={size.current.width}
+        height={GRASS_HEIGHT}
+        color="rgba(102,182,50,1)"
+      />
+      <Rect
+        x={0}
+        y={size.current.height - FLOOR_HEIGHT}
+        width={size.current.width}
+        height={3}
+        color="#666"
       />
       {/* <Obstacle
         canvasWidth={size.current.width}

@@ -124,20 +124,44 @@ const Obstacle = ({
 
   return (
     <Group>
-      <Rect
-        x={x}
-        y={0}
-        width={OBSTACLE_WIDTH}
-        height={GAP_Y_TOP.current}
-        color="black"
-      />
-      <Rect
-        x={x}
-        y={GAP_Y_BOTTOM.current}
-        width={OBSTACLE_WIDTH}
-        height={GAP_BOTTOM_HEIGHT}
-        color="black"
-      />
+      <Group>
+        <Rect
+          x={x}
+          y={0}
+          width={OBSTACLE_WIDTH}
+          height={GAP_Y_TOP.current}
+          color="rgba(102,182,50,1)"
+        />
+        <Rect
+          x={x}
+          y={0}
+          width={OBSTACLE_WIDTH}
+          height={GAP_Y_TOP.current}
+          color="#666"
+          strokeWidth={3}
+          style="stroke"
+          strokeJoin="bevel"
+        />
+      </Group>
+      <Group>
+        <Rect
+          x={x}
+          y={GAP_Y_BOTTOM.current}
+          width={OBSTACLE_WIDTH}
+          height={GAP_BOTTOM_HEIGHT}
+          color="rgba(102,182,50,1)"
+        />
+        <Rect
+          x={x}
+          y={GAP_Y_BOTTOM.current}
+          width={OBSTACLE_WIDTH}
+          height={GAP_BOTTOM_HEIGHT}
+          color="#666"
+          strokeWidth={3}
+          style="stroke"
+          strokeJoin="bevel"
+        />
+      </Group>
       {SHOW_DEBUG && (
         <>
           <Text
