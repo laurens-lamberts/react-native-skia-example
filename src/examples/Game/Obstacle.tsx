@@ -15,7 +15,8 @@ import React, {useState} from 'react';
 import {useWindowDimensions} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {
-  BIRD_SIZE,
+  BIRD_WIDTH,
+  BIRD_HEIGHT,
   OBSTACLE_SPEED,
   OBSTACLE_WIDTH,
   OBSTACLE_FREQ,
@@ -105,13 +106,13 @@ const Obstacle = ({
     }
 
     // if the bird is at x-coordinates of the obstacle
-    if (BIRD_X > x.current - BIRD_SIZE && BIRD_X < x.current + BIRD_SIZE) {
+    if (BIRD_X > x.current - BIRD_WIDTH && BIRD_X < x.current + BIRD_WIDTH) {
       if (
         birdY.current <= GAP_Y_TOP.current ||
-        birdY.current + BIRD_SIZE >= GAP_Y_BOTTOM.current
+        birdY.current + BIRD_HEIGHT >= GAP_Y_BOTTOM.current
       ) {
         gameOver();
-      } else if (BIRD_X > x.current + BIRD_SIZE / 2) {
+      } else if (BIRD_X > x.current + BIRD_WIDTH / 2) {
         // Obstacle is passed. Count the point.
         // We count the point when the center of the bird passed the right side of the obstacle.
         points.current += 1;

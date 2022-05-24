@@ -15,7 +15,7 @@ import {
   vec,
 } from '@shopify/react-native-skia';
 import React, {useRef} from 'react';
-import {BIRD_SIZE, BIRD_X, SHOW_DEBUG} from './Config';
+import {BIRD_WIDTH, BIRD_HEIGHT, BIRD_X, SHOW_DEBUG} from './Config';
 
 interface Props {
   birdY: SkiaReadonlyValue<number>;
@@ -48,33 +48,24 @@ const Bird = ({birdY, clock}: Props) => {
     [progress],
   ); */
 
-  const center = vec(BIRD_SIZE / 2, BIRD_SIZE / 2 - 64);
+  const center = vec(BIRD_WIDTH / 2, BIRD_HEIGHT / 2 - 64);
 
   return (
     <Group origin={center} /* transform={transform} */>
       {SHOW_DEBUG && (
-        <>
-          <Rect
-            x={BIRD_X}
-            y={birdY}
-            width={BIRD_SIZE}
-            height={BIRD_SIZE}
-            color="yellow"
-          />
-          <Text
-            x={20} // TODO: actual center
-            y={200}
-            text={currentImage.current.toString()}
-            familyName="serif"
-            size={20}
-          />
-        </>
+        <Rect
+          x={BIRD_X}
+          y={birdY}
+          width={BIRD_WIDTH}
+          height={BIRD_HEIGHT}
+          color="yellow"
+        />
       )}
       <Image
         x={BIRD_X}
         y={birdY}
-        width={BIRD_SIZE}
-        height={BIRD_SIZE}
+        width={BIRD_WIDTH}
+        height={BIRD_HEIGHT}
         image={images[0]}
         fit="contain"
         opacity={currentImage.current === 0 ? 1 : 0}
@@ -82,8 +73,8 @@ const Bird = ({birdY, clock}: Props) => {
       <Image
         x={BIRD_X}
         y={birdY}
-        width={BIRD_SIZE}
-        height={BIRD_SIZE}
+        width={BIRD_WIDTH}
+        height={BIRD_HEIGHT}
         image={images[1]}
         fit="contain"
         opacity={currentImage.current === 1 ? 1 : 0}
@@ -91,8 +82,8 @@ const Bird = ({birdY, clock}: Props) => {
       <Image
         x={BIRD_X}
         y={birdY}
-        width={BIRD_SIZE}
-        height={BIRD_SIZE}
+        width={BIRD_WIDTH}
+        height={BIRD_HEIGHT}
         image={images[2]}
         fit="contain"
         opacity={currentImage.current === 2 ? 1 : 0}

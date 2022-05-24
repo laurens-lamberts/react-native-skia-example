@@ -24,7 +24,8 @@ import {
 } from '@shopify/react-native-skia';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import {
-  BIRD_SIZE,
+  BIRD_WIDTH,
+  BIRD_HEIGHT,
   FALLING_SPEED,
   FALL_ACCELERATE_FACTOR,
   OBSTACLE_MINIMUM_GAP_SIZE,
@@ -38,7 +39,7 @@ import Obstacle from './Obstacle';
 
 /* const {height} = Dimensions.get('window');
 
-const bottomBoundary = height - BIRD_SIZE - 20;
+const bottomBoundary = height - BIRD_HEIGHT - 20;
 
 interface PhysicsAnimationState extends AnimationState {}
 
@@ -76,7 +77,7 @@ const CanvasContent = ({
 
   const birdY = useValue(0);
   const bottom = useDerivedValue(
-    () => size.current.height - BIRD_SIZE ?? 0,
+    () => size.current.height - BIRD_HEIGHT ?? 0,
     [size],
   );
 
