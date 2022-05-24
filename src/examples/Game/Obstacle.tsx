@@ -13,7 +13,7 @@ import {
 } from '@shopify/react-native-skia';
 import React, {useState} from 'react';
 import {useWindowDimensions} from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {EdgeInsets, useSafeAreaInsets} from 'react-native-safe-area-context';
 import {
   BIRD_WIDTH,
   BIRD_HEIGHT,
@@ -22,6 +22,7 @@ import {
   OBSTACLE_FREQ,
   BIRD_X,
   SHOW_DEBUG,
+  FLOOR_HEIGHT,
 } from './Config';
 
 interface Props {
@@ -44,8 +45,8 @@ const Obstacle = ({
 }: Props) => {
   const {height, width} = useWindowDimensions();
   const {size} = useCanvas();
-  const canvasWidth = width; //TODO should be: size.current.width, but useCanvas is not consistent
-  const canvasHeight = height; //TODO should be: size.current.height, but useCanvas is not consistent
+  const canvasWidth = size.current.width;
+  const canvasHeight = size.current.height - FLOOR_HEIGHT;
 
   if (!initialX) initialX = canvasWidth;
 

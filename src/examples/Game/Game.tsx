@@ -22,7 +22,11 @@ import {
   useTouchHandler,
   useValue,
 } from '@shopify/react-native-skia';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import {
+  EdgeInsets,
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 import {
   BIRD_WIDTH,
   BIRD_HEIGHT,
@@ -33,6 +37,7 @@ import {
   VELOCITY_DECREASE,
   VELOCITY_INCREASE,
   VELOCITY_MAX,
+  FLOOR_HEIGHT,
 } from './Config';
 import Bird from './Bird';
 import Obstacle from './Obstacle';
@@ -77,7 +82,7 @@ const CanvasContent = ({
 
   const birdY = useValue(0);
   const bottom = useDerivedValue(
-    () => size.current.height - BIRD_HEIGHT ?? 0,
+    () => size.current.height - BIRD_HEIGHT - FLOOR_HEIGHT ?? 0,
     [size],
   );
 

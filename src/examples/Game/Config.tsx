@@ -16,4 +16,7 @@ export const OBSTACLE_WIDTH = BIRD_WIDTH;
 export const OBSTACLE_FREQ = 1.3; // Lower is more frequent
 export const OBSTACLE_MINIMUM_GAP_SIZE = 160;
 
+// SCENE config
+export const FLOOR_HEIGHT = 80;
+
 export const SHOW_DEBUG = true;
