@@ -61,7 +61,7 @@ const Obstacle = ({
     let newX = 0;
     const progress = clock.current % (OBSTACLE_FREQ * 2000);
 
-    if (firstResetClock.current === 0) {
+    /* if (firstResetClock.current === 0) {
       newX = initialX - progress * OBSTACLE_SPEED * 0.1;
     } else {
       const resetOffset = firstResetClock.current % (OBSTACLE_FREQ * 2000);
@@ -69,7 +69,7 @@ const Obstacle = ({
         canvasWidth -
         initialX -
         (progress - resetOffset) * OBSTACLE_SPEED * 0.1;
-    }
+    } */
 
     // dummy for testing
     newX = canvasWidth - progress * OBSTACLE_SPEED * 0.1;

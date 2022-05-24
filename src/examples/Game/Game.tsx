@@ -87,7 +87,7 @@ const CanvasContent = ({
   return (
     <Group>
       <Fill color="rgba(67,183,192,1)" />
-      <Bird birdY={birdY} />
+      <Bird birdY={birdY} clock={clock} />
       <Obstacle
         canvasWidth={size.current.width}
         canvasHeight={size.current.height}

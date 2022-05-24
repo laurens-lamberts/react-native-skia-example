@@ -15,4 +15,4 @@ export const OBSTACLE_WIDTH = BIRD_SIZE;
 export const OBSTACLE_FREQ = 1.3; // Lower is more frequent
 export const OBSTACLE_MINIMUM_GAP_SIZE = 160;
 
-export const SHOW_DEBUG = true;
+export const SHOW_DEBUG = false;
