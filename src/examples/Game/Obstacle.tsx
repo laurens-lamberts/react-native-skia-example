@@ -61,6 +61,18 @@ const Obstacle = ({
   const GAP_Y_BOTTOM = useValue(canvasHeight * 0.8);
   const GAP_BOTTOM_HEIGHT = canvasHeight - GAP_Y_BOTTOM.current;
 
+  const generateNewGap = () => {
+    GAP_Y_TOP.current = Math.random() * canvasHeight;
+    GAP_Y_BOTTOM.current = Math.random() * (canvasHeight - GAP_Y_TOP.current);
+    const gapSize = GAP_Y_BOTTOM.current - GAP_Y_TOP.current;
+    if (gapSize < minimumGapSize) {
+      // increase the gap so that it meets the minimum size
+      const difference = minimumGapSize - gapSize;
+      GAP_Y_TOP.current -= difference / 2;
+      GAP_Y_BOTTOM.current += difference / 2;
+    }
+  };
+
   const x = useDerivedValue(() => {
     let newX = 0;
     const progress = clock.current % (OBSTACLE_FREQ * 2000);
@@ -84,16 +96,8 @@ const Obstacle = ({
         firstResetClock.current = clock.current;
       newX = canvasWidth;
 
-      // Set a new gap
-      GAP_Y_TOP.current = Math.random() * canvasHeight;
-      GAP_Y_BOTTOM.current = Math.random() * (canvasHeight - GAP_Y_TOP.current);
-      const gapSize = GAP_Y_BOTTOM.current - GAP_Y_TOP.current;
-      if (gapSize < minimumGapSize) {
-        // increase the gap so that it meets the minimum size
-        const difference = minimumGapSize - gapSize;
-        GAP_Y_TOP.current -= difference / 2;
-        GAP_Y_BOTTOM.current += difference / 2;
-      }
+      generateNewGap();
+
       // Reset that a point has been counted for the next gap
       pointCounted.current = 0;
     }
