@@ -167,6 +167,8 @@ const Flappy = () => {
 
   // GAME LOOP
   useValueEffect(clock, () => {
+    // TODO: with the current setup setting state seems necessary to get the values out for drawings, but drops the JS thread to 30fps on low-end Android.
+    // All drawings should be done- and calculations should compute on GPU.
     setClockState(clock.current);
 
     if (translateY.current <= 0 && velocityY.current === 0) {
