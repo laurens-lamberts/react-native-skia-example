@@ -47,8 +47,10 @@ const Obstacle = ({
 }: Props) => {
   const {height, width} = useWindowDimensions();
   const {size} = useCanvas();
-  const canvasWidth = size.current.width;
-  const canvasHeight = size.current.height - FLOOR_HEIGHT;
+  const canvasWidth = size.current.width || width;
+  const canvasHeight = size.current.height
+    ? size.current.height - FLOOR_HEIGHT
+    : height - FLOOR_HEIGHT - 120; // TODO: temp incorrect patch (does not take safearea into account)
 
   if (!initialX) initialX = canvasWidth;
 
