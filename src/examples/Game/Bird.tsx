@@ -22,6 +22,8 @@ interface Props {
   clock: SkiaClockValue;
 }
 const Bird = ({birdY, clock}: Props) => {
+  const image = useImage(require('./assets/yellowbird-upflap.png'));
+
   const images: SkImage[] = [
     useImage(require('./assets/yellowbird-upflap.png')),
     useImage(require('./assets/yellowbird-midflap.png')),
@@ -61,6 +63,18 @@ const Bird = ({birdY, clock}: Props) => {
           color="yellow"
         />
       )}
+      {!!image && (
+        <Image
+          x={BIRD_X}
+          y={birdY}
+          width={BIRD_WIDTH}
+          height={BIRD_HEIGHT}
+          image={image}
+          fit="contain"
+          opacity={1}
+        />
+      )}
+      {/*}
       <Image
         x={BIRD_X}
         y={birdY}
@@ -87,7 +101,7 @@ const Bird = ({birdY, clock}: Props) => {
         image={images[2]}
         fit="contain"
         opacity={currentImage.current === 2 ? 1 : 0}
-      />
+      /> */}
     </Group>
   );
 };
