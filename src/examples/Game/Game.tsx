@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Dimensions, View} from 'react-native';
+import {StyleSheet, Dimensions, View, useWindowDimensions} from 'react-native';
 import {
   AnimationState,
   Group,
@@ -80,11 +80,13 @@ const CanvasContent = ({
   points,
 }: CanvasContentProps) => {
   const {size} = useCanvas();
+  const canvasWidth = size.current.width;
+  const canvasHeight = size.current.height;
 
   const birdY = useValue(0);
   const bottom = useDerivedValue(
-    () => size.current.height - BIRD_HEIGHT - FLOOR_HEIGHT ?? 0,
-    [size],
+    () => canvasHeight - BIRD_HEIGHT - FLOOR_HEIGHT ?? 0,
+    [canvasHeight],
   );
 
   useDerivedValue(() => {
@@ -96,8 +98,8 @@ const CanvasContent = ({
       <Fill color="rgba(67,183,192,1)" />
       <Bird birdY={birdY} clock={clock} />
       <Obstacle
-        canvasWidth={size.current.width}
-        canvasHeight={size.current.height}
+        canvasWidth={canvasWidth}
+        canvasHeight={canvasHeight}
         birdY={birdY}
         clock={clock}
         gameOver={gameOver}
@@ -107,28 +109,28 @@ const CanvasContent = ({
       />
       <Rect
         x={0}
-        y={size.current.height - FLOOR_HEIGHT}
-        width={size.current.width}
+        y={canvasHeight - FLOOR_HEIGHT}
+        width={canvasWidth}
         height={FLOOR_HEIGHT}
         color="rgba(219,211,143,1)"
       />
       <Rect
         x={0}
-        y={size.current.height - FLOOR_HEIGHT + 3}
-        width={size.current.width}
+        y={canvasHeight - FLOOR_HEIGHT + 3}
+        width={canvasWidth}
         height={GRASS_HEIGHT}
         color="rgba(102,182,50,1)"
       />
       <Rect
         x={0}
-        y={size.current.height - FLOOR_HEIGHT}
-        width={size.current.width}
+        y={canvasHeight - FLOOR_HEIGHT}
+        width={canvasWidth}
         height={3}
         color="#666"
       />
       {/* <Obstacle
-        canvasWidth={size.current.width}
-        canvasHeight={size.current.height}
+        canvasWidth={canvasWidth}
+        canvasHeight={canvasHeight}
         birdY={birdY}
         clock={clock}
         gameOver={gameOver}
@@ -137,7 +139,7 @@ const CanvasContent = ({
         minimumGapSize={OBSTACLE_MINIMUM_GAP_SIZE} // TODO: decrease over time
       /> */}
       <Text
-        x={size.current.width / 2 - 8} // TODO: actual center
+        x={canvasWidth / 2 - 8} // TODO: actual center
         y={120}
         text={points.current.toString()}
         familyName="serif"
