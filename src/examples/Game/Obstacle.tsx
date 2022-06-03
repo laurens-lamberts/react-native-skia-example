@@ -3,7 +3,7 @@ import {
   Points,
   Rect,
   SkiaClockValue,
-  SkiaReadonlyValue,
+  SkiaMutableValue,
   SkiaValue,
   Text,
   useCanvas,
@@ -13,9 +13,8 @@ import {
   useValueEffect,
   vec,
 } from '@shopify/react-native-skia';
-import React, {useState} from 'react';
+import React from 'react';
 import {useWindowDimensions} from 'react-native';
-import {EdgeInsets, useSafeAreaInsets} from 'react-native-safe-area-context';
 import {
   BIRD_WIDTH,
   BIRD_HEIGHT,
@@ -30,9 +29,9 @@ import {
 interface Props {
   canvasWidth: number;
   canvasHeight: number;
-  birdY: SkiaReadonlyValue<number>;
+  birdY: SkiaValue<number>;
   clock: SkiaClockValue;
-  points: SkiaValue<number>;
+  points: SkiaMutableValue<number>;
   initialX: number;
   gameOver: () => void;
   minimumGapSize: number;

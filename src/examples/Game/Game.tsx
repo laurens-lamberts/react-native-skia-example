@@ -1,34 +1,23 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, Dimensions, View, useWindowDimensions} from 'react-native';
+import React, {useState} from 'react';
 import {
-  AnimationState,
   Group,
   Rect,
   SkiaClockValue,
-  SkiaReadonlyValue,
-  SkiaValue,
+  SkiaMutableValue,
   Text,
   useCanvas,
-  useCanvasRef,
   useClockValue,
   useDerivedValue,
   useValueEffect,
 } from '@shopify/react-native-skia';
 import {
-  ValueApi,
   Canvas,
-  Circle,
   Fill,
   useTouchHandler,
   useValue,
 } from '@shopify/react-native-skia';
+import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import {
-  EdgeInsets,
-  SafeAreaView,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
-import {
-  BIRD_WIDTH,
   BIRD_HEIGHT,
   FALLING_SPEED,
   FALL_ACCELERATE_FACTOR,
@@ -68,10 +57,10 @@ const runBouncing = (translate: SkiaValue<number>) => {
 }; */
 
 interface CanvasContentProps {
-  translateY: SkiaValue<number>;
+  translateY: SkiaMutableValue<number>;
   clock: SkiaClockValue;
   gameOver: () => void;
-  points: SkiaValue<number>;
+  points: SkiaMutableValue<number>;
 }
 const CanvasContent = ({
   translateY,
@@ -107,6 +96,16 @@ const CanvasContent = ({
         points={points}
         minimumGapSize={OBSTACLE_MINIMUM_GAP_SIZE} // TODO: decrease over time
       />
+      {/* <Obstacle
+        canvasWidth={canvasWidth}
+        canvasHeight={canvasHeight}
+        birdY={birdY}
+        clock={clock}
+        gameOver={gameOver}
+        initialX={600}
+        points={points}
+        minimumGapSize={OBSTACLE_MINIMUM_GAP_SIZE} // TODO: decrease over time
+      /> */}
       <Rect
         x={0}
         y={canvasHeight - FLOOR_HEIGHT}
@@ -128,16 +127,6 @@ const CanvasContent = ({
         height={3}
         color="#666"
       />
-      {/* <Obstacle
-        canvasWidth={canvasWidth}
-        canvasHeight={canvasHeight}
-        birdY={birdY}
-        clock={clock}
-        gameOver={gameOver}
-        initialX={600}
-        points={points}
-        minimumGapSize={OBSTACLE_MINIMUM_GAP_SIZE} // TODO: decrease over time
-      /> */}
       <Text
         x={canvasWidth / 2 - 8} // TODO: actual center
         y={120}
