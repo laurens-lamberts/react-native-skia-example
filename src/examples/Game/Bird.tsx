@@ -1,30 +1,26 @@
 import {
-  Fill,
   Group,
   Image,
   Rect,
   SkiaClockValue,
-  SkiaReadonlyValue,
+  SkiaValue,
   SkImage,
-  Text,
-  useDerivedValue,
   useImage,
-  useLoop,
   useValue,
   useValueEffect,
   vec,
 } from '@shopify/react-native-skia';
-import React, {useRef} from 'react';
+import React from 'react';
 import {BIRD_WIDTH, BIRD_HEIGHT, BIRD_X, SHOW_DEBUG} from './Config';
 
 interface Props {
-  birdY: SkiaReadonlyValue<number>;
+  birdY: SkiaValue<number>;
   clock: SkiaClockValue;
 }
 const Bird = ({birdY, clock}: Props) => {
   const image = useImage(require('./assets/yellowbird-upflap.png'));
 
-  const images: SkImage[] = [
+  const images: (SkImage | null)[] = [
     useImage(require('./assets/yellowbird-upflap.png')),
     useImage(require('./assets/yellowbird-midflap.png')),
     useImage(require('./assets/yellowbird-downflap.png')),
