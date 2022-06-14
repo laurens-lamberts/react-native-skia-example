@@ -17,6 +17,10 @@ interface Props {
   birdY: SkiaValue<number>;
   clock: SkiaClockValue;
 }
+
+// Dynamically switching images is not working well yet.
+const USE_STATIC_IMAGE = true;
+
 const Bird = ({birdY, clock}: Props) => {
   const image = useImage(require('./assets/yellowbird-upflap.png'));
 
@@ -59,7 +63,7 @@ const Bird = ({birdY, clock}: Props) => {
           color="yellow"
         />
       )}
-      {!!image && (
+      {USE_STATIC_IMAGE && !!image && (
         <Image
           x={BIRD_X}
           y={birdY}
@@ -70,34 +74,37 @@ const Bird = ({birdY, clock}: Props) => {
           opacity={1}
         />
       )}
-      {/*}
-      <Image
-        x={BIRD_X}
-        y={birdY}
-        width={BIRD_WIDTH}
-        height={BIRD_HEIGHT}
-        image={images[0]}
-        fit="contain"
-        opacity={currentImage.current === 0 ? 1 : 0}
-      />
-      <Image
-        x={BIRD_X}
-        y={birdY}
-        width={BIRD_WIDTH}
-        height={BIRD_HEIGHT}
-        image={images[1]}
-        fit="contain"
-        opacity={currentImage.current === 1 ? 1 : 0}
-      />
-      <Image
-        x={BIRD_X}
-        y={birdY}
-        width={BIRD_WIDTH}
-        height={BIRD_HEIGHT}
-        image={images[2]}
-        fit="contain"
-        opacity={currentImage.current === 2 ? 1 : 0}
-      /> */}
+      {!USE_STATIC_IMAGE && (
+        <>
+          <Image
+            x={BIRD_X}
+            y={birdY}
+            width={BIRD_WIDTH}
+            height={BIRD_HEIGHT}
+            image={images[0]}
+            fit="contain"
+            opacity={currentImage.current === 0 ? 1 : 0}
+          />
+          <Image
+            x={BIRD_X}
+            y={birdY}
+            width={BIRD_WIDTH}
+            height={BIRD_HEIGHT}
+            image={images[1]}
+            fit="contain"
+            opacity={currentImage.current === 1 ? 1 : 0}
+          />
+          <Image
+            x={BIRD_X}
+            y={birdY}
+            width={BIRD_WIDTH}
+            height={BIRD_HEIGHT}
+            image={images[2]}
+            fit="contain"
+            opacity={currentImage.current === 2 ? 1 : 0}
+          />
+        </>
+      )}
     </Group>
   );
 };

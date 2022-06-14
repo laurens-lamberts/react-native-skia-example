@@ -7,11 +7,13 @@ import {
 import BackdropBlur from './src/examples/BackdropBlur';
 import Mount from './src/examples/Mount';
 import Game from './src/examples/Game/Game';
+import LabyrinthGame from './src/examples/Labyrinth/Game';
 
 const examples = [
   {name: 'Mount', component: Mount},
   {name: 'BackdropBlur', component: BackdropBlur},
-  {name: 'Game', component: Game},
+  {name: 'Flappy', component: Game},
+  {name: 'Sensor', component: LabyrinthGame},
 ];
 
 interface ExampleProps {
@@ -44,7 +46,7 @@ const App = () => {
             key={e.name}
             style={{
               height: 50,
-              width: 100,
+              flex: 1,
               borderRightWidth: 1,
               borderColor: 'rgba(0, 0, 0, 0.2)',
             }}>
