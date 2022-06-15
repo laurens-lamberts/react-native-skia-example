@@ -5,6 +5,10 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
+    "iosDebug": "react-native run-ios --simulator 'iPhone 13 Pro' --configuration=Debug",
+    "iosDebugPhysical": "react-native run-ios --device 'iPhone van Laurens' --configuration=Debug",
+    "iosRelease": "react-native run-ios --simulator 'iPhone 13 Pro' --configuration=Release",
+    "iosReleasePhysical": "react-native run-ios --device 'iPhone van Laurens' --configuration=Release",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
