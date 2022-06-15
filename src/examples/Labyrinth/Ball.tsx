@@ -1,4 +1,6 @@
 import {
+  Circle,
+  Oval,
   RadialGradient,
   RoundedRect,
   Shadow,
@@ -18,6 +20,7 @@ interface BallInterface {
   shadowX: SkiaValue<number>;
   shadowY: SkiaValue<number>;
   screenWidth: number;
+  ballSize: SkiaValue<number>;
 }
 
 const Ball = ({
@@ -28,6 +31,7 @@ const Ball = ({
   startX,
   startY,
   screenWidth,
+  ballSize,
 }: BallInterface) => {
   const ballShadowX = useValue(0);
   const ballShadowY = useValue(0);
@@ -38,13 +42,9 @@ const Ball = ({
   }, [shadowX, shadowY]);
 
   return (
-    <RoundedRect
-      x={x}
-      y={y}
-      width={BALL_SIZE}
-      height={BALL_SIZE}
-      r={BALL_SIZE / 2}
-      color="#CCC">
+    /* // Oval is used instead of Circle, because i'm not sure about the best way to do position correction.
+    as circle has it's origin in the middle, where other shapes have the origin at left top corner. */
+    <Oval x={x} y={y} width={ballSize} height={ballSize} color="#CCC">
       <Shadow
         dx={ballShadowX}
         dy={ballShadowY}
@@ -54,10 +54,10 @@ const Ball = ({
       <RadialGradient // The light glare on the ball
         // TODO: set the origin to center
         c={vec(startX, startY)}
-        r={screenWidth * 0.8}
+        r={screenWidth * 1.1}
         colors={['#AAA', '#333']}
       />
-    </RoundedRect>
+    </Oval>
   );
 };
 

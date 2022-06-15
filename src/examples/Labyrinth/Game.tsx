@@ -1,15 +1,28 @@
 import {
   Canvas,
+  Easing,
   Group,
+  runSpring,
+  runTiming,
   useSharedValueEffect,
   useValue,
 } from '@shopify/react-native-skia';
 import React from 'react';
 import {useWindowDimensions} from 'react-native';
-import {SensorType, useAnimatedSensor} from 'react-native-reanimated';
+import {
+  SensorType,
+  useAnimatedSensor,
+  withTiming,
+} from 'react-native-reanimated';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Ball from './Ball';
-import {BALL_SPEED_FACTOR, BALL_SIZE, WALL_WIDTH} from './Config';
+import {
+  BALL_SPEED_FACTOR,
+  BALL_SIZE,
+  WALL_WIDTH,
+  HOLE_SIZE,
+  FALL_SENSITIVITY,
+} from './Config';
 import Floor from './Floor';
 import GameBox from './GameBox';
 
@@ -27,13 +40,43 @@ const LabyrinthGame = () => {
   const y = useValue(startY);
   const shadowX = useValue(startX);
   const shadowY = useValue(startY);
+  const falling = useValue(false);
+  const ballSize = useValue(BALL_SIZE);
 
   const gameBoxStartY = startY / 2 - BALL_SIZE / 2 + WALL_WIDTH / 2;
   const gameBoxWidth = screenWidth - WALL_WIDTH;
   const gameBoxHeight = screenWidth - WALL_WIDTH;
 
+  const holes = [
+    {x: WALL_WIDTH + 20, y: gameBoxStartY + WALL_WIDTH + 10},
+    {
+      x: gameBoxWidth - WALL_WIDTH - 40,
+      y: gameBoxStartY + WALL_WIDTH + 10,
+    },
+  ];
+
+  const checkHoles = () => {
+    if (
+      !!holes.find(
+        h =>
+          h.x < x.current &&
+          h.x + HOLE_SIZE > x.current + BALL_SIZE - FALL_SENSITIVITY &&
+          h.y < y.current &&
+          h.y + HOLE_SIZE > y.current + BALL_SIZE - FALL_SENSITIVITY,
+      )
+    ) {
+      falling.current = true;
+      runTiming(ballSize, BALL_SIZE * 0.85, {
+        duration: 300,
+        easing: Easing.ease,
+      });
+      //ballSize.current = withTiming()
+    }
+  };
+
   // GAME LOOP (based on motion)
   useSharedValueEffect(() => {
+    if (falling.current) return;
     const yaw = animatedSensor.sensor.value.yaw;
     const pitch = animatedSensor.sensor.value.pitch;
 
@@ -64,6 +107,8 @@ const LabyrinthGame = () => {
     const yAbsolute = startY + yDelta;
     shadowX.current = -(xAbsolute / 9 - 20);
     shadowY.current = -(yAbsolute / 9 - 34);
+
+    checkHoles();
   }, animatedSensor);
 
   return (
@@ -75,7 +120,8 @@ const LabyrinthGame = () => {
           shadowX={shadowX}
           shadowY={shadowY}
           width={gameBoxWidth}
-          height={gameBoxHeight}>
+          height={gameBoxHeight}
+          holes={holes}>
           <Ball
             x={x}
             y={y}
@@ -84,6 +130,7 @@ const LabyrinthGame = () => {
             startX={startX}
             startY={startY}
             screenWidth={screenWidth}
+            ballSize={ballSize}
           />
         </GameBox>
       </Group>

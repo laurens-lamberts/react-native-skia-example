@@ -1,4 +1,4 @@
-import {Rect, RoundedRect, Shadow, SkiaValue} from '@shopify/react-native-skia';
+import {Rect} from '@shopify/react-native-skia';
 import React from 'react';
 import {useWindowDimensions} from 'react-native';
 import {BALL_SIZE, WALL_WIDTH} from './Config';
