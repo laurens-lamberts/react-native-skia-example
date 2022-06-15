@@ -29,7 +29,7 @@ const Example = ({activeExample}: ExampleProps) => {
 };
 
 const App = () => {
-  const [activeExample, setActiveExample] = useState(2);
+  const [activeExample, setActiveExample] = useState(-1);
   const insets = useSafeAreaInsets();
 
   return (
