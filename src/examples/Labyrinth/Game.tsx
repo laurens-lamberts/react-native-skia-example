@@ -1,23 +1,17 @@
 import {
   Canvas,
-  Rect,
-  RoundedRect,
-  Shadow,
-  Text,
+  Group,
   useSharedValueEffect,
   useValue,
 } from '@shopify/react-native-skia';
 import React from 'react';
 import {useWindowDimensions} from 'react-native';
-import {
-  SensorType,
-  useAnimatedSensor,
-  useAnimatedReaction,
-} from 'react-native-reanimated';
+import {SensorType, useAnimatedSensor} from 'react-native-reanimated';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-
-const BALL_SIZE = 40;
-const WALL_WIDTH = 20;
+import Ball from './Ball';
+import {BALL_SIZE} from './Config';
+import Floor from './Floor';
+import GameBox from './GameBox';
 
 const LabyrinthGame = () => {
   const insets = useSafeAreaInsets();
@@ -38,8 +32,6 @@ const LabyrinthGame = () => {
     const yaw = animatedSensor.sensor.value.yaw;
     const pitch = animatedSensor.sensor.value.pitch;
 
-    console.log('yaw', yaw, 'pitch', pitch);
-
     const newX = startX + pitch * ((screenWidth / screenHeight) * screenWidth);
     const newY = startY + yaw * ((screenWidth / screenHeight) * screenWidth);
 
@@ -49,42 +41,13 @@ const LabyrinthGame = () => {
     shadowY.current = -(newY / 9 - 34);
   }, animatedSensor);
 
-  /*   useSharedValueEffect(() => {
-    x.current = mix(progress.value, 0, 100);
-  }, progress); // you can pass other shared values as extra parameters */
-
   return (
     <Canvas style={{flex: 1, backgroundColor: 'tomato'}}>
-      {/* <Rect
-        x={WALL_WIDTH / 2}
-        y={startY / 2 - BALL_SIZE / 2 + WALL_WIDTH / 2}
-        width={screenWidth - WALL_WIDTH}
-        height={screenWidth - WALL_WIDTH}
-        color="rgba(106,81,64,1)"
-      /> */}
-      <RoundedRect
-        x={x}
-        y={y}
-        width={BALL_SIZE}
-        height={BALL_SIZE}
-        r={BALL_SIZE / 2}
-        color="#222"
-      />
-      <Rect
-        x={WALL_WIDTH / 2}
-        y={startY / 2 - BALL_SIZE / 2 + WALL_WIDTH / 2}
-        width={screenWidth - WALL_WIDTH}
-        height={screenWidth - WALL_WIDTH}
-        style="stroke"
-        strokeWidth={WALL_WIDTH}
-        color="rgba(225,193,152,1)">
-        <Shadow
-          dx={shadowX}
-          dy={shadowY}
-          blur={1}
-          color={'rgba(106,81,64,1)'}
-        />
-      </Rect>
+      <Group>
+        <Floor startY={startY} />
+        <Ball x={x} y={y} shadowX={shadowX} shadowY={shadowY} />
+        <GameBox startY={startY} shadowX={shadowX} shadowY={shadowY} />
+      </Group>
     </Canvas>
   );
 };
