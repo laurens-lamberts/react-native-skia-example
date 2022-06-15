@@ -75,7 +75,15 @@ const LabyrinthGame = () => {
           shadowY={shadowY}
           width={gameBoxWidth}
           height={gameBoxHeight}>
-          <Ball x={x} y={y} shadowX={shadowX} shadowY={shadowY} />
+          <Ball
+            x={x}
+            y={y}
+            shadowX={shadowX}
+            shadowY={shadowY}
+            startX={startX}
+            startY={startY}
+            screenWidth={screenWidth}
+          />
         </GameBox>
       </Group>
     </Canvas>
