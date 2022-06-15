@@ -20,7 +20,7 @@ interface BallInterface {
   shadowX: SkiaValue<number>;
   shadowY: SkiaValue<number>;
   screenWidth: number;
-  ballSize: SkiaValue<number>;
+  ballRadius: SkiaValue<number>;
 }
 
 const Ball = ({
@@ -31,7 +31,7 @@ const Ball = ({
   startX,
   startY,
   screenWidth,
-  ballSize,
+  ballRadius,
 }: BallInterface) => {
   const ballShadowX = useValue(0);
   const ballShadowY = useValue(0);
@@ -44,7 +44,7 @@ const Ball = ({
   return (
     /* // Oval is used instead of Circle, because i'm not sure about the best way to do position correction.
     as circle has it's origin in the middle, where other shapes have the origin at left top corner. */
-    <Oval x={x} y={y} width={ballSize} height={ballSize} color="#CCC">
+    <Circle cx={x} cy={y} r={ballRadius} color="#CCC">
       <Shadow
         dx={ballShadowX}
         dy={ballShadowY}
@@ -57,7 +57,7 @@ const Ball = ({
         r={screenWidth * 1.1}
         colors={['#AAA', '#333']}
       />
-    </Oval>
+    </Circle>
   );
 };
 

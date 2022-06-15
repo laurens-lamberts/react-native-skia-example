@@ -34,14 +34,15 @@ const LabyrinthGame = () => {
   const approximateCanvasHeight =
     screenHeight / 2 - BALL_SIZE / 2 - insets.top - 50; // 50 is the fixed menu height
 
+  const BALL_RADIUS = BALL_SIZE / 2;
+  const ballRadius = useValue(BALL_RADIUS);
   const startX = screenWidth / 2 - BALL_SIZE / 2;
   const startY = approximateCanvasHeight;
-  const x = useValue(startX);
-  const y = useValue(startY);
+  const x = useValue(startX + BALL_RADIUS);
+  const y = useValue(startY + BALL_RADIUS);
   const shadowX = useValue(startX);
   const shadowY = useValue(startY);
   const falling = useValue(false);
-  const ballSize = useValue(BALL_SIZE);
 
   const gameBoxStartY = startY / 2 - BALL_SIZE / 2 + WALL_WIDTH / 2;
   const gameBoxWidth = screenWidth - WALL_WIDTH;
@@ -60,18 +61,48 @@ const LabyrinthGame = () => {
       !!holes.find(
         h =>
           h.x < x.current &&
-          h.x + HOLE_SIZE > x.current + BALL_SIZE - FALL_SENSITIVITY &&
+          h.x + HOLE_SIZE >
+            x.current + BALL_SIZE - FALL_SENSITIVITY - BALL_RADIUS &&
           h.y < y.current &&
-          h.y + HOLE_SIZE > y.current + BALL_SIZE - FALL_SENSITIVITY,
+          h.y + HOLE_SIZE >
+            y.current + BALL_SIZE - FALL_SENSITIVITY - BALL_RADIUS,
       )
     ) {
       falling.current = true;
-      runTiming(ballSize, BALL_SIZE * 0.85, {
+      runTiming(ballRadius, ballRadius.current * 0.85, {
         duration: 300,
         easing: Easing.ease,
       });
       //ballSize.current = withTiming()
     }
+  };
+  const moveBall = (xDelta: number, yDelta: number) => {
+    const xDeltaBall = xDelta * BALL_SPEED_FACTOR;
+    const yDeltaBall = yDelta * BALL_SPEED_FACTOR;
+    if (
+      (xDeltaBall < 0 && x.current > WALL_WIDTH + BALL_RADIUS) ||
+      (xDeltaBall > 0 &&
+        x.current < screenWidth - WALL_WIDTH - BALL_SIZE + BALL_RADIUS)
+    ) {
+      x.current += xDeltaBall;
+    }
+    if (
+      (yDeltaBall < 0 &&
+        y.current > gameBoxStartY + WALL_WIDTH + BALL_RADIUS) ||
+      (yDeltaBall > 0 &&
+        y.current <
+          gameBoxStartY + gameBoxHeight - WALL_WIDTH - BALL_SIZE + BALL_RADIUS)
+    ) {
+      y.current += yDeltaBall;
+    }
+  };
+
+  const moveShadows = (xDelta: number, yDelta: number) => {
+    // Set the shadow based on absolute motion
+    const xAbsolute = startX + xDelta;
+    const yAbsolute = startY + yDelta;
+    shadowX.current = -(xAbsolute / 9 - 20);
+    shadowY.current = -(yAbsolute / 9 - 34);
   };
 
   // GAME LOOP (based on motion)
@@ -85,29 +116,8 @@ const LabyrinthGame = () => {
     const xDelta = pitch * ((screenWidth / screenHeight) * screenWidth);
     const yDelta = yaw * ((screenWidth / screenHeight) * screenWidth);
 
-    const xDeltaBall = xDelta * BALL_SPEED_FACTOR;
-    const yDeltaBall = yDelta * BALL_SPEED_FACTOR;
-
-    if (
-      (xDeltaBall < 0 && x.current > WALL_WIDTH) ||
-      (xDeltaBall > 0 && x.current < screenWidth - WALL_WIDTH - BALL_SIZE)
-    ) {
-      x.current += xDeltaBall;
-    }
-    if (
-      (yDeltaBall < 0 && y.current > gameBoxStartY + WALL_WIDTH) ||
-      (yDeltaBall > 0 &&
-        y.current < gameBoxStartY + gameBoxHeight - WALL_WIDTH - BALL_SIZE)
-    ) {
-      y.current += yDeltaBall;
-    }
-
-    // Set the shadow based on absolute motion
-    const xAbsolute = startX + xDelta;
-    const yAbsolute = startY + yDelta;
-    shadowX.current = -(xAbsolute / 9 - 20);
-    shadowY.current = -(yAbsolute / 9 - 34);
-
+    moveBall(xDelta, yDelta);
+    moveShadows(xDelta, yDelta);
     checkHoles();
   }, animatedSensor);
 
@@ -130,7 +140,7 @@ const LabyrinthGame = () => {
             startX={startX}
             startY={startY}
             screenWidth={screenWidth}
-            ballSize={ballSize}
+            ballRadius={ballRadius}
           />
         </GameBox>
       </Group>
