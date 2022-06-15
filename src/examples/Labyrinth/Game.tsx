@@ -39,23 +39,24 @@ const LabyrinthGame = () => {
 
     // Move the ball based on motion over time
     // TODO: give the ball a mass (acceleration)
-    const xDelta =
-      pitch * ((screenWidth / screenHeight) * screenWidth) * BALL_SPEED_FACTOR;
-    const yDelta =
-      yaw * ((screenWidth / screenHeight) * screenWidth) * BALL_SPEED_FACTOR;
+    const xDelta = pitch * ((screenWidth / screenHeight) * screenWidth);
+    const yDelta = yaw * ((screenWidth / screenHeight) * screenWidth);
+
+    const xDeltaBall = xDelta * BALL_SPEED_FACTOR;
+    const yDeltaBall = yDelta * BALL_SPEED_FACTOR;
 
     if (
-      (xDelta < 0 && x.current > WALL_WIDTH) ||
-      (xDelta > 0 && x.current < screenWidth - WALL_WIDTH - BALL_SIZE)
+      (xDeltaBall < 0 && x.current > WALL_WIDTH) ||
+      (xDeltaBall > 0 && x.current < screenWidth - WALL_WIDTH - BALL_SIZE)
     ) {
-      x.current += xDelta;
+      x.current += xDeltaBall;
     }
     if (
-      (yDelta < 0 && y.current > gameBoxStartY + WALL_WIDTH) ||
-      (yDelta > 0 &&
+      (yDeltaBall < 0 && y.current > gameBoxStartY + WALL_WIDTH) ||
+      (yDeltaBall > 0 &&
         y.current < gameBoxStartY + gameBoxHeight - WALL_WIDTH - BALL_SIZE)
     ) {
-      y.current += yDelta;
+      y.current += yDeltaBall;
     }
 
     // Set the shadow based on absolute motion
