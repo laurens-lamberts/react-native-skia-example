@@ -9,7 +9,7 @@ import {useWindowDimensions} from 'react-native';
 import {SensorType, useAnimatedSensor} from 'react-native-reanimated';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Ball from './Ball';
-import {BALL_SIZE} from './Config';
+import {BALL_SPEED_FACTOR, BALL_SIZE, WALL_WIDTH} from './Config';
 import Floor from './Floor';
 import GameBox from './GameBox';
 
@@ -28,25 +28,55 @@ const LabyrinthGame = () => {
   const shadowX = useValue(startX);
   const shadowY = useValue(startY);
 
+  const gameBoxStartY = startY / 2 - BALL_SIZE / 2 + WALL_WIDTH / 2;
+  const gameBoxWidth = screenWidth - WALL_WIDTH;
+  const gameBoxHeight = screenWidth - WALL_WIDTH;
+
+  // GAME LOOP (based on motion)
   useSharedValueEffect(() => {
     const yaw = animatedSensor.sensor.value.yaw;
     const pitch = animatedSensor.sensor.value.pitch;
 
-    const newX = startX + pitch * ((screenWidth / screenHeight) * screenWidth);
-    const newY = startY + yaw * ((screenWidth / screenHeight) * screenWidth);
+    // Move the ball based on motion over time
+    // TODO: give the ball a mass (acceleration)
+    const xDelta =
+      pitch * ((screenWidth / screenHeight) * screenWidth) * BALL_SPEED_FACTOR;
+    const yDelta =
+      yaw * ((screenWidth / screenHeight) * screenWidth) * BALL_SPEED_FACTOR;
 
-    x.current = newX;
-    y.current = newY;
-    shadowX.current = -(newX / 9 - 20);
-    shadowY.current = -(newY / 9 - 34);
+    if (
+      (xDelta < 0 && x.current > WALL_WIDTH) ||
+      (xDelta > 0 && x.current < screenWidth - WALL_WIDTH - BALL_SIZE)
+    ) {
+      x.current += xDelta;
+    }
+    if (
+      (yDelta < 0 && y.current > gameBoxStartY + WALL_WIDTH) ||
+      (yDelta > 0 &&
+        y.current < gameBoxStartY + gameBoxHeight - WALL_WIDTH - BALL_SIZE)
+    ) {
+      y.current += yDelta;
+    }
+
+    // Set the shadow based on absolute motion
+    const xAbsolute = startX + xDelta;
+    const yAbsolute = startY + yDelta;
+    shadowX.current = -(xAbsolute / 9 - 20);
+    shadowY.current = -(yAbsolute / 9 - 34);
   }, animatedSensor);
 
   return (
     <Canvas style={{flex: 1, backgroundColor: 'tomato'}}>
       <Group>
         <Floor startY={startY} />
-        <Ball x={x} y={y} shadowX={shadowX} shadowY={shadowY} />
-        <GameBox startY={startY} shadowX={shadowX} shadowY={shadowY} />
+        <GameBox
+          y={gameBoxStartY}
+          shadowX={shadowX}
+          shadowY={shadowY}
+          width={gameBoxWidth}
+          height={gameBoxHeight}>
+          <Ball x={x} y={y} shadowX={shadowX} shadowY={shadowY} />
+        </GameBox>
       </Group>
     </Canvas>
   );

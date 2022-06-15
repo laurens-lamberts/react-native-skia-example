@@ -20,8 +20,8 @@ const Ball = ({x, y, shadowX, shadowY}: BallInterface) => {
   const ballShadowY = useValue(0);
 
   useDerivedValue(() => {
-    ballShadowX.current = shadowX.current / 3;
-    ballShadowY.current = shadowY.current / 3;
+    ballShadowX.current = shadowX.current / 2;
+    ballShadowY.current = shadowY.current / 2;
   }, [shadowX, shadowY]);
 
   return (
