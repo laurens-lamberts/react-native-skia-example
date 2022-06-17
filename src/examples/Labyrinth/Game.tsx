@@ -127,16 +127,16 @@ const LabyrinthGame = () => {
       //console.log('in wall');
       switch (direction.current) {
         case 'down':
-          ballY.current -= 10;
+          ballY.current -= yDeltaBall;
           return;
         case 'up':
-          ballY.current += 10;
+          ballY.current += yDeltaBall;
           return;
         case 'left':
-          ballX.current += 10;
+          ballX.current += xDeltaBall;
           return;
         case 'right':
-          ballX.current -= 10;
+          ballX.current -= xDeltaBall;
           return;
       }
     } else {

@@ -1,6 +1,6 @@
 import {vec} from '@shopify/react-native-skia';
 import {useMemo} from 'react';
-import {WALL_WIDTH} from '../Config';
+import {BALL_RADIUS, WALL_WIDTH} from '../Config';
 
 interface ObstacleProps {
   gameBoxWidth: number;
@@ -65,12 +65,12 @@ export const useObstacle = ({
     const {leftTop, rightTop, rightBottom, leftBottom} = obstacleVectors;
     // For now we assume the obstacle is always square
     if (
-      leftTop.x < ballX &&
-      rightTop.x > ballX &&
+      leftTop.x < ballX + BALL_RADIUS &&
+      rightTop.x > ballX - BALL_RADIUS &&
       /* rightBottom.x > ballX &&
       leftBottom.x < ballX && */
-      leftTop.y < ballY &&
-      leftBottom.y > ballY
+      leftTop.y < ballY + BALL_RADIUS &&
+      leftBottom.y > ballY - BALL_RADIUS
       /* rightBottom.y > ballY &&
       leftBottom.y < ballY */
     ) {
