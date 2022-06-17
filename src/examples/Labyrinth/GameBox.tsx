@@ -28,16 +28,16 @@ const GameBox = ({
   children,
   holes,
 }: PropsWithChildren<GameBoxInterface>) => {
-  const {obstacle} = useObstacle({
+  const {obstacle: obstacleOne} = useObstacle({
     id: 0,
     gameBoxHeight: height,
-    gameboxWidth: width,
+    gameBoxWidth: width,
     gameBoxY: y,
   });
   const {obstacle: obstacleTwo} = useObstacle({
     id: 1,
     gameBoxHeight: height,
-    gameboxWidth: width,
+    gameBoxWidth: width,
     gameBoxY: y,
   });
 
@@ -71,7 +71,7 @@ const GameBox = ({
       </Rect>
       {children}
       <Vertices
-        vertices={obstacle}
+        vertices={obstacleOne}
         color="rgba(203,153,96,1)"
         mode="triangleFan">
         <Shadow

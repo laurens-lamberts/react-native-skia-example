@@ -19,6 +19,7 @@ import {
 } from './Config';
 import Floor from './Floor';
 import GameBox from './GameBox';
+import {useObstacle} from './hooks/useObstacle';
 
 const LabyrinthGame = () => {
   const insets = useSafeAreaInsets();
@@ -38,6 +39,10 @@ const LabyrinthGame = () => {
   const shadowX = useValue(startX);
   const shadowY = useValue(startY);
   const falling = useValue(false);
+  const isInWall = useValue(false);
+  const direction = useValue<'left' | 'up' | 'down' | 'right' | undefined>(
+    undefined,
+  );
 
   const gameBoxStartY = startY / 2 - BALL_SIZE / 2 + WALL_WIDTH / 2;
   const gameBoxWidth = screenWidth - WALL_WIDTH;
@@ -50,6 +55,19 @@ const LabyrinthGame = () => {
       y: gameBoxStartY + gameBoxHeight - WALL_WIDTH / 2 - 40 - HOLE_SIZE / 2,
     },
   ];
+
+  const {isInObstacle: isInObstacleOne} = useObstacle({
+    id: 0,
+    gameBoxHeight,
+    gameBoxWidth,
+    gameBoxY: gameBoxStartY,
+  });
+  const {isInObstacle: isInObstacleTwo} = useObstacle({
+    id: 1,
+    gameBoxHeight,
+    gameBoxWidth,
+    gameBoxY: gameBoxStartY,
+  });
 
   const reset = () => {
     ballX.current = startX;
@@ -84,6 +102,48 @@ const LabyrinthGame = () => {
   const moveBall = (xDelta: number, yDelta: number) => {
     const xDeltaBall = xDelta * BALL_SPEED_FACTOR;
     const yDeltaBall = yDelta * BALL_SPEED_FACTOR;
+
+    // Set an approximate direction for correction on collision
+    if (xDelta < 0 && yDelta < 0) {
+      if (xDelta > yDelta) {
+        direction.current = 'up';
+      } else {
+        direction.current = 'left';
+      }
+    } else {
+      if (xDelta > yDelta) {
+        direction.current = 'right';
+      } else {
+        direction.current = 'down';
+      }
+    }
+
+    // Collision detection with the obstacles
+    if (
+      isInObstacleOne(ballX.current, ballY.current) ||
+      isInObstacleTwo(ballX.current, ballY.current)
+    ) {
+      isInWall.current = true;
+      //console.log('in wall');
+      switch (direction.current) {
+        case 'down':
+          ballY.current -= 10;
+          return;
+        case 'up':
+          ballY.current += 10;
+          return;
+        case 'left':
+          ballX.current += 10;
+          return;
+        case 'right':
+          ballX.current -= 10;
+          return;
+      }
+    } else {
+      isInWall.current = false;
+    }
+
+    // Collision detection with the outer walls of the box
     if (
       (xDeltaBall < 0 && ballX.current > WALL_WIDTH + BALL_RADIUS) ||
       (xDeltaBall > 0 &&
@@ -150,6 +210,13 @@ const LabyrinthGame = () => {
             />
           </GameBox>
         </Group>
+        {/* <SkiaText
+          x={WALL_WIDTH + 10}
+          y={gameBoxStartY + gameBoxHeight + WALL_WIDTH + 20}
+          text={'isInWall: ' + isInWall.current}
+          familyName="serif"
+          size={16}
+        /> */}
       </Canvas>
       {fellDown && (
         <TouchableOpacity

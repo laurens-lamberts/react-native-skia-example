@@ -3,14 +3,14 @@ import {useMemo} from 'react';
 import {WALL_WIDTH} from '../Config';
 
 interface ObstacleProps {
-  gameboxWidth: number;
+  gameBoxWidth: number;
   gameBoxHeight: number;
   gameBoxY: number;
   id: number;
 }
 
 export const useObstacle = ({
-  gameboxWidth,
+  gameBoxWidth,
   gameBoxHeight,
   gameBoxY,
   id,
@@ -20,11 +20,11 @@ export const useObstacle = ({
       {
         leftTop: vec(WALL_WIDTH, gameBoxY + gameBoxHeight * 0.3),
         rightTop: vec(
-          WALL_WIDTH + gameboxWidth * 0.6,
+          WALL_WIDTH + gameBoxWidth * 0.6,
           gameBoxY + gameBoxHeight * 0.3,
         ),
         rightBottom: vec(
-          WALL_WIDTH + gameboxWidth * 0.6,
+          WALL_WIDTH + gameBoxWidth * 0.6,
           gameBoxY + gameBoxHeight * 0.3 + WALL_WIDTH,
         ),
         leftBottom: vec(
@@ -34,21 +34,21 @@ export const useObstacle = ({
       },
       {
         leftTop: vec(
-          WALL_WIDTH + gameboxWidth * 0.3,
+          WALL_WIDTH + gameBoxWidth * 0.3,
           gameBoxY + gameBoxHeight * 0.6,
         ),
-        rightTop: vec(gameboxWidth, gameBoxY + gameBoxHeight * 0.6),
+        rightTop: vec(gameBoxWidth, gameBoxY + gameBoxHeight * 0.6),
         rightBottom: vec(
-          gameboxWidth,
+          gameBoxWidth,
           gameBoxY + gameBoxHeight * 0.6 + WALL_WIDTH,
         ),
         leftBottom: vec(
-          WALL_WIDTH + gameboxWidth * 0.3,
+          WALL_WIDTH + gameBoxWidth * 0.3,
           gameBoxY + gameBoxHeight * 0.6 + WALL_WIDTH,
         ),
       },
     ],
-    [gameBoxHeight, gameBoxY, gameboxWidth],
+    [gameBoxHeight, gameBoxY, gameBoxWidth],
   );
 
   const obstacle = useMemo(() => {
@@ -60,7 +60,25 @@ export const useObstacle = ({
     return [leftTop, rightTop, rightBottom, leftBottom, leftTop];
   }, [id, vectors]);
 
-  const isInObstacle = () => {};
+  const isInObstacle = (ballX: number, ballY: number) => {
+    const obstacleVectors = vectors[id];
+    const {leftTop, rightTop, rightBottom, leftBottom} = obstacleVectors;
+    // For now we assume the obstacle is always square
+    if (
+      leftTop.x < ballX &&
+      rightTop.x > ballX &&
+      /* rightBottom.x > ballX &&
+      leftBottom.x < ballX && */
+      leftTop.y < ballY &&
+      leftBottom.y > ballY
+      /* rightBottom.y > ballY &&
+      leftBottom.y < ballY */
+    ) {
+      return true;
+    }
+
+    return false;
+  };
 
   return {obstacle, isInObstacle};
 };
