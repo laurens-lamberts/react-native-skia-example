@@ -38,8 +38,8 @@ const LabyrinthGame = () => {
   const ballRadius = useValue(BALL_RADIUS);
   const startX = screenWidth / 2 - BALL_SIZE / 2;
   const startY = approximateCanvasHeight;
-  const x = useValue(startX + BALL_RADIUS);
-  const y = useValue(startY + BALL_RADIUS);
+  const ballX = useValue(startX + BALL_RADIUS);
+  const ballY = useValue(startY + BALL_RADIUS);
   const shadowX = useValue(startX);
   const shadowY = useValue(startY);
   const falling = useValue(false);
@@ -59,41 +59,37 @@ const LabyrinthGame = () => {
   const checkHoles = () => {
     if (
       !!holes.find(
-        h =>
-          h.x < x.current &&
-          h.x + HOLE_SIZE >
-            x.current + BALL_SIZE - FALL_SENSITIVITY - BALL_RADIUS &&
-          h.y < y.current &&
-          h.y + HOLE_SIZE >
-            y.current + BALL_SIZE - FALL_SENSITIVITY - BALL_RADIUS,
+        hole =>
+          hole.x < ballX.current - BALL_RADIUS &&
+          hole.x + HOLE_SIZE >
+            ballX.current + BALL_SIZE - FALL_SENSITIVITY - BALL_RADIUS &&
+          hole.y < ballY.current - BALL_RADIUS &&
+          hole.y + HOLE_SIZE >
+            ballY.current + BALL_SIZE - FALL_SENSITIVITY - BALL_RADIUS,
       )
     ) {
       falling.current = true;
-      runTiming(ballRadius, ballRadius.current * 0.85, {
-        duration: 300,
-        easing: Easing.ease,
-      });
-      //ballSize.current = withTiming()
+      runSpring(ballRadius, ballRadius.current * 0.85, {});
     }
   };
   const moveBall = (xDelta: number, yDelta: number) => {
     const xDeltaBall = xDelta * BALL_SPEED_FACTOR;
     const yDeltaBall = yDelta * BALL_SPEED_FACTOR;
     if (
-      (xDeltaBall < 0 && x.current > WALL_WIDTH + BALL_RADIUS) ||
+      (xDeltaBall < 0 && ballX.current > WALL_WIDTH + BALL_RADIUS) ||
       (xDeltaBall > 0 &&
-        x.current < screenWidth - WALL_WIDTH - BALL_SIZE + BALL_RADIUS)
+        ballX.current < screenWidth - WALL_WIDTH - BALL_SIZE + BALL_RADIUS)
     ) {
-      x.current += xDeltaBall;
+      ballX.current += xDeltaBall;
     }
     if (
       (yDeltaBall < 0 &&
-        y.current > gameBoxStartY + WALL_WIDTH + BALL_RADIUS) ||
+        ballY.current > gameBoxStartY + WALL_WIDTH + BALL_RADIUS) ||
       (yDeltaBall > 0 &&
-        y.current <
+        ballY.current <
           gameBoxStartY + gameBoxHeight - WALL_WIDTH - BALL_SIZE + BALL_RADIUS)
     ) {
-      y.current += yDeltaBall;
+      ballY.current += yDeltaBall;
     }
   };
 
@@ -133,8 +129,8 @@ const LabyrinthGame = () => {
           height={gameBoxHeight}
           holes={holes}>
           <Ball
-            x={x}
-            y={y}
+            x={ballX}
+            y={ballY}
             shadowX={shadowX}
             shadowY={shadowY}
             startX={startX}
