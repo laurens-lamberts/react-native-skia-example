@@ -5,6 +5,7 @@ import {
   Rect,
   Shadow,
   SkiaValue,
+  SkVertices,
   vec,
   Vertices,
 } from '@shopify/react-native-skia';
