@@ -21,7 +21,7 @@ import {
   BALL_SIZE,
   WALL_WIDTH,
   HOLE_SIZE,
-  FALL_SENSITIVITY,
+  BALL_FALL_SENSITIVITY,
 } from './Config';
 import Floor from './Floor';
 import GameBox from './GameBox';
@@ -71,10 +71,10 @@ const LabyrinthGame = () => {
         hole =>
           hole.x < ballX.current - BALL_RADIUS &&
           hole.x + HOLE_SIZE >
-            ballX.current + BALL_SIZE - FALL_SENSITIVITY - BALL_RADIUS &&
+            ballX.current + BALL_SIZE - BALL_FALL_SENSITIVITY - BALL_RADIUS &&
           hole.y < ballY.current - BALL_RADIUS &&
           hole.y + HOLE_SIZE >
-            ballY.current + BALL_SIZE - FALL_SENSITIVITY - BALL_RADIUS,
+            ballY.current + BALL_SIZE - BALL_FALL_SENSITIVITY - BALL_RADIUS,
       )
     ) {
       falling.current = true;

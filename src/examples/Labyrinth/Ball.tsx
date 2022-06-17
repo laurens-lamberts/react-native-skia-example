@@ -1,8 +1,6 @@
 import {
   Circle,
-  Oval,
   RadialGradient,
-  RoundedRect,
   Shadow,
   SkiaValue,
   useDerivedValue,
@@ -10,7 +8,7 @@ import {
   vec,
 } from '@shopify/react-native-skia';
 import React from 'react';
-import {BALL_SIZE} from './Config';
+import {BALL_SHADOW_OFFSET_FACTOR} from './Config';
 
 interface BallInterface {
   startX: number;
@@ -37,8 +35,8 @@ const Ball = ({
   const ballShadowY = useValue(0);
 
   useDerivedValue(() => {
-    ballShadowX.current = shadowX.current / 1.5;
-    ballShadowY.current = shadowY.current / 1.5;
+    ballShadowX.current = shadowX.current * BALL_SHADOW_OFFSET_FACTOR;
+    ballShadowY.current = shadowY.current * BALL_SHADOW_OFFSET_FACTOR;
   }, [shadowX, shadowY]);
 
   return (
@@ -54,7 +52,7 @@ const Ball = ({
       <RadialGradient // The light glare on the ball
         // TODO: set the origin to center
         c={vec(startX, startY)}
-        r={screenWidth * 1.1}
+        r={screenWidth * 1.4}
         colors={['#AAA', '#333']}
       />
     </Circle>
