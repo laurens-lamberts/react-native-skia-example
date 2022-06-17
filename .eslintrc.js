@@ -7,6 +7,14 @@ module.exports = {
     {
       files: ['*.ts', '*.tsx'],
       rules: {
+        'react-hooks/exhaustive-deps': [
+          'warn',
+          {
+            enableDangerousAutofixThisMayCauseInfiniteLoops: true,
+            additionalHooks:
+              '(useAnimatedStyle|useAnimatedProps|useDerivedValue|useAnimatedGestureHandler)',
+          },
+        ],
         '@typescript-eslint/no-shadow': ['error'],
         'no-shadow': 'off',
         'no-undef': 'off',
