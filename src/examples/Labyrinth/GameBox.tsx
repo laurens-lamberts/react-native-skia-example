@@ -1,4 +1,13 @@
-import {Group, Rect, Shadow, SkiaValue} from '@shopify/react-native-skia';
+import {
+  Fill,
+  Group,
+  Points,
+  Rect,
+  Shadow,
+  SkiaValue,
+  vec,
+  Vertices,
+} from '@shopify/react-native-skia';
 import React, {PropsWithChildren} from 'react';
 import {WALL_WIDTH} from './Config';
 import Hole from './Hole';
@@ -21,6 +30,21 @@ const GameBox = ({
   children,
   holes,
 }: PropsWithChildren<GameBoxInterface>) => {
+  const obstacleFirstPoints = [
+    vec(WALL_WIDTH, y + height * 0.3),
+    vec(WALL_WIDTH + width * 0.6, y + height * 0.3),
+    vec(WALL_WIDTH + width * 0.6, y + height * 0.3 + WALL_WIDTH),
+    vec(WALL_WIDTH, y + height * 0.3 + WALL_WIDTH),
+    vec(WALL_WIDTH, y + height * 0.3),
+  ];
+  const obstacleSecondPoints = [
+    vec(WALL_WIDTH + width * 0.3, y + height * 0.6),
+    vec(width, y + height * 0.6),
+    vec(width, y + height * 0.6 + WALL_WIDTH),
+    vec(WALL_WIDTH + width * 0.3, y + height * 0.6 + WALL_WIDTH),
+    vec(WALL_WIDTH + width * 0.3, y + height * 0.6),
+  ];
+
   return (
     <Group>
       {/* // TODO: set relative position for hole */}
@@ -33,7 +57,6 @@ const GameBox = ({
           shadowY={shadowY}
         />
       ))}
-
       <Rect
         x={WALL_WIDTH / 2}
         y={y}
@@ -51,6 +74,35 @@ const GameBox = ({
         />
       </Rect>
       {children}
+      <Vertices
+        vertices={obstacleFirstPoints}
+        color="rgba(203,153,96,1)"
+        mode="triangleFan">
+        <Shadow
+          dx={shadowX}
+          dy={shadowY}
+          blur={0.2}
+          color={'rgba(106,81,64,1)'}
+        />
+      </Vertices>
+      <Vertices
+        vertices={obstacleSecondPoints}
+        color="rgba(203,153,96,1)"
+        mode="triangleFan">
+        <Shadow
+          dx={shadowX}
+          dy={shadowY}
+          blur={0.2}
+          color={'rgba(106,81,64,1)'}
+        />
+      </Vertices>
+      {/* <Points
+        points={obstaclePoints}
+        mode="polygon"
+        color="rgba(203,153,96,1)"
+        style="fill">
+        
+      </Points> */}
       <Rect
         x={WALL_WIDTH / 2}
         y={y}
@@ -58,7 +110,8 @@ const GameBox = ({
         height={height}
         style="stroke"
         strokeWidth={WALL_WIDTH}
-        color="rgba(203,153,96,1)"></Rect>
+        color="rgba(203,153,96,1)"
+      />
     </Group>
   );
 };

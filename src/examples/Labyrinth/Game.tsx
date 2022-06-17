@@ -51,10 +51,10 @@ const LabyrinthGame = () => {
 
   const holes = [
     {x: WALL_WIDTH + 20, y: gameBoxStartY + WALL_WIDTH + 10},
-    {
+    /* {
       x: gameBoxWidth - WALL_WIDTH - 40,
       y: gameBoxStartY + WALL_WIDTH + 10,
-    },
+    }, */
   ];
 
   const reset = () => {
