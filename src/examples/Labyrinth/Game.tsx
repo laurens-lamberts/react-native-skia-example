@@ -21,6 +21,8 @@ import Floor from './Floor';
 import GameBox from './GameBox';
 import {useObstacle} from './hooks/useObstacle';
 
+const MAGIC_NUMBER_VERTICAL_COLLISION = 10; // Unsure why, but this value is necessary to get a correct collision detection vertically with the bounds of the game box.
+
 const LabyrinthGame = () => {
   const insets = useSafeAreaInsets();
   const {width: screenWidth, height: screenHeight} = useWindowDimensions();
@@ -153,10 +155,19 @@ const LabyrinthGame = () => {
     }
     if (
       (yDeltaBall < 0 &&
-        ballY.current > gameBoxStartY + WALL_WIDTH + BALL_RADIUS) ||
+        ballY.current >
+          gameBoxStartY +
+            WALL_WIDTH +
+            BALL_RADIUS -
+            MAGIC_NUMBER_VERTICAL_COLLISION) ||
       (yDeltaBall > 0 &&
         ballY.current <
-          gameBoxStartY + gameBoxHeight - WALL_WIDTH - BALL_SIZE + BALL_RADIUS)
+          gameBoxStartY +
+            gameBoxHeight -
+            WALL_WIDTH -
+            BALL_SIZE +
+            BALL_RADIUS +
+            MAGIC_NUMBER_VERTICAL_COLLISION)
     ) {
       ballY.current += yDeltaBall;
     }
