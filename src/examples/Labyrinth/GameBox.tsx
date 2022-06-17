@@ -1,17 +1,14 @@
 import {
-  Fill,
   Group,
-  Points,
   Rect,
   Shadow,
   SkiaValue,
-  SkVertices,
-  vec,
   Vertices,
 } from '@shopify/react-native-skia';
 import React, {PropsWithChildren} from 'react';
 import {WALL_WIDTH} from './Config';
 import Hole from './Hole';
+import {useObstacle} from './hooks/useObstacle';
 
 interface GameBoxInterface {
   y: number;
@@ -31,20 +28,19 @@ const GameBox = ({
   children,
   holes,
 }: PropsWithChildren<GameBoxInterface>) => {
-  const obstacleFirstPoints = [
-    vec(WALL_WIDTH, y + height * 0.3),
-    vec(WALL_WIDTH + width * 0.6, y + height * 0.3),
-    vec(WALL_WIDTH + width * 0.6, y + height * 0.3 + WALL_WIDTH),
-    vec(WALL_WIDTH, y + height * 0.3 + WALL_WIDTH),
-    vec(WALL_WIDTH, y + height * 0.3),
-  ];
-  const obstacleSecondPoints = [
+  const {obstacle} = useObstacle({
+    id: 0,
+    gameBoxHeight: height,
+    gameboxWidth: width,
+    gameBoxY: y,
+  });
+  /* const obstacleSecondPoints = [
     vec(WALL_WIDTH + width * 0.3, y + height * 0.6),
     vec(width, y + height * 0.6),
     vec(width, y + height * 0.6 + WALL_WIDTH),
     vec(WALL_WIDTH + width * 0.3, y + height * 0.6 + WALL_WIDTH),
     vec(WALL_WIDTH + width * 0.3, y + height * 0.6),
-  ];
+  ]; */
 
   return (
     <Group>
@@ -76,7 +72,7 @@ const GameBox = ({
       </Rect>
       {children}
       <Vertices
-        vertices={obstacleFirstPoints}
+        vertices={obstacle}
         color="rgba(203,153,96,1)"
         mode="triangleFan">
         <Shadow
@@ -86,7 +82,7 @@ const GameBox = ({
           color={'rgba(106,81,64,1)'}
         />
       </Vertices>
-      <Vertices
+      {/* <Vertices
         vertices={obstacleSecondPoints}
         color="rgba(203,153,96,1)"
         mode="triangleFan">
@@ -96,7 +92,7 @@ const GameBox = ({
           blur={0.2}
           color={'rgba(106,81,64,1)'}
         />
-      </Vertices>
+      </Vertices> */}
       {/* <Points
         points={obstaclePoints}
         mode="polygon"
