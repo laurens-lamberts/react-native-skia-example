@@ -8,7 +8,7 @@ interface FloorInterface {
 }
 
 const Floor = ({startY}: FloorInterface) => {
-  const {width: screenWidth, height: screenHeight} = useWindowDimensions();
+  const {width: screenWidth} = useWindowDimensions();
   return (
     <Rect
       x={WALL_WIDTH / 2}

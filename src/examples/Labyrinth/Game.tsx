@@ -1,19 +1,13 @@
 import {
   Canvas,
-  Easing,
   Group,
   runSpring,
-  runTiming,
   useSharedValueEffect,
   useValue,
 } from '@shopify/react-native-skia';
 import React, {useState} from 'react';
 import {Text, TouchableOpacity, useWindowDimensions} from 'react-native';
-import {
-  SensorType,
-  useAnimatedSensor,
-  withTiming,
-} from 'react-native-reanimated';
+import {SensorType, useAnimatedSensor} from 'react-native-reanimated';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Ball from './Ball';
 import {
@@ -67,7 +61,7 @@ const LabyrinthGame = () => {
 
   const checkHoles = () => {
     if (
-      !!holes.find(
+      holes.find(
         hole =>
           hole.x < ballX.current - BALL_RADIUS &&
           hole.x + HOLE_SIZE >

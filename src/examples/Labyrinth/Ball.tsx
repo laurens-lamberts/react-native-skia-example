@@ -37,7 +37,7 @@ const Ball = ({
   useDerivedValue(() => {
     ballShadowX.current = shadowX.current * BALL_SHADOW_OFFSET_FACTOR;
     ballShadowY.current = shadowY.current * BALL_SHADOW_OFFSET_FACTOR;
-  }, [shadowX, shadowY]);
+  }, [ballShadowX, ballShadowY, shadowX, shadowY]);
 
   return (
     /* // Oval is used instead of Circle, because i'm not sure about the best way to do position correction.

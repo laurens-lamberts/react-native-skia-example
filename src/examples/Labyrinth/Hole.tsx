@@ -1,6 +1,6 @@
 import {Oval, Shadow, SkiaValue} from '@shopify/react-native-skia';
 import React from 'react';
-import {BALL_SIZE, HOLE_SIZE} from './Config';
+import {HOLE_SIZE} from './Config';
 
 interface HoleInterface {
   x: number;
