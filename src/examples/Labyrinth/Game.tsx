@@ -7,8 +7,8 @@ import {
   useSharedValueEffect,
   useValue,
 } from '@shopify/react-native-skia';
-import React from 'react';
-import {useWindowDimensions} from 'react-native';
+import React, {useState} from 'react';
+import {Text, TouchableOpacity, useWindowDimensions} from 'react-native';
 import {
   SensorType,
   useAnimatedSensor,
@@ -30,6 +30,7 @@ const LabyrinthGame = () => {
   const insets = useSafeAreaInsets();
   const {width: screenWidth, height: screenHeight} = useWindowDimensions();
   const animatedSensor = useAnimatedSensor(SensorType.ROTATION, {interval: 10}); // <- initialization
+  const [fellDown, setFellDown] = useState(false);
 
   const approximateCanvasHeight =
     screenHeight / 2 - BALL_SIZE / 2 - insets.top - 50; // 50 is the fixed menu height
@@ -56,6 +57,14 @@ const LabyrinthGame = () => {
     },
   ];
 
+  const reset = () => {
+    ballX.current = startX;
+    ballY.current = startY;
+    falling.current = false;
+    ballRadius.current = BALL_RADIUS;
+    setFellDown(false);
+  };
+
   const checkHoles = () => {
     if (
       !!holes.find(
@@ -69,7 +78,13 @@ const LabyrinthGame = () => {
       )
     ) {
       falling.current = true;
-      runSpring(ballRadius, ballRadius.current * 0.85, {});
+      setFellDown(true);
+      runSpring(ballRadius, ballRadius.current * 0.85, {
+        mass: 2,
+        velocity: 100,
+        damping: 10,
+        stiffness: 100,
+      });
     }
   };
   const moveBall = (xDelta: number, yDelta: number) => {
@@ -118,29 +133,46 @@ const LabyrinthGame = () => {
   }, animatedSensor);
 
   return (
-    <Canvas style={{flex: 1, backgroundColor: 'tomato'}}>
-      <Group>
-        <Floor startY={startY} />
-        <GameBox
-          y={gameBoxStartY}
-          shadowX={shadowX}
-          shadowY={shadowY}
-          width={gameBoxWidth}
-          height={gameBoxHeight}
-          holes={holes}>
-          <Ball
-            x={ballX}
-            y={ballY}
+    <>
+      <Canvas style={{flex: 1, backgroundColor: 'tomato'}}>
+        <Group>
+          <Floor startY={startY} />
+          <GameBox
+            y={gameBoxStartY}
             shadowX={shadowX}
             shadowY={shadowY}
-            startX={startX}
-            startY={startY}
-            screenWidth={screenWidth}
-            ballRadius={ballRadius}
-          />
-        </GameBox>
-      </Group>
-    </Canvas>
+            width={gameBoxWidth}
+            height={gameBoxHeight}
+            holes={holes}>
+            <Ball
+              x={ballX}
+              y={ballY}
+              shadowX={shadowX}
+              shadowY={shadowY}
+              startX={startX}
+              startY={startY}
+              screenWidth={screenWidth}
+              ballRadius={ballRadius}
+            />
+          </GameBox>
+        </Group>
+      </Canvas>
+      {fellDown && (
+        <TouchableOpacity
+          style={{
+            position: 'absolute',
+            top: screenHeight - gameBoxStartY,
+            backgroundColor: 'teal',
+            paddingVertical: 20,
+            paddingHorizontal: 40,
+            borderRadius: 4,
+            alignSelf: 'center',
+          }}
+          onPress={reset}>
+          <Text style={{color: 'white'}}>Restart</Text>
+        </TouchableOpacity>
+      )}
+    </>
   );
 };
 
