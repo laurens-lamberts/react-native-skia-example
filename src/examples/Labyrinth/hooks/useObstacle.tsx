@@ -32,6 +32,21 @@ export const useObstacle = ({
           gameBoxY + gameBoxHeight * 0.3 + WALL_WIDTH,
         ),
       },
+      {
+        leftTop: vec(
+          WALL_WIDTH + gameboxWidth * 0.3,
+          gameBoxY + gameBoxHeight * 0.6,
+        ),
+        rightTop: vec(gameboxWidth, gameBoxY + gameBoxHeight * 0.6),
+        rightBottom: vec(
+          gameboxWidth,
+          gameBoxY + gameBoxHeight * 0.6 + WALL_WIDTH,
+        ),
+        leftBottom: vec(
+          WALL_WIDTH + gameboxWidth * 0.3,
+          gameBoxY + gameBoxHeight * 0.6 + WALL_WIDTH,
+        ),
+      },
     ],
     [gameBoxHeight, gameBoxY, gameboxWidth],
   );

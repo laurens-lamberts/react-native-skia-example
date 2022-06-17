@@ -34,13 +34,12 @@ const GameBox = ({
     gameboxWidth: width,
     gameBoxY: y,
   });
-  /* const obstacleSecondPoints = [
-    vec(WALL_WIDTH + width * 0.3, y + height * 0.6),
-    vec(width, y + height * 0.6),
-    vec(width, y + height * 0.6 + WALL_WIDTH),
-    vec(WALL_WIDTH + width * 0.3, y + height * 0.6 + WALL_WIDTH),
-    vec(WALL_WIDTH + width * 0.3, y + height * 0.6),
-  ]; */
+  const {obstacle: obstacleTwo} = useObstacle({
+    id: 1,
+    gameBoxHeight: height,
+    gameboxWidth: width,
+    gameBoxY: y,
+  });
 
   return (
     <Group>
@@ -73,6 +72,17 @@ const GameBox = ({
       {children}
       <Vertices
         vertices={obstacle}
+        color="rgba(203,153,96,1)"
+        mode="triangleFan">
+        <Shadow
+          dx={shadowX}
+          dy={shadowY}
+          blur={0.2}
+          color={'rgba(106,81,64,1)'}
+        />
+      </Vertices>
+      <Vertices
+        vertices={obstacleTwo}
         color="rgba(203,153,96,1)"
         mode="triangleFan">
         <Shadow
