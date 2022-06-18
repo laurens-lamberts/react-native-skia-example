@@ -47,6 +47,8 @@ const Ball = ({
     ballShadowY.current = shadowY.current * BALL_SHADOW_OFFSET_FACTOR;
   }, [ballShadowX, ballShadowY, shadowX, shadowY]);
 
+  const positionKey = useDerivedValue(() => x.current + y.current, [x, y]);
+
   /* const ballColor = useDerivedValue(
     () =>
       interpolateColors(
@@ -62,7 +64,7 @@ const Ball = ({
     y: y.current - 4,
   });
 
-  useValueEffect(x, () => {
+  useValueEffect(positionKey, () => {
     const glareOffsetHorizontal = interpolate(
       x.current,
       [0, gameBoxWidth],
