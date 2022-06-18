@@ -187,7 +187,6 @@ const LabyrinthGame = () => {
 
   // GAME LOOP (based on motion)
   useSharedValueEffect(() => {
-    if (falling.current) return;
     const yaw = animatedSensor.sensor.value.yaw;
     const pitch = animatedSensor.sensor.value.pitch;
 
@@ -196,8 +195,10 @@ const LabyrinthGame = () => {
     const xDelta = pitch * ((screenWidth / screenHeight) * screenWidth);
     const yDelta = yaw * ((screenWidth / screenHeight) * screenWidth);
 
-    moveBall(xDelta, yDelta);
     moveShadows(xDelta, yDelta);
+    if (falling.current) return;
+
+    moveBall(xDelta, yDelta);
     checkHoles();
   }, animatedSensor);
 
