@@ -42,8 +42,8 @@ const LabyrinthGame = () => {
   const shadowY = useValue(startY);
   const falling = useValue(false);
 
-  const lastXDeltaBall = useValue(0);
-  const lastYDeltaBall = useValue(0);
+  const velocityX = useValue(0);
+  const velocityY = useValue(0);
 
   const gameBoxStartY = startY / 2 - BALL_SIZE / 2 + WALL_WIDTH / 2;
   const gameBoxWidth = screenWidth - WALL_WIDTH;
@@ -105,17 +105,49 @@ const LabyrinthGame = () => {
     }
   };
   const moveBall = (xDelta: number, yDelta: number) => {
+    let isInObstacle = false;
     let xDeltaBall = xDelta * BALL_SPEED_FACTOR;
     let yDeltaBall = yDelta * BALL_SPEED_FACTOR;
+
+    /* let direction: 'horizontal' | 'vertical' | undefined;
+    // Set an approximate direction for correction on collision
+    if (xDelta < 0 && yDelta < 0) {
+      if (xDelta > yDelta) {
+        direction = 'vertical';
+        //direction.current = 'up';
+      } else {
+        direction = 'horizontal';
+        //direction.current = 'left';
+      }
+    } else {
+      if (xDelta > yDelta) {
+        direction = 'horizontal';
+        //direction.current = 'right';
+      } else {
+        direction = 'vertical';
+        //direction.current = 'down';
+      }
+    } */
 
     // Collision detection with the obstacles
     if (
       isInObstacleOne(ballX.current, ballY.current) ||
       isInObstacleTwo(ballX.current, ballY.current)
     ) {
-      if (lastXDeltaBall.current || lastYDeltaBall.current) {
-        xDeltaBall = lastXDeltaBall.current;
-        yDeltaBall = -lastYDeltaBall.current;
+      isInObstacle = true;
+
+      if (velocityX.current || velocityY.current) {
+        xDeltaBall = -velocityX.current * 0.5;
+        yDeltaBall = -velocityY.current * 0.5;
+
+        // TODO: the side of the obstacle that is approached should affect the line below, to be either + or -.
+        // Side = +, top or bottom = -.
+        /* if (direction === 'horizontal') {
+          ballX.current += xDeltaBall;
+        } else { */
+        ballX.current -= xDeltaBall;
+        /* } */
+        ballY.current += yDeltaBall;
       }
     }
 
@@ -145,8 +177,13 @@ const LabyrinthGame = () => {
     ) {
       ballY.current += yDeltaBall;
     }
-    lastXDeltaBall.current = xDeltaBall;
-    lastYDeltaBall.current = yDeltaBall;
+    if (isInObstacle) {
+      velocityX.current = 0;
+      velocityY.current = 0;
+    } else {
+      velocityX.current = xDeltaBall;
+      velocityY.current = yDeltaBall;
+    }
   };
 
   const moveShadows = (xDelta: number, yDelta: number) => {
