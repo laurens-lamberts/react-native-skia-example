@@ -28,6 +28,7 @@ interface BallInterface {
   screenWidth: number;
   gameBoxWidth: number;
   gameBoxHeight: number;
+  gameBoxY: number;
   ballRadius: SkiaValue<number>;
 }
 
@@ -42,6 +43,7 @@ const Ball = ({
   ballRadius,
   gameBoxWidth,
   gameBoxHeight,
+  gameBoxY,
 }: BallInterface) => {
   const ballShadowX = useValue(0);
   const ballShadowY = useValue(0);
@@ -74,7 +76,7 @@ const Ball = ({
       Extrapolate.CLAMP,
     );
     const glareOffsetVertical = interpolate(
-      y.current,
+      y.current - gameBoxY,
       [0, gameBoxHeight],
       [BALL_RADIUS * BALL_GLARE_FACTOR, -BALL_RADIUS * BALL_GLARE_FACTOR],
       Extrapolate.CLAMP,

@@ -234,6 +234,7 @@ const LabyrinthGame = () => {
               ballRadius={ballRadius}
               gameBoxHeight={gameBoxHeight}
               gameBoxWidth={gameBoxWidth}
+              gameBoxY={gameBoxStartY}
             />
           </GameBox>
         </Group>
