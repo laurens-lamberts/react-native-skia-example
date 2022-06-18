@@ -228,9 +228,6 @@ const LabyrinthGame = () => {
               y={ballY}
               shadowX={shadowX}
               shadowY={shadowY}
-              startX={startX}
-              startY={startY}
-              screenWidth={screenWidth}
               ballRadius={ballRadius}
               gameBoxHeight={gameBoxHeight}
               gameBoxWidth={gameBoxWidth}

@@ -19,13 +19,10 @@ import {
 } from './Config';
 
 interface BallInterface {
-  startX: number;
-  startY: number;
   x: SkiaValue<number>;
   y: SkiaValue<number>;
   shadowX: SkiaValue<number>;
   shadowY: SkiaValue<number>;
-  screenWidth: number;
   gameBoxWidth: number;
   gameBoxHeight: number;
   gameBoxY: number;
@@ -37,9 +34,6 @@ const Ball = ({
   y,
   shadowX,
   shadowY,
-  startX,
-  startY,
-  screenWidth,
   ballRadius,
   gameBoxWidth,
   gameBoxHeight,
