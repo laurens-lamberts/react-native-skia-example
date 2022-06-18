@@ -41,7 +41,7 @@ const LabyrinthGame = () => {
   const shadowX = useValue(startX);
   const shadowY = useValue(startY);
   const falling = useValue(false);
-  const isInWall = useValue(false);
+  //const isInWall = useValue(false);
   const direction = useValue<'left' | 'up' | 'down' | 'right' | undefined>(
     undefined,
   );
@@ -129,8 +129,7 @@ const LabyrinthGame = () => {
       isInObstacleOne(ballX.current, ballY.current) ||
       isInObstacleTwo(ballX.current, ballY.current)
     ) {
-      isInWall.current = true;
-      //console.log('in wall');
+      //isInWall.current = true;
       switch (direction.current) {
         case 'down':
           ballY.current -= yDeltaBall;
@@ -146,7 +145,7 @@ const LabyrinthGame = () => {
           return;
       }
     } else {
-      isInWall.current = false;
+      //isInWall.current = false;
     }
 
     // Collision detection with the outer walls of the box
@@ -226,13 +225,6 @@ const LabyrinthGame = () => {
             />
           </GameBox>
         </Group>
-        {/* <SkiaText
-          x={WALL_WIDTH + 10}
-          y={gameBoxStartY + gameBoxHeight + WALL_WIDTH + 20}
-          text={'isInWall: ' + isInWall.current}
-          familyName="serif"
-          size={16}
-        /> */}
       </Canvas>
       {fellDown && (
         <TouchableOpacity
