@@ -18,33 +18,39 @@ export const useObstacle = ({
   const vectors = useMemo(
     () => [
       {
-        leftTop: vec(WALL_WIDTH, gameBoxY + gameBoxHeight * 0.3),
+        leftTop: vec(
+          WALL_WIDTH,
+          gameBoxY + gameBoxHeight * 0.33 - WALL_WIDTH / 2,
+        ),
         rightTop: vec(
-          WALL_WIDTH + gameBoxWidth * 0.6,
-          gameBoxY + gameBoxHeight * 0.3,
+          WALL_WIDTH + gameBoxWidth * 0.66,
+          gameBoxY + gameBoxHeight * 0.33 - WALL_WIDTH / 2,
         ),
         rightBottom: vec(
-          WALL_WIDTH + gameBoxWidth * 0.6,
-          gameBoxY + gameBoxHeight * 0.3 + WALL_WIDTH,
+          WALL_WIDTH + gameBoxWidth * 0.66,
+          gameBoxY + gameBoxHeight * 0.33 + WALL_WIDTH - WALL_WIDTH / 2,
         ),
         leftBottom: vec(
           WALL_WIDTH,
-          gameBoxY + gameBoxHeight * 0.3 + WALL_WIDTH,
+          gameBoxY + gameBoxHeight * 0.33 + WALL_WIDTH - WALL_WIDTH / 2,
         ),
       },
       {
         leftTop: vec(
-          WALL_WIDTH + gameBoxWidth * 0.3,
-          gameBoxY + gameBoxHeight * 0.6,
+          WALL_WIDTH + gameBoxWidth * 0.33,
+          gameBoxY + gameBoxHeight * 0.66 - WALL_WIDTH / 2,
         ),
-        rightTop: vec(gameBoxWidth, gameBoxY + gameBoxHeight * 0.6),
+        rightTop: vec(
+          gameBoxWidth,
+          gameBoxY + gameBoxHeight * 0.66 - WALL_WIDTH / 2,
+        ),
         rightBottom: vec(
           gameBoxWidth,
-          gameBoxY + gameBoxHeight * 0.6 + WALL_WIDTH,
+          gameBoxY + gameBoxHeight * 0.66 + WALL_WIDTH - WALL_WIDTH / 2,
         ),
         leftBottom: vec(
-          WALL_WIDTH + gameBoxWidth * 0.3,
-          gameBoxY + gameBoxHeight * 0.6 + WALL_WIDTH,
+          WALL_WIDTH + gameBoxWidth * 0.33,
+          gameBoxY + gameBoxHeight * 0.66 + WALL_WIDTH - WALL_WIDTH / 2,
         ),
       },
     ],

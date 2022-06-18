@@ -79,6 +79,17 @@ const LabyrinthGame = () => {
     setFellDown(false);
   };
 
+  const fallInHole = () => {
+    falling.current = true;
+    setFellDown(true);
+    runSpring(ballRadius, ballRadius.current * 0.85, {
+      mass: 2,
+      velocity: 100,
+      damping: 10,
+      stiffness: 100,
+    });
+  };
+
   const checkHoles = () => {
     if (
       holes.find(
@@ -91,14 +102,7 @@ const LabyrinthGame = () => {
             ballY.current + BALL_SIZE - BALL_FALL_SENSITIVITY - BALL_RADIUS,
       )
     ) {
-      falling.current = true;
-      setFellDown(true);
-      runSpring(ballRadius, ballRadius.current * 0.85, {
-        mass: 2,
-        velocity: 100,
-        damping: 10,
-        stiffness: 100,
-      });
+      fallInHole();
     }
   };
   const moveBall = (xDelta: number, yDelta: number) => {

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -29,7 +29,7 @@ const Example = ({activeExample}: ExampleProps) => {
 };
 
 const App = () => {
-  const [activeExample, setActiveExample] = useState(-1);
+  const [activeExample, setActiveExample] = useState(3);
   const insets = useSafeAreaInsets();
 
   return (
