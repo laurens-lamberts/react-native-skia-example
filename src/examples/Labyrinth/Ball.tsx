@@ -60,8 +60,8 @@ const Ball = ({
   ); */
 
   const glareVector: SkiaMutableValue<Vector> = useValue({
-    x: x.current - 4,
-    y: y.current - 4,
+    x: x.current,
+    y: y.current,
   });
 
   useValueEffect(positionKey, () => {
