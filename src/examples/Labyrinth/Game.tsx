@@ -41,10 +41,9 @@ const LabyrinthGame = () => {
   const shadowX = useValue(startX);
   const shadowY = useValue(startY);
   const falling = useValue(false);
-  //const isInWall = useValue(false);
-  const direction = useValue<'left' | 'up' | 'down' | 'right' | undefined>(
-    undefined,
-  );
+
+  const lastXDeltaBall = useValue(0);
+  const lastYDeltaBall = useValue(0);
 
   const gameBoxStartY = startY / 2 - BALL_SIZE / 2 + WALL_WIDTH / 2;
   const gameBoxWidth = screenWidth - WALL_WIDTH;
@@ -106,46 +105,18 @@ const LabyrinthGame = () => {
     }
   };
   const moveBall = (xDelta: number, yDelta: number) => {
-    const xDeltaBall = xDelta * BALL_SPEED_FACTOR;
-    const yDeltaBall = yDelta * BALL_SPEED_FACTOR;
-
-    // Set an approximate direction for correction on collision
-    if (xDelta < 0 && yDelta < 0) {
-      if (xDelta > yDelta) {
-        direction.current = 'up';
-      } else {
-        direction.current = 'left';
-      }
-    } else {
-      if (xDelta > yDelta) {
-        direction.current = 'right';
-      } else {
-        direction.current = 'down';
-      }
-    }
+    let xDeltaBall = xDelta * BALL_SPEED_FACTOR;
+    let yDeltaBall = yDelta * BALL_SPEED_FACTOR;
 
     // Collision detection with the obstacles
     if (
       isInObstacleOne(ballX.current, ballY.current) ||
       isInObstacleTwo(ballX.current, ballY.current)
     ) {
-      //isInWall.current = true;
-      switch (direction.current) {
-        case 'down':
-          ballY.current -= yDeltaBall;
-          return;
-        case 'up':
-          ballY.current += yDeltaBall;
-          return;
-        case 'left':
-          ballX.current += xDeltaBall;
-          return;
-        case 'right':
-          ballX.current -= xDeltaBall;
-          return;
+      if (lastXDeltaBall.current || lastYDeltaBall.current) {
+        xDeltaBall = lastXDeltaBall.current;
+        yDeltaBall = -lastYDeltaBall.current;
       }
-    } else {
-      //isInWall.current = false;
     }
 
     // Collision detection with the outer walls of the box
@@ -174,6 +145,8 @@ const LabyrinthGame = () => {
     ) {
       ballY.current += yDeltaBall;
     }
+    lastXDeltaBall.current = xDeltaBall;
+    lastYDeltaBall.current = yDeltaBall;
   };
 
   const moveShadows = (xDelta: number, yDelta: number) => {
