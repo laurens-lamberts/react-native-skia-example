@@ -18,7 +18,7 @@ const Hole = ({x, y, shadowX, shadowY}: HoleInterface) => {
       y={y}
       width={HOLE_SIZE}
       height={HOLE_SIZE}
-      color="rgba(170,147,104,1)">
+      color="rgba(160,137,94,1)">
       <Shadow
         dx={shadowX}
         dy={shadowY}
