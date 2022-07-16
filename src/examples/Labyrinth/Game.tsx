@@ -9,6 +9,7 @@ import React, {useState} from 'react';
 import {Text, TouchableOpacity, useWindowDimensions} from 'react-native';
 import {SensorType, useAnimatedSensor} from 'react-native-reanimated';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {FULL_SCREEN} from '../../../App';
 import Ball from './Ball';
 import {
   BALL_SPEED_FACTOR,
@@ -30,7 +31,7 @@ const LabyrinthGame = () => {
   const [fellDown, setFellDown] = useState(false);
 
   const approximateCanvasHeight =
-    screenHeight / 2 - BALL_SIZE / 2 - insets.top - 50; // 50 is the fixed menu height
+    screenHeight / 2 - BALL_SIZE / 2 - (FULL_SCREEN ? 0 : insets.top - 50); // 50 is the fixed menu height
 
   const BALL_RADIUS = BALL_SIZE / 2;
   const ballRadius = useValue(BALL_RADIUS);

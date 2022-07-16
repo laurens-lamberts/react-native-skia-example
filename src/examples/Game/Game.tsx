@@ -31,6 +31,7 @@ import {
 } from './Config';
 import Bird from './Bird';
 import Obstacle from './Obstacle';
+import {FULL_SCREEN} from '../../../App';
 
 /* const {height} = Dimensions.get('window');
 
@@ -80,6 +81,7 @@ const CanvasContent = ({
 
   useDerivedValue(() => {
     birdY.current = bottom.current - translateY.current;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bottom, translateY]);
 
   return (
@@ -209,7 +211,7 @@ const Flappy = () => {
   });
 
   return (
-    <SafeAreaView style={{flex: 1}} edges={['bottom']}>
+    <SafeAreaView style={{flex: 1}} edges={FULL_SCREEN ? ['left'] : ['bottom']}>
       <Canvas
         style={{
           flex: 1,

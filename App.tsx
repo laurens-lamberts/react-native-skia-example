@@ -16,6 +16,8 @@ const examples = [
   {name: 'Sensor', component: LabyrinthGame},
 ];
 
+export const FULL_SCREEN = true;
+
 interface ExampleProps {
   activeExample: number;
 }
@@ -29,39 +31,42 @@ const Example = ({activeExample}: ExampleProps) => {
 };
 
 const App = () => {
-  const [activeExample, setActiveExample] = useState(3);
+  const [activeExample, setActiveExample] = useState(2);
   const insets = useSafeAreaInsets();
 
   return (
     <View style={{flex: 1}}>
-      <View
-        style={{
-          width: '100%',
-          flexDirection: 'row',
-          backgroundColor: 'tomato',
-          paddingTop: insets.top,
-        }}>
-        {examples.map((e, index) => (
-          <View
-            key={e.name}
-            style={{
-              height: 50,
-              flex: 1,
-              borderRightWidth: 1,
-              borderColor: 'rgba(0, 0, 0, 0.2)',
-            }}>
-            <TouchableOpacity
+      {!FULL_SCREEN && (
+        <View
+          style={{
+            width: '100%',
+            flexDirection: 'row',
+            backgroundColor: 'tomato',
+            paddingTop: insets.top,
+          }}>
+          {examples.map((e, index) => (
+            <View
+              key={e.name}
               style={{
+                height: 50,
                 flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              onPress={() => setActiveExample(index)}>
-              <Text>{e.name}</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-      </View>
+                borderRightWidth: 1,
+                borderColor: 'rgba(0, 0, 0, 0.2)',
+              }}>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                onPress={() => setActiveExample(index)}>
+                <Text>{e.name}</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      )}
+
       <Example activeExample={activeExample} />
     </View>
   );
