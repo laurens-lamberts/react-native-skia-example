@@ -7,13 +7,12 @@ import {
   SkiaValue,
   Text,
   useCanvas,
-  useClockValue,
   useDerivedValue,
   useValue,
   useValueEffect,
   vec,
 } from '@shopify/react-native-skia';
-import React from 'react';
+import React, {useCallback} from 'react';
 import {useWindowDimensions} from 'react-native';
 import {
   BIRD_WIDTH,
@@ -62,9 +61,9 @@ const Obstacle = ({
   const GAP_Y_BOTTOM = useValue(canvasHeight * 0.8);
   const GAP_BOTTOM_HEIGHT = canvasHeight - GAP_Y_BOTTOM.current;
 
-  const generateNewGap = () => {
-    GAP_Y_TOP.current = Math.random() * canvasHeight;
-    GAP_Y_BOTTOM.current = Math.random() * (canvasHeight - GAP_Y_TOP.current);
+  const generateNewGap = useCallback(() => {
+    GAP_Y_BOTTOM.current = Math.random() * canvasHeight;
+    GAP_Y_TOP.current = GAP_Y_BOTTOM.current - (Math.random() * 100 - 100); //Math.random() * (canvasHeight - GAP_Y_TOP.current);
     const gapSize = GAP_Y_BOTTOM.current - GAP_Y_TOP.current;
     if (gapSize < minimumGapSize) {
       // increase the gap so that it meets the minimum size
@@ -72,7 +71,7 @@ const Obstacle = ({
       GAP_Y_TOP.current -= difference / 2;
       GAP_Y_BOTTOM.current += difference / 2;
     }
-  };
+  }, [GAP_Y_BOTTOM, GAP_Y_TOP, canvasHeight, minimumGapSize]);
 
   const x = useDerivedValue(() => {
     let newX = 0;
@@ -103,7 +102,7 @@ const Obstacle = ({
       pointCounted.current = 0;
     }
     return newX;
-  }, [clock]);
+  }, [canvasWidth, clock, firstResetClock, generateNewGap, pointCounted]);
 
   // Collision detection
   // Note that this clock differs from the main clock.
