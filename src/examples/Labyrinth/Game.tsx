@@ -28,6 +28,7 @@ import GameBox from './GameBox';
 import {useObstacle} from './hooks/useObstacle';
 
 const MAGIC_NUMBER_VERTICAL_COLLISION = 10; // Unsure why, but this value is necessary to get a correct collision detection vertically with the bounds of the game box.
+const AROUND_GAMEBOX_MARGIN = 10;
 
 const LabyrinthGame = () => {
   const insets = useSafeAreaInsets();
@@ -52,13 +53,18 @@ const LabyrinthGame = () => {
   const velocityY = useValue(0);
 
   const gameBoxStartY = startY / 2 - BALL_SIZE / 2 + WALL_WIDTH / 2;
-  const gameBoxWidth = screenWidth - WALL_WIDTH;
-  const gameBoxHeight = screenWidth - WALL_WIDTH;
+  const gameBoxStartX = WALL_WIDTH + AROUND_GAMEBOX_MARGIN;
+  const gameBoxWidth = screenWidth - WALL_WIDTH * 2 - AROUND_GAMEBOX_MARGIN * 2;
+  const gameBoxHeight =
+    screenWidth - WALL_WIDTH * 2 - AROUND_GAMEBOX_MARGIN * 2;
 
   const holes = [
-    {x: WALL_WIDTH + 20, y: gameBoxStartY + WALL_WIDTH + 10},
     {
-      x: gameBoxWidth - WALL_WIDTH - 40,
+      x: WALL_WIDTH + 20 + AROUND_GAMEBOX_MARGIN * 2,
+      y: gameBoxStartY + WALL_WIDTH + 10,
+    },
+    {
+      x: gameBoxWidth - WALL_WIDTH - 40 + AROUND_GAMEBOX_MARGIN * 2,
       y: gameBoxStartY + gameBoxHeight - WALL_WIDTH / 2 - 40 - HOLE_SIZE / 2,
     },
   ];
@@ -67,12 +73,14 @@ const LabyrinthGame = () => {
     id: 0,
     gameBoxHeight,
     gameBoxWidth,
+    gameBoxX: gameBoxStartX,
     gameBoxY: gameBoxStartY,
   });
   const {isInObstacle: isInObstacleTwo} = useObstacle({
     id: 1,
     gameBoxHeight,
     gameBoxWidth,
+    gameBoxX: gameBoxStartX,
     gameBoxY: gameBoxStartY,
   });
 
@@ -159,9 +167,15 @@ const LabyrinthGame = () => {
 
     // Collision detection with the outer walls of the box
     if (
-      (xDeltaBall < 0 && ballX.current > WALL_WIDTH + BALL_RADIUS) ||
+      (xDeltaBall < 0 &&
+        ballX.current > WALL_WIDTH + BALL_RADIUS + AROUND_GAMEBOX_MARGIN * 2) ||
       (xDeltaBall > 0 &&
-        ballX.current < screenWidth - WALL_WIDTH - BALL_SIZE + BALL_RADIUS)
+        ballX.current <
+          screenWidth -
+            WALL_WIDTH -
+            BALL_SIZE +
+            BALL_RADIUS -
+            AROUND_GAMEBOX_MARGIN * 2)
     ) {
       ballX.current += xDeltaBall;
     }
@@ -221,8 +235,14 @@ const LabyrinthGame = () => {
     <>
       <Canvas style={{flex: 1, backgroundColor: 'tomato'}}>
         <Group>
-          <Floor startY={startY} />
+          <Floor
+            startY={startY}
+            startX={WALL_WIDTH + 10}
+            gameBoxHeight={gameBoxHeight}
+            gameBoxWidth={gameBoxWidth}
+          />
           <GameBox
+            x={gameBoxStartX}
             y={gameBoxStartY}
             shadowX={shadowX}
             shadowY={shadowY}

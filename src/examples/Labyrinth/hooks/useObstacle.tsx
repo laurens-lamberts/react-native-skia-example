@@ -5,6 +5,7 @@ import {BALL_RADIUS, WALL_WIDTH} from '../Config';
 interface ObstacleProps {
   gameBoxWidth: number;
   gameBoxHeight: number;
+  gameBoxX: number;
   gameBoxY: number;
   id: number;
 }
@@ -12,6 +13,7 @@ interface ObstacleProps {
 export const useObstacle = ({
   gameBoxWidth,
   gameBoxHeight,
+  gameBoxX,
   gameBoxY,
   id,
 }: ObstacleProps) => {
@@ -19,42 +21,42 @@ export const useObstacle = ({
     () => [
       {
         leftTop: vec(
-          WALL_WIDTH,
+          gameBoxX,
           gameBoxY + gameBoxHeight * 0.33 - WALL_WIDTH / 2,
         ),
         rightTop: vec(
-          WALL_WIDTH + gameBoxWidth * 0.66,
+          gameBoxX + gameBoxWidth * 0.66,
           gameBoxY + gameBoxHeight * 0.33 - WALL_WIDTH / 2,
         ),
         rightBottom: vec(
-          WALL_WIDTH + gameBoxWidth * 0.66,
+          gameBoxX + gameBoxWidth * 0.66,
           gameBoxY + gameBoxHeight * 0.33 + WALL_WIDTH - WALL_WIDTH / 2,
         ),
         leftBottom: vec(
-          WALL_WIDTH,
+          gameBoxX,
           gameBoxY + gameBoxHeight * 0.33 + WALL_WIDTH - WALL_WIDTH / 2,
         ),
       },
       {
         leftTop: vec(
-          WALL_WIDTH + gameBoxWidth * 0.33,
+          gameBoxX + gameBoxWidth * 0.33,
           gameBoxY + gameBoxHeight * 0.66 - WALL_WIDTH / 2,
         ),
         rightTop: vec(
-          gameBoxWidth,
+          gameBoxWidth + gameBoxX,
           gameBoxY + gameBoxHeight * 0.66 - WALL_WIDTH / 2,
         ),
         rightBottom: vec(
-          gameBoxWidth,
+          gameBoxWidth + gameBoxX,
           gameBoxY + gameBoxHeight * 0.66 + WALL_WIDTH - WALL_WIDTH / 2,
         ),
         leftBottom: vec(
-          WALL_WIDTH + gameBoxWidth * 0.33,
+          gameBoxX + gameBoxWidth * 0.33,
           gameBoxY + gameBoxHeight * 0.66 + WALL_WIDTH - WALL_WIDTH / 2,
         ),
       },
     ],
-    [gameBoxHeight, gameBoxY, gameBoxWidth],
+    [gameBoxX, gameBoxY, gameBoxHeight, gameBoxWidth],
   );
 
   const obstacle = useMemo(() => {

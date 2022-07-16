@@ -11,6 +11,7 @@ import Hole from './Hole';
 import {useObstacle} from './hooks/useObstacle';
 
 interface GameBoxInterface {
+  x: number;
   y: number;
   height: number;
   width: number;
@@ -20,6 +21,7 @@ interface GameBoxInterface {
 }
 
 const GameBox = ({
+  x,
   y,
   height,
   width,
@@ -32,12 +34,14 @@ const GameBox = ({
     id: 0,
     gameBoxHeight: height,
     gameBoxWidth: width,
+    gameBoxX: x,
     gameBoxY: y,
   });
   const {obstacle: obstacleTwo} = useObstacle({
     id: 1,
     gameBoxHeight: height,
     gameBoxWidth: width,
+    gameBoxX: x,
     gameBoxY: y,
   });
 
@@ -54,7 +58,7 @@ const GameBox = ({
         />
       ))}
       <Rect
-        x={WALL_WIDTH / 2}
+        x={x}
         y={y}
         width={width}
         height={height}
@@ -111,7 +115,7 @@ const GameBox = ({
         
       </Points> */}
       <Rect
-        x={WALL_WIDTH / 2}
+        x={x}
         y={y}
         width={width}
         height={height}
