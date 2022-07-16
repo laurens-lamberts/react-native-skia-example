@@ -7,7 +7,12 @@ import {
 } from '@shopify/react-native-skia';
 import React, {useState} from 'react';
 import {Text, TouchableOpacity, useWindowDimensions} from 'react-native';
-import {SensorType, useAnimatedSensor} from 'react-native-reanimated';
+import Animated, {
+  FadeIn,
+  FadeOut,
+  SensorType,
+  useAnimatedSensor,
+} from 'react-native-reanimated';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {FULL_SCREEN} from '../../../App';
 import Ball from './Ball';
@@ -30,13 +35,13 @@ const LabyrinthGame = () => {
   const animatedSensor = useAnimatedSensor(SensorType.ROTATION, {interval: 10}); // <- initialization
   const [fellDown, setFellDown] = useState(false);
 
-  const approximateCanvasHeight =
-    screenHeight / 2 - BALL_SIZE / 2 - (FULL_SCREEN ? 0 : insets.top - 50); // 50 is the fixed menu height
-
   const BALL_RADIUS = BALL_SIZE / 2;
   const ballRadius = useValue(BALL_RADIUS);
   const startX = screenWidth / 2 - BALL_SIZE / 2;
-  const startY = approximateCanvasHeight;
+  const startY =
+    screenHeight / 2 -
+    BALL_SIZE / 2 -
+    (FULL_SCREEN ? BALL_SIZE * 2 : insets.top - 50); // 50 is the fixed menu height;
   const ballX = useValue(startX + BALL_RADIUS);
   const ballY = useValue(startY + BALL_RADIUS);
   const shadowX = useValue(startX);
@@ -238,19 +243,25 @@ const LabyrinthGame = () => {
         </Group>
       </Canvas>
       {fellDown && (
-        <TouchableOpacity
+        <Animated.View
           style={{
             position: 'absolute',
-            top: screenHeight - gameBoxStartY,
-            backgroundColor: 'teal',
-            paddingVertical: 20,
-            paddingHorizontal: 40,
-            borderRadius: 4,
+            top: screenHeight - gameBoxStartY - 100,
             alignSelf: 'center',
           }}
-          onPress={reset}>
-          <Text style={{color: 'white'}}>Restart</Text>
-        </TouchableOpacity>
+          entering={FadeIn}
+          exiting={FadeOut}>
+          <TouchableOpacity
+            style={{
+              backgroundColor: 'teal',
+              paddingVertical: 20,
+              paddingHorizontal: 40,
+              borderRadius: 4,
+            }}
+            onPress={reset}>
+            <Text style={{color: 'white'}}>Restart</Text>
+          </TouchableOpacity>
+        </Animated.View>
       )}
     </>
   );
