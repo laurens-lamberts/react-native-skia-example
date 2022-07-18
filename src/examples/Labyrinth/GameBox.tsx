@@ -96,24 +96,6 @@ const GameBox = ({
           color={'rgba(106,81,64,1)'}
         />
       </Vertices>
-      {/* <Vertices
-        vertices={obstacleSecondPoints}
-        color="rgba(203,153,96,1)"
-        mode="triangleFan">
-        <Shadow
-          dx={shadowX}
-          dy={shadowY}
-          blur={0.2}
-          color={'rgba(106,81,64,1)'}
-        />
-      </Vertices> */}
-      {/* <Points
-        points={obstaclePoints}
-        mode="polygon"
-        color="rgba(203,153,96,1)"
-        style="fill">
-        
-      </Points> */}
       <Rect
         x={x}
         y={y}

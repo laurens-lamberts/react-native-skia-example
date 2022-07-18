@@ -123,26 +123,6 @@ const LabyrinthGame = () => {
     let xDeltaBall = xDelta * BALL_SPEED_FACTOR;
     let yDeltaBall = yDelta * BALL_SPEED_FACTOR;
 
-    /* let direction: 'horizontal' | 'vertical' | undefined;
-    // Set an approximate direction for correction on collision
-    if (xDelta < 0 && yDelta < 0) {
-      if (xDelta > yDelta) {
-        direction = 'vertical';
-        //direction.current = 'up';
-      } else {
-        direction = 'horizontal';
-        //direction.current = 'left';
-      }
-    } else {
-      if (xDelta > yDelta) {
-        direction = 'horizontal';
-        //direction.current = 'right';
-      } else {
-        direction = 'vertical';
-        //direction.current = 'down';
-      }
-    } */
-
     // Collision detection with the obstacles
     if (
       isInObstacleOne(ballX.current, ballY.current) ||
