@@ -11,6 +11,7 @@ import {
   vec,
 } from '@shopify/react-native-skia';
 import React from 'react';
+import {Platform} from 'react-native';
 import {BIRD_WIDTH, BIRD_HEIGHT, BIRD_X, SHOW_DEBUG} from './Config';
 
 interface Props {
@@ -19,7 +20,7 @@ interface Props {
 }
 
 // Dynamically switching images is not working well yet.
-const USE_STATIC_IMAGE = true;
+const USE_STATIC_IMAGE = Platform.OS === 'android';
 
 const Bird = ({birdY, clock}: Props) => {
   const image = useImage(require('./assets/yellowbird-upflap.png'));
@@ -40,9 +41,6 @@ const Bird = ({birdY, clock}: Props) => {
         currentImage.current = 0;
       }
     }
-    /* if (clock.current % 300 === 0) {
-      
-    } */
   });
 
   /* const rotateTransform = useDerivedValue(

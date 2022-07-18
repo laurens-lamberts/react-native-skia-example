@@ -33,30 +33,6 @@ import Bird from './Bird';
 import Obstacle from './Obstacle';
 import {FULL_SCREEN} from '../../../App';
 
-/* const {height} = Dimensions.get('window');
-
-const bottomBoundary = height - BIRD_HEIGHT - 20;
-
-interface PhysicsAnimationState extends AnimationState {}
-
-const runBouncing = (translate: SkiaValue<number>) => {
-  translate.animation = ValueApi.createAnimation<PhysicsAnimationState>(
-    (now, state) => {
-      if (state === undefined) {
-        return {
-          current: translate.current,
-          finished: false,
-        };
-      }
-      const newState = {
-        current: state.current,
-        finished: false,
-      };
-      return newState;
-    },
-  );
-}; */
-
 interface CanvasContentProps {
   translateY: SkiaMutableValue<number>;
   clock: SkiaClockValue;
@@ -158,8 +134,6 @@ const Flappy = () => {
   const reset = () => {
     resetOnNextTap.current = 0;
     points.current = 0;
-    //taps.current = 0;
-    //ref.current?.render();
     clock.start();
   };
   const gameOver = () => {

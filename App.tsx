@@ -6,7 +6,7 @@ import {
 } from 'react-native-safe-area-context';
 import BackdropBlur from './src/examples/BackdropBlur';
 import Mount from './src/examples/Mount';
-import Game from './src/examples/Game/Game';
+import Game from './src/examples/Flappy/Game';
 import LabyrinthGame from './src/examples/Labyrinth/Game';
 
 const examples = [
