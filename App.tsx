@@ -16,7 +16,7 @@ const examples = [
   {name: 'Sensor', component: LabyrinthGame},
 ];
 
-export const FULL_SCREEN = true;
+export const FULL_SCREEN = false;
 
 interface ExampleProps {
   activeExample: number;
@@ -31,7 +31,7 @@ const Example = ({activeExample}: ExampleProps) => {
 };
 
 const App = () => {
-  const [activeExample, setActiveExample] = useState(2);
+  const [activeExample, setActiveExample] = useState(3);
   const insets = useSafeAreaInsets();
 
   return (
