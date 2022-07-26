@@ -22,8 +22,8 @@ const CanvasResizeAnimation = () => {
     <View style={{margin: 12}}>
       <Canvas
         style={{
-          width: 300,
-          height: 300,
+          width: imageSize,
+          height: imageSize,
         }}>
         {!!skiaImage && (
           <Image
