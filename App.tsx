@@ -8,12 +8,14 @@ import BackdropBlur from './src/examples/BackdropBlur';
 import Mount from './src/examples/Mount';
 import Game from './src/examples/Flappy/Game';
 import LabyrinthGame from './src/examples/Labyrinth/Game';
+import CanvasResizeAnimation from './src/examples/CanvasResizeAnimation';
 
 const examples = [
   {name: 'Mount', component: Mount},
-  {name: 'BackdropBlur', component: BackdropBlur},
+  {name: 'Blur', component: BackdropBlur},
+  {name: 'Resize', component: CanvasResizeAnimation},
   {name: 'Flappy', component: Game},
-  {name: 'Sensor', component: LabyrinthGame},
+  {name: 'Maze', component: LabyrinthGame},
 ];
 
 export const FULL_SCREEN = false;
@@ -31,7 +33,7 @@ const Example = ({activeExample}: ExampleProps) => {
 };
 
 const App = () => {
-  const [activeExample, setActiveExample] = useState(3);
+  const [activeExample, setActiveExample] = useState(2);
   const insets = useSafeAreaInsets();
 
   return (
