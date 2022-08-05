@@ -6,13 +6,13 @@ import {
   Shadow,
   Text,
   useFont,
-  useValue,
 } from '@shopify/react-native-skia';
 import {useWindowDimensions, View} from 'react-native';
 import useSetInitialAppPositions from './hooks/useSetInitialAppPositions';
 import useSpringboardTouchHandler from './hooks/useSpringboardTouchHandler';
 import Wallpaper from './components/Wallpaper';
 import useApps from './hooks/useApps';
+import useWidgets from './hooks/useWidgets';
 
 const Springboard = () => {
   const {width: screenWidth} = useWindowDimensions();
@@ -20,7 +20,7 @@ const Springboard = () => {
   const horizontalPadding = (screenWidth - appIconSize * 4) / 5;
 
   const {apps} = useApps();
-  const widgets = useValue([{name: 'clock'}]);
+  const {widgets} = useWidgets();
 
   useSetInitialAppPositions({apps, horizontalPadding, appIconSize});
   const touchHandler = useSpringboardTouchHandler({apps, appIconSize});
