@@ -18,6 +18,7 @@ const appSnapAnimationConfig: TimingConfig = {
 };
 
 const DRAG_START_MS = 1400;
+const SNAP_TO_SCREEN_TRAVEL_THRESHOLD = 0.4;
 
 interface Props {
   apps: SkiaMutableValue<AppType[]>;
@@ -207,13 +208,33 @@ const useSpringboardTouchHandler = ({
       if (touchedAppIndex.current === -1) {
         if (screensTranslateX.current !== screenTranslateStartX.current) {
           // we need to snap to the closest multitude of screenWidth
-          const screenSnapIndex = Math.round(
-            screensTranslateX.current / screenWidth,
+          // TODO: should actually be based on the amount of horizontal drag travel
+          const prevScreenIndex = Math.round(
+            screenTranslateStartX.current / screenWidth,
           );
+          let newScreensTranslateX = screenWidth;
+          const horizontalDragTravel =
+            screensTranslateX.current - screenTranslateStartX.current;
+          if (
+            horizontalDragTravel >
+            screenWidth * SNAP_TO_SCREEN_TRAVEL_THRESHOLD
+          ) {
+            // travelled a fair amount of screen to the right
+            newScreensTranslateX = screenWidth * (prevScreenIndex + 1);
+          } else if (
+            horizontalDragTravel <
+            -(screenWidth * SNAP_TO_SCREEN_TRAVEL_THRESHOLD)
+          ) {
+            newScreensTranslateX = screenWidth * (prevScreenIndex - 1);
+          } else {
+            newScreensTranslateX = screenWidth * prevScreenIndex;
+          }
+          //alert();
+          //const screenSnapIndex =
 
           runTiming(
             screensTranslateX,
-            screenSnapIndex < 0 ? screenWidth * screenSnapIndex : 0,
+            newScreensTranslateX,
             appSnapAnimationConfig,
           );
         }
