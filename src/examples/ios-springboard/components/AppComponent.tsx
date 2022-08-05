@@ -23,6 +23,7 @@ const AppComponent = ({item, appIconSize}: Props) => {
     FONT_SIZE,
   );
   const labelWidth = font?.measureText(item.name).width;
+  //const labelWidth = font.getTextWidth(item.name); this is not precise?
 
   const textX = useDerivedValue(() => {
     return item.x.current + (appIconSize - (labelWidth || 0)) / 2;
@@ -34,8 +35,6 @@ const AppComponent = ({item, appIconSize}: Props) => {
   if (font === null) {
     return null;
   }
-
-  //const labelWidth = font.getTextWidth(item.name); this is not precise?
 
   return (
     <Group
