@@ -16,15 +16,8 @@ import {useWindowDimensions, View} from 'react-native';
 import {TimingConfig} from '@shopify/react-native-skia/lib/typescript/src/animation/types';
 import useSetInitialAppPositions from './hooks/useSetInitialAppPositions';
 import {AppType} from './types/AppType';
-
-const getRandomColor = () => {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-};
+import Wallpaper from './components/Wallpaper';
+import {getRandomColor} from './helpers/color';
 
 const appSnapAnimationConfig: TimingConfig = {
   easing: Easing.out(Easing.exp),
@@ -131,12 +124,13 @@ const Springboard = () => {
       }
       touchedApp = apps.current[touchedAppIndex];
 
-      //alert(selectedApp.name);
+      console.log('drag', touchedApp.name);
       touchedApp.x.current = x - draggingAppPickupPos.current.x;
       touchedApp.y.current = y - draggingAppPickupPos.current.y;
     },
     onEnd: ({x, y}) => {
       const touchedApp = apps.current[draggingAppIndex.current];
+      if (!touchedApp) return;
       runTiming(
         touchedApp.x,
         draggingAppOriginalPos.current.x,
@@ -170,7 +164,6 @@ const Springboard = () => {
     <View
       style={{
         flex: 1,
-        backgroundColor: 'lightblue',
       }}>
       <View style={{flex: 1}}>
         <Canvas
@@ -178,6 +171,7 @@ const Springboard = () => {
             flex: 1,
           }}
           onTouch={touchHandler}>
+          <Wallpaper />
           {apps.current.map((item, index) => {
             const labelWidth = font.measureText(item.name).width;
             //const labelWidth = font.getTextWidth(item.name); this is not precise?
