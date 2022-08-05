@@ -29,7 +29,13 @@ const AppComponent = ({item, index, appIconSize}: Props) => {
   //const labelWidth = font.getTextWidth(item.name); this is not precise?
 
   return (
-    <Group key={index + item.name}>
+    <Group
+      key={index + item.name}
+      origin={{
+        x: item.x.current + appIconSize / 2,
+        y: item.y.current + appIconSize / 2,
+      }}
+      transform={[{rotate: 0}]}>
       <RoundedRect
         x={item.x}
         y={item.y}

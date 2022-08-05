@@ -112,6 +112,7 @@ const useSpringboardTouchHandler = ({apps, appIconSize}: Props) => {
     },
     onEnd: ({x, y}) => {
       if (!moveMode.current) return;
+      if (touchedAppIndex.current === -1) return;
 
       let touchedApp = apps.current[touchedAppIndex.current];
       if (!touchedApp) {
