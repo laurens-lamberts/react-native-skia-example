@@ -103,9 +103,9 @@ const useSpringboardTouchHandler = ({apps, appIconSize}: Props) => {
           (draggingAppSnappedX.current && draggingAppSnappedY.current)
         ) {
           touchedApp = apps.current[touchedAppIndex.current];
-          console.log('drag', touchedApp.name);
           touchedApp.x.current = x - draggingAppPickupPos.current.x;
           touchedApp.y.current = y - draggingAppPickupPos.current.y;
+          console.log('drag', touchedApp.name);
         }
         moveMode.current = true;
       }
