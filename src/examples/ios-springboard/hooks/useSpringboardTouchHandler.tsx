@@ -18,7 +18,7 @@ const appSnapAnimationConfig: TimingConfig = {
 };
 
 const DRAG_START_MS = 1400;
-const SNAP_TO_SCREEN_TRAVEL_THRESHOLD = 0.4;
+const SNAP_TO_SCREEN_TRAVEL_THRESHOLD = 0.3;
 
 interface Props {
   apps: SkiaMutableValue<AppType[]>;
