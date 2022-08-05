@@ -48,6 +48,9 @@ const useSpringboardTouchHandler = ({
 
   const touchHandler = useTouchHandler({
     onStart: ({x, y}) => {
+      // correct x with the screen you're on
+      const screenXFactor = screensTranslateX.current / screenWidth + 1;
+
       touchStartPos.current = vec(x, y);
       screenTranslateStartX.current = screensTranslateX.current;
       const newTouchedAppIndex = apps.current.findIndex(
@@ -89,6 +92,9 @@ const useSpringboardTouchHandler = ({
         return;
       }
       let touchedApp = apps.current[touchedAppIndex.current];
+
+      // correct x with the screen you're on
+      //x *= Math.round(screensTranslateX.current / screenWidth) + 1;
 
       if (
         moveMode.current ||
@@ -207,35 +213,36 @@ const useSpringboardTouchHandler = ({
 
           runTiming(
             screensTranslateX,
-            screenWidth * screenSnapIndex,
+            screenSnapIndex < 0 ? screenWidth * screenSnapIndex : 0,
             appSnapAnimationConfig,
           );
         }
       }
-      if (!moveMode.current) return;
+      //if (!moveMode.current) return;
 
       let touchedApp = apps.current[touchedAppIndex.current];
       if (!touchedApp) {
+        // no app was dragged. Disable move-mode.
         moveMode.current = false;
-        return;
       }
 
-      // These stopped working....
-      /* runTiming(
-        touchedApp.x,
-        draggingAppOriginalPos.current.x,
-        appSnapAnimationConfig,
-      );
-      runTiming(
-        touchedApp.y,
-        draggingAppOriginalPos.current.y,
-        appSnapAnimationConfig,
-      );
-      runTiming(touchedApp.labelOpacity, 1, appSnapAnimationConfig); */
-      touchedApp.x.current = draggingAppOriginalPos.current.x;
-      touchedApp.y.current = draggingAppOriginalPos.current.y;
-      touchedApp.labelOpacity.current = 1;
-
+      if (touchedApp) {
+        // These stopped working....
+        /* runTiming(
+          touchedApp.x,
+          draggingAppOriginalPos.current.x,
+          appSnapAnimationConfig,
+        );
+        runTiming(
+          touchedApp.y,
+          draggingAppOriginalPos.current.y,
+          appSnapAnimationConfig,
+        );
+        runTiming(touchedApp.labelOpacity, 1, appSnapAnimationConfig); */
+        touchedApp.x.current = draggingAppOriginalPos.current.x;
+        touchedApp.y.current = draggingAppOriginalPos.current.y;
+        touchedApp.labelOpacity.current = 1;
+      }
       // reset
       touchedAppIndex.current = -1;
       draggingAppIndex.current = -1;
