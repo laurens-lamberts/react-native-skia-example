@@ -11,6 +11,7 @@ const useApps = () => {
       labelOpacity: useValue(1),
       name: 'Mail',
       backgroundColor: useValue(getRandomColor()),
+      isMoving: useValue(false),
     },
     {
       id: 'com.app.notes',
@@ -19,6 +20,7 @@ const useApps = () => {
       labelOpacity: useValue(1),
       name: 'Notes',
       backgroundColor: useValue(getRandomColor()),
+      isMoving: useValue(false),
     },
     {
       id: 'com.app.camera',
@@ -27,6 +29,7 @@ const useApps = () => {
       labelOpacity: useValue(1),
       name: 'Camera',
       backgroundColor: useValue(getRandomColor()),
+      isMoving: useValue(false),
     },
     {
       id: 'com.app.settings',
@@ -35,6 +38,7 @@ const useApps = () => {
       labelOpacity: useValue(1),
       name: 'Settings',
       backgroundColor: useValue(getRandomColor()),
+      isMoving: useValue(false),
     },
     {
       id: 'com.app.maps',
@@ -43,6 +47,7 @@ const useApps = () => {
       labelOpacity: useValue(1),
       name: 'Maps',
       backgroundColor: useValue(getRandomColor()),
+      isMoving: useValue(false),
     },
     {
       id: 'com.app.appstore',
@@ -51,6 +56,7 @@ const useApps = () => {
       labelOpacity: useValue(1),
       name: 'App Store',
       backgroundColor: useValue(getRandomColor()),
+      isMoving: useValue(false),
     },
     {
       id: 'com.app.appstore2',
@@ -59,6 +65,7 @@ const useApps = () => {
       labelOpacity: useValue(1),
       name: 'App Store 2',
       backgroundColor: useValue(getRandomColor()),
+      isMoving: useValue(false),
     },
     {
       id: 'com.app.appstore3',
@@ -67,6 +74,7 @@ const useApps = () => {
       labelOpacity: useValue(1),
       name: 'App Store 3',
       backgroundColor: useValue(getRandomColor()),
+      isMoving: useValue(false),
     },
     {
       id: 'com.app.appstore4',
@@ -75,6 +83,7 @@ const useApps = () => {
       labelOpacity: useValue(1),
       name: 'App Store 4',
       backgroundColor: useValue(getRandomColor()),
+      isMoving: useValue(false),
     },
   ]);
   return {apps};

@@ -150,11 +150,17 @@ const useSpringboardTouchHandler = ({
                 appIconSize -
                 horizontalPadding;
             }
-            runTiming(
-              otherAppUnderDraggingCursor.x,
-              otherNewX,
-              appSnapAnimationConfig,
-            );
+            if (!otherAppUnderDraggingCursor.isMoving.current) {
+              otherAppUnderDraggingCursor.isMoving.current = true;
+              runTiming(
+                otherAppUnderDraggingCursor.x,
+                otherNewX,
+                appSnapAnimationConfig,
+                () => {
+                  otherAppUnderDraggingCursor.isMoving.current = false;
+                },
+              );
+            }
             /* } else {
               // other y level
 

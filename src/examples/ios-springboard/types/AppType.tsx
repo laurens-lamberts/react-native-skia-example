@@ -7,6 +7,7 @@ export interface AppType {
   x: SkiaMutableValue<number>;
   y: SkiaMutableValue<number>;
   labelOpacity: SkiaMutableValue<number>;
+  isMoving: SkiaMutableValue<boolean>;
 }
 
 export interface WidgetType {
