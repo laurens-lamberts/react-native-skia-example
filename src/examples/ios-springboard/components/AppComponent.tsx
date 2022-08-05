@@ -3,6 +3,7 @@ import {
   RoundedRect,
   Shadow,
   Text,
+  useDerivedValue,
   useFont,
 } from '@shopify/react-native-skia';
 import React from 'react';
@@ -17,20 +18,29 @@ interface Props {
 const AppComponent = ({item, index, appIconSize}: Props) => {
   const FONT_SIZE = 14;
   const LABEL_MARGIN = 4;
+
   const font = useFont(
     require('../assets/fonts/SFPRODISPLAYREGULAR.otf'),
     FONT_SIZE,
   );
+  const labelWidth = font?.measureText(item.name).width;
+
+  const textX = useDerivedValue(() => {
+    return item.x.current + (appIconSize - (labelWidth || 0)) / 2;
+  }, [appIconSize, item.x, labelWidth]);
+  const textY = useDerivedValue(() => {
+    return item.y.current + appIconSize + FONT_SIZE + LABEL_MARGIN;
+  }, [appIconSize, item.y]);
+
   if (font === null) {
     return null;
   }
 
-  const labelWidth = font.measureText(item.name).width;
   //const labelWidth = font.getTextWidth(item.name); this is not precise?
 
   return (
     <Group
-      key={index + item.name}
+      key={item.id}
       origin={{
         x: item.x.current + appIconSize / 2,
         y: item.y.current + appIconSize / 2,
@@ -52,8 +62,8 @@ const AppComponent = ({item, index, appIconSize}: Props) => {
       </RoundedRect>
       <Text
         text={item.name}
-        x={item.x.current + (appIconSize - labelWidth) / 2}
-        y={item.y.current + appIconSize + FONT_SIZE + LABEL_MARGIN}
+        x={textX}
+        y={textY}
         font={font}
         color="white"
         opacity={item.labelOpacity}

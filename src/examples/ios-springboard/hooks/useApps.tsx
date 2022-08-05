@@ -5,6 +5,7 @@ import {AppType} from '../types/AppType';
 const useApps = () => {
   const apps = useValue<AppType[]>([
     {
+      id: 'com.app.mail',
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
@@ -12,6 +13,7 @@ const useApps = () => {
       backgroundColor: useValue(getRandomColor()),
     },
     {
+      id: 'com.app.notes',
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
@@ -19,6 +21,7 @@ const useApps = () => {
       backgroundColor: useValue(getRandomColor()),
     },
     {
+      id: 'com.app.camera',
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
@@ -26,6 +29,7 @@ const useApps = () => {
       backgroundColor: useValue(getRandomColor()),
     },
     {
+      id: 'com.app.settings',
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
@@ -33,6 +37,7 @@ const useApps = () => {
       backgroundColor: useValue(getRandomColor()),
     },
     {
+      id: 'com.app.maps',
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
@@ -40,6 +45,7 @@ const useApps = () => {
       backgroundColor: useValue(getRandomColor()),
     },
     {
+      id: 'com.app.appstore',
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
@@ -47,6 +53,7 @@ const useApps = () => {
       backgroundColor: useValue(getRandomColor()),
     },
     {
+      id: 'com.app.appstore2',
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
@@ -54,6 +61,7 @@ const useApps = () => {
       backgroundColor: useValue(getRandomColor()),
     },
     {
+      id: 'com.app.appstore3',
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
@@ -61,6 +69,7 @@ const useApps = () => {
       backgroundColor: useValue(getRandomColor()),
     },
     {
+      id: 'com.app.appstore4',
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),

@@ -20,10 +20,15 @@ const DRAG_START_MS = 1400;
 
 interface Props {
   apps: SkiaMutableValue<AppType[]>;
+  horizontalPadding: number;
   appIconSize: number;
 }
 
-const useSpringboardTouchHandler = ({apps, appIconSize}: Props) => {
+const useSpringboardTouchHandler = ({
+  apps,
+  horizontalPadding,
+  appIconSize,
+}: Props) => {
   const clock = useClockValue();
   const moveMode = useValue(false);
   const touchClockStart = useValue(0);
@@ -71,12 +76,12 @@ const useSpringboardTouchHandler = ({apps, appIconSize}: Props) => {
       if (touchedAppIndex.current === -1) return;
       let touchedApp = apps.current[touchedAppIndex.current];
 
-      // pickup confirmed - executed once
       if (
         moveMode.current ||
         clock.current - touchClockStart.current > DRAG_START_MS
       ) {
         if (draggingAppIndex.current === -1) {
+          // pickup confirmed - executed once
           draggingAppIndex.current = touchedAppIndex.current;
 
           if (!moveMode.current) {
@@ -102,10 +107,59 @@ const useSpringboardTouchHandler = ({apps, appIconSize}: Props) => {
           moveMode.current ||
           (draggingAppSnappedX.current && draggingAppSnappedY.current)
         ) {
+          // dragging the app
+          console.log('drag', touchedApp.name);
+
           touchedApp = apps.current[touchedAppIndex.current];
           touchedApp.x.current = x - draggingAppPickupPos.current.x;
           touchedApp.y.current = y - draggingAppPickupPos.current.y;
-          console.log('drag', touchedApp.name);
+
+          // check collision to make space.
+          const otherAppUnderDraggingCursorIndex = apps.current.findIndex(
+            a =>
+              a.id !== touchedApp.id &&
+              a.x.current < x &&
+              a.x.current + appIconSize > x &&
+              a.y.current < y &&
+              a.y.current + appIconSize > y,
+          );
+          if (otherAppUnderDraggingCursorIndex > -1) {
+            // found collision
+            const otherAppUnderDraggingCursor =
+              apps.current[otherAppUnderDraggingCursorIndex];
+            console.log('drag collision', otherAppUnderDraggingCursor.name);
+
+            /* // move it aside
+            if (
+              Math.round(otherAppUnderDraggingCursor.y.current) ===
+              Math.round(draggingAppOriginalPos.current.y)
+            ) {
+              // same y level */
+            const otherShouldGoRight =
+              otherAppUnderDraggingCursor.x.current <
+              draggingAppOriginalPos.current.x;
+            let otherNewX: number;
+            if (otherShouldGoRight) {
+              otherNewX =
+                otherAppUnderDraggingCursor.x.current +
+                appIconSize +
+                horizontalPadding;
+            } else {
+              otherNewX =
+                otherAppUnderDraggingCursor.x.current -
+                appIconSize -
+                horizontalPadding;
+            }
+            runTiming(
+              otherAppUnderDraggingCursor.x,
+              otherNewX,
+              appSnapAnimationConfig,
+            );
+            /* } else {
+              // other y level
+
+            } */
+          }
         }
         moveMode.current = true;
       }

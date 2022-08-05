@@ -17,7 +17,11 @@ const Springboard = () => {
   const {widgets} = useWidgets();
 
   useSetInitialAppPositions({apps, horizontalPadding, appIconSize});
-  const touchHandler = useSpringboardTouchHandler({apps, appIconSize});
+  const touchHandler = useSpringboardTouchHandler({
+    apps,
+    horizontalPadding,
+    appIconSize,
+  });
 
   return (
     <View
@@ -36,7 +40,7 @@ const Springboard = () => {
               item={item}
               index={index}
               appIconSize={appIconSize}
-              key={index + item.name}
+              key={item.id}
             />
           ))}
         </Canvas>
