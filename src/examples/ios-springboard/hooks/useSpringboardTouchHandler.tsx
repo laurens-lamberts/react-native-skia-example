@@ -152,6 +152,14 @@ const useSpringboardTouchHandler = ({
             }
             if (!otherAppUnderDraggingCursor.isMoving.current) {
               otherAppUnderDraggingCursor.isMoving.current = true;
+
+              // swap the dragging-app starting location to the one we now move.
+              draggingAppOriginalPos.current = vec(
+                otherAppUnderDraggingCursor.x.current,
+                otherAppUnderDraggingCursor.y.current,
+              );
+
+              // move the other app
               runTiming(
                 otherAppUnderDraggingCursor.x,
                 otherNewX,
