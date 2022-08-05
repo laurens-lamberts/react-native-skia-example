@@ -119,7 +119,9 @@ const useSpringboardTouchHandler = ({apps, appIconSize}: Props) => {
         moveMode.current = false;
         return;
       }
-      runTiming(
+
+      // These stopped working....
+      /* runTiming(
         touchedApp.x,
         draggingAppOriginalPos.current.x,
         appSnapAnimationConfig,
@@ -129,7 +131,10 @@ const useSpringboardTouchHandler = ({apps, appIconSize}: Props) => {
         draggingAppOriginalPos.current.y,
         appSnapAnimationConfig,
       );
-      runTiming(touchedApp.labelOpacity, 1, appSnapAnimationConfig);
+      runTiming(touchedApp.labelOpacity, 1, appSnapAnimationConfig); */
+      touchedApp.x.current = draggingAppOriginalPos.current.x;
+      touchedApp.y.current = draggingAppOriginalPos.current.y;
+      touchedApp.labelOpacity.current = 1;
 
       // reset
       touchedAppIndex.current = -1;

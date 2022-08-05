@@ -32,7 +32,12 @@ const Springboard = () => {
           onTouch={touchHandler}>
           <Wallpaper />
           {apps.current.map((item, index) => (
-            <AppComponent item={item} index={index} appIconSize={appIconSize} />
+            <AppComponent
+              item={item}
+              index={index}
+              appIconSize={appIconSize}
+              key={index + item.name}
+            />
           ))}
         </Canvas>
       </View>
