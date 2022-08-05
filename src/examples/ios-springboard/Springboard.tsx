@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
   Canvas,
   Easing,
@@ -7,6 +7,7 @@ import {
   runTiming,
   Shadow,
   Text,
+  useClockValue,
   useFont,
   useTouchHandler,
   useValue,
@@ -18,11 +19,14 @@ import useSetInitialAppPositions from './hooks/useSetInitialAppPositions';
 import {AppType} from './types/AppType';
 import Wallpaper from './components/Wallpaper';
 import {getRandomColor} from './helpers/color';
+import {lightenDarkenColor} from '../../utils/color';
 
 const appSnapAnimationConfig: TimingConfig = {
   easing: Easing.out(Easing.exp),
   duration: 620,
 };
+
+const DRAG_START_MS = 1400;
 
 const Springboard = () => {
   const apps = useValue<AppType[]>([
@@ -31,64 +35,72 @@ const Springboard = () => {
       y: useValue(0),
       labelOpacity: useValue(1),
       name: 'Mail',
-      backgroundColor: getRandomColor(),
+      backgroundColor: useValue(getRandomColor()),
     },
     {
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
       name: 'Notes',
-      backgroundColor: getRandomColor(),
+      backgroundColor: useValue(getRandomColor()),
     },
     {
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
       name: 'Camera',
-      backgroundColor: getRandomColor(),
+      backgroundColor: useValue(getRandomColor()),
     },
     {
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
       name: 'Settings',
-      backgroundColor: getRandomColor(),
+      backgroundColor: useValue(getRandomColor()),
     },
     {
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
       name: 'Maps',
-      backgroundColor: getRandomColor(),
+      backgroundColor: useValue(getRandomColor()),
     },
     {
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
       name: 'App Store',
-      backgroundColor: getRandomColor(),
+      backgroundColor: useValue(getRandomColor()),
     },
     {
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
       name: 'App Store 2',
-      backgroundColor: getRandomColor(),
+      backgroundColor: useValue(getRandomColor()),
     },
     {
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
       name: 'App Store 3',
-      backgroundColor: getRandomColor(),
+      backgroundColor: useValue(getRandomColor()),
     },
   ]);
-  const [widgets, setWidgets] = useState([{name: 'clock'}]);
+  const widgets = useValue([{name: 'clock'}]);
   const {width: screenWidth} = useWindowDimensions();
 
+  const clock = useClockValue();
+
+  const moveMode = useValue(false);
+
+  const touchClockStart = useValue(0);
+  const touchedAppIndex = useValue(-1);
   const draggingAppIndex = useValue(-1);
   const draggingAppPickupPos = useValue(vec(0, 0));
   const draggingAppOriginalPos = useValue(vec(0, 0));
+  const draggingAppSnappedX = useValue(false);
+  const draggingAppSnappedY = useValue(false);
 
   const appIconSize = screenWidth * 0.175;
   const horizontalPadding = (screenWidth - appIconSize * 4) / 5;
@@ -96,41 +108,89 @@ const Springboard = () => {
   useSetInitialAppPositions({apps, horizontalPadding, appIconSize});
 
   const touchHandler = useTouchHandler({
-    onActive: ({x, y}) => {
-      let touchedAppIndex = draggingAppIndex.current;
-      let touchedApp: AppType;
-      if (draggingAppIndex.current === -1) {
-        touchedAppIndex = apps.current.findIndex(
-          a =>
-            a.x.current < x &&
-            a.x.current + appIconSize > x &&
-            a.y.current < y &&
-            a.y.current + appIconSize > y,
-        );
-        if (touchedAppIndex === -1) return;
+    onStart: ({x, y}) => {
+      const newTouchedAppIndex = apps.current.findIndex(
+        a =>
+          a.x.current < x &&
+          a.x.current + appIconSize > x &&
+          a.y.current < y &&
+          a.y.current + appIconSize > y,
+      );
 
-        // Pickup
-        touchedApp = apps.current[touchedAppIndex];
-        draggingAppIndex.current = touchedAppIndex;
-        draggingAppPickupPos.current = vec(
-          x - touchedApp.x.current,
-          y - touchedApp.y.current,
-        );
+      if (newTouchedAppIndex > -1) {
+        touchedAppIndex.current = newTouchedAppIndex;
+        let touchedApp = apps.current[touchedAppIndex.current];
+
         draggingAppOriginalPos.current = vec(
           touchedApp.x.current,
           touchedApp.y.current,
         );
-        runTiming(touchedApp.labelOpacity, 0, appSnapAnimationConfig);
-      }
-      touchedApp = apps.current[touchedAppIndex];
+        draggingAppPickupPos.current = vec(
+          x - touchedApp.x.current,
+          y - touchedApp.y.current,
+        );
 
-      console.log('drag', touchedApp.name);
-      touchedApp.x.current = x - draggingAppPickupPos.current.x;
-      touchedApp.y.current = y - draggingAppPickupPos.current.y;
+        if (!moveMode.current) {
+          touchedApp.backgroundColor.current = lightenDarkenColor(
+            touchedApp.backgroundColor.current,
+            -10,
+          );
+        }
+      }
+
+      touchClockStart.current = clock.current;
+    },
+    onActive: ({x, y}) => {
+      if (touchedAppIndex.current === -1) return;
+      let touchedApp = apps.current[touchedAppIndex.current];
+
+      // pickup confirmed - executed once
+      if (
+        moveMode.current ||
+        clock.current - touchClockStart.current > DRAG_START_MS
+      ) {
+        if (draggingAppIndex.current === -1) {
+          draggingAppIndex.current = touchedAppIndex.current;
+
+          if (!moveMode.current) {
+            runTiming(
+              touchedApp.x,
+              x - draggingAppPickupPos.current.x,
+              appSnapAnimationConfig,
+              () => {
+                draggingAppSnappedX.current = true;
+              },
+            );
+            runTiming(
+              touchedApp.y,
+              y - draggingAppPickupPos.current.y,
+              appSnapAnimationConfig,
+              () => {
+                draggingAppSnappedY.current = true;
+              },
+            );
+          }
+          runTiming(touchedApp.labelOpacity, 0, appSnapAnimationConfig);
+        } else if (
+          moveMode.current ||
+          (draggingAppSnappedX.current && draggingAppSnappedY.current)
+        ) {
+          touchedApp = apps.current[touchedAppIndex.current];
+          console.log('drag', touchedApp.name);
+          touchedApp.x.current = x - draggingAppPickupPos.current.x;
+          touchedApp.y.current = y - draggingAppPickupPos.current.y;
+        }
+        moveMode.current = true;
+      }
     },
     onEnd: ({x, y}) => {
-      const touchedApp = apps.current[draggingAppIndex.current];
-      if (!touchedApp) return;
+      if (!moveMode.current) return;
+
+      let touchedApp = apps.current[touchedAppIndex.current];
+      if (!touchedApp) {
+        moveMode.current = false;
+        return;
+      }
       runTiming(
         touchedApp.x,
         draggingAppOriginalPos.current.x,
@@ -144,9 +204,13 @@ const Springboard = () => {
       runTiming(touchedApp.labelOpacity, 1, appSnapAnimationConfig);
 
       // reset
+      touchedAppIndex.current = -1;
       draggingAppIndex.current = -1;
       draggingAppPickupPos.current = vec(0, 0);
       draggingAppOriginalPos.current = vec(0, 0);
+      draggingAppSnappedX.current = false;
+      draggingAppSnappedY.current = false;
+      touchClockStart.current = 0;
     },
   });
 
