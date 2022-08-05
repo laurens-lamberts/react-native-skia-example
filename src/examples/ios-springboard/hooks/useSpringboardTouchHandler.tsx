@@ -25,6 +25,7 @@ interface Props {
   horizontalPadding: number;
   appIconSize: number;
   screensTranslateX: SkiaMutableValue<number>;
+  moveMode: SkiaMutableValue<boolean>;
 }
 
 const useSpringboardTouchHandler = ({
@@ -32,11 +33,11 @@ const useSpringboardTouchHandler = ({
   horizontalPadding,
   appIconSize,
   screensTranslateX,
+  moveMode,
 }: Props) => {
   const {width: screenWidth} = useWindowDimensions();
 
   const clock = useClockValue();
-  const moveMode = useValue(false);
   const touchClockStart = useValue(0);
   const touchedAppIndex = useValue(-1);
   const screenTranslateStartX = useValue(0);
@@ -122,6 +123,11 @@ const useSpringboardTouchHandler = ({
                 draggingAppSnappedY.current = true;
               },
             );
+            touchedApp = apps.current[touchedAppIndex.current];
+            touchedApp.backgroundColor.current = lightenDarkenColor(
+              touchedApp.backgroundColor.current,
+              10,
+            );
           }
           runTiming(touchedApp.labelOpacity, 0, appSnapAnimationConfig);
         } else if (
@@ -132,6 +138,7 @@ const useSpringboardTouchHandler = ({
           console.log('drag', touchedApp.name);
 
           touchedApp = apps.current[touchedAppIndex.current];
+
           touchedApp.x.current = x - draggingAppPickupPos.current.x;
           touchedApp.y.current = y - draggingAppPickupPos.current.y;
 
