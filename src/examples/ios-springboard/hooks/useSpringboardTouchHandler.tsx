@@ -198,8 +198,21 @@ const useSpringboardTouchHandler = ({
       }
     },
     onEnd: ({x, y}) => {
+      if (touchedAppIndex.current === -1) {
+        if (screensTranslateX.current !== screenTranslateStartX.current) {
+          // we need to snap to the closest multitude of screenWidth
+          const screenSnapIndex = Math.round(
+            screensTranslateX.current / screenWidth,
+          );
+
+          runTiming(
+            screensTranslateX,
+            screenWidth * screenSnapIndex,
+            appSnapAnimationConfig,
+          );
+        }
+      }
       if (!moveMode.current) return;
-      if (touchedAppIndex.current === -1) return;
 
       let touchedApp = apps.current[touchedAppIndex.current];
       if (!touchedApp) {
