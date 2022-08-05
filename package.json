@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "ios": "react-native run-ios --simulator 'iPhone 13 Pro' ",
     "iosDebug": "react-native run-ios --simulator 'iPhone 13 Pro' --configuration=Debug",
     "iosDebugPhysical": "react-native run-ios --device 'iPhone van Laurens' --configuration=Debug",
     "iosRelease": "react-native run-ios --simulator 'iPhone 13 Pro' --configuration=Release",
