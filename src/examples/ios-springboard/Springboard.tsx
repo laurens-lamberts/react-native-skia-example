@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useState} from 'react';
 import {
   Canvas,
   Easing,
@@ -6,7 +6,6 @@ import {
   RoundedRect,
   runTiming,
   Shadow,
-  SkiaMutableValue,
   Text,
   useFont,
   useTouchHandler,
@@ -14,16 +13,9 @@ import {
   vec,
 } from '@shopify/react-native-skia';
 import {useWindowDimensions, View} from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {TimingConfig} from '@shopify/react-native-skia/lib/typescript/src/animation/types';
-
-interface App {
-  name: string;
-  backgroundColor: string;
-  x: SkiaMutableValue<number>;
-  y: SkiaMutableValue<number>;
-  labelOpacity: SkiaMutableValue<number>;
-}
+import useSetInitialAppPositions from './hooks/useSetInitialAppPositions';
+import {AppType} from './types/AppType';
 
 const getRandomColor = () => {
   var letters = '0123456789ABCDEF';
@@ -40,7 +32,7 @@ const appSnapAnimationConfig: TimingConfig = {
 };
 
 const Springboard = () => {
-  const apps = useValue<App[]>([
+  const apps = useValue<AppType[]>([
     {
       x: useValue(0),
       y: useValue(0),
@@ -100,48 +92,20 @@ const Springboard = () => {
   ]);
   const [widgets, setWidgets] = useState([{name: 'clock'}]);
   const {width: screenWidth} = useWindowDimensions();
-  const insets = useSafeAreaInsets();
 
-  const appsPositioned = useRef(false);
   const draggingAppIndex = useValue(-1);
   const draggingAppPickupPos = useValue(vec(0, 0));
   const draggingAppOriginalPos = useValue(vec(0, 0));
 
   const appIconSize = screenWidth * 0.175;
   const horizontalPadding = (screenWidth - appIconSize * 4) / 5;
-  const verticalPadding = horizontalPadding * 1.5;
-  const startPos = vec(horizontalPadding, insets.top + horizontalPadding); // this last property is also the horizontalpadding, as we'd like to keep the bounding padding similar
 
-  useEffect(() => {
-    // set app positions
-    if (appsPositioned.current) return;
-    apps.current = apps.current.map((item, index) => {
-      let x = startPos.x + index * (appIconSize + horizontalPadding);
-      let y = startPos.y;
-      if (x > screenWidth - appIconSize - horizontalPadding) {
-        x = startPos.x;
-        y = startPos.y + 1 * (index / 4) * (appIconSize + verticalPadding);
-      }
-
-      item.x.current = x;
-      item.y.current = y;
-      return item;
-    });
-    appsPositioned.current = true;
-  }, [
-    appIconSize,
-    apps,
-    horizontalPadding,
-    screenWidth,
-    startPos.x,
-    startPos.y,
-    verticalPadding,
-  ]);
+  useSetInitialAppPositions({apps, horizontalPadding, appIconSize});
 
   const touchHandler = useTouchHandler({
     onActive: ({x, y}) => {
       let touchedAppIndex = draggingAppIndex.current;
-      let touchedApp: App;
+      let touchedApp: AppType;
       if (draggingAppIndex.current === -1) {
         touchedAppIndex = apps.current.findIndex(
           a =>
