@@ -11,11 +11,10 @@ import {AppType} from '../types/AppType';
 
 interface Props {
   item: AppType;
-  index: number;
   appIconSize: number;
 }
 
-const AppComponent = ({item, index, appIconSize}: Props) => {
+const AppComponent = ({item, appIconSize}: Props) => {
   const FONT_SIZE = 14;
   const LABEL_MARGIN = 4;
 

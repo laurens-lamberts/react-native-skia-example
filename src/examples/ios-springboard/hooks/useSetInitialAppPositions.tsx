@@ -26,10 +26,18 @@ const useSetInitialAppPositions = ({
     // set app positions
     if (appsPositioned.current) return;
     apps.current = apps.current.map((item, index) => {
-      let x = startPos.x + (index % 4) * (appIconSize + horizontalPadding);
+      const indexOnScreen = apps.current
+        .filter(i => i.screen === item.screen)
+        .findIndex(a => a.id === item.id);
+
+      let x =
+        startPos.x + (indexOnScreen % 4) * (appIconSize + horizontalPadding);
       let y =
         startPos.y +
-        (Math.floor(index / 4) % 4) * (appIconSize + verticalPadding);
+        (Math.floor(indexOnScreen / 4) % 4) * (appIconSize + verticalPadding);
+
+      // increase the x position depending on the screen
+      x += screenWidth * item.screen;
 
       item.x.current = x;
       item.y.current = y;

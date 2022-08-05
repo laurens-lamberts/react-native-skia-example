@@ -8,6 +8,7 @@ import {
   vec,
 } from '@shopify/react-native-skia';
 import {TimingConfig} from '@shopify/react-native-skia/lib/typescript/src/animation/types';
+import {useWindowDimensions} from 'react-native';
 import {lightenDarkenColor} from '../../../utils/color';
 import {AppType} from '../types/AppType';
 
@@ -22,17 +23,23 @@ interface Props {
   apps: SkiaMutableValue<AppType[]>;
   horizontalPadding: number;
   appIconSize: number;
+  screensTranslateX: SkiaMutableValue<number>;
 }
 
 const useSpringboardTouchHandler = ({
   apps,
   horizontalPadding,
   appIconSize,
+  screensTranslateX,
 }: Props) => {
+  const {width: screenWidth} = useWindowDimensions();
+
   const clock = useClockValue();
   const moveMode = useValue(false);
   const touchClockStart = useValue(0);
   const touchedAppIndex = useValue(-1);
+  const screenTranslateStartX = useValue(0);
+  const touchStartPos = useValue(vec(0, 0));
   const draggingAppIndex = useValue(-1);
   const draggingAppPickupPos = useValue(vec(0, 0));
   const draggingAppOriginalPos = useValue(vec(0, 0));
@@ -41,6 +48,8 @@ const useSpringboardTouchHandler = ({
 
   const touchHandler = useTouchHandler({
     onStart: ({x, y}) => {
+      touchStartPos.current = vec(x, y);
+      screenTranslateStartX.current = screensTranslateX.current;
       const newTouchedAppIndex = apps.current.findIndex(
         a =>
           a.x.current < x &&
@@ -73,7 +82,12 @@ const useSpringboardTouchHandler = ({
       touchClockStart.current = clock.current;
     },
     onActive: ({x, y}) => {
-      if (touchedAppIndex.current === -1) return;
+      if (touchedAppIndex.current === -1) {
+        // drag the screen
+        screensTranslateX.current =
+          screenTranslateStartX.current + x - touchStartPos.current.x;
+        return;
+      }
       let touchedApp = apps.current[touchedAppIndex.current];
 
       if (
@@ -133,8 +147,7 @@ const useSpringboardTouchHandler = ({
             if (
               Math.round(otherAppUnderDraggingCursor.y.current) ===
               Math.round(draggingAppOriginalPos.current.y)
-            ) {
-              // same y level */
+            ) {*/
             const otherShouldGoRight =
               otherAppUnderDraggingCursor.x.current <
               draggingAppOriginalPos.current.x;
@@ -144,12 +157,19 @@ const useSpringboardTouchHandler = ({
                 otherAppUnderDraggingCursor.x.current +
                 appIconSize +
                 horizontalPadding;
+
+              // check if this has gotten offscreen, so we should move it to the next row
+              if (otherNewX > screenWidth - horizontalPadding) {
+                // TODO
+                console.log('an app icon should be moved to the next row');
+              }
             } else {
               otherNewX =
                 otherAppUnderDraggingCursor.x.current -
                 appIconSize -
                 horizontalPadding;
             }
+
             if (!otherAppUnderDraggingCursor.isMoving.current) {
               otherAppUnderDraggingCursor.isMoving.current = true;
 
@@ -168,11 +188,10 @@ const useSpringboardTouchHandler = ({
                   otherAppUnderDraggingCursor.isMoving.current = false;
                 },
               );
-            }
-            /* } else {
-              // other y level
 
-            } */
+              // check if we're left with a gap
+              // TODO
+            }
           }
         }
         moveMode.current = true;

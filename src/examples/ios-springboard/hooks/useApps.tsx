@@ -6,6 +6,7 @@ const useApps = () => {
   const apps = useValue<AppType[]>([
     {
       id: 'com.app.mail',
+      screen: 0,
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
@@ -15,6 +16,7 @@ const useApps = () => {
     },
     {
       id: 'com.app.notes',
+      screen: 0,
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
@@ -24,6 +26,7 @@ const useApps = () => {
     },
     {
       id: 'com.app.camera',
+      screen: 0,
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
@@ -33,6 +36,7 @@ const useApps = () => {
     },
     {
       id: 'com.app.settings',
+      screen: 0,
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
@@ -42,6 +46,7 @@ const useApps = () => {
     },
     {
       id: 'com.app.maps',
+      screen: 0,
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
@@ -51,6 +56,7 @@ const useApps = () => {
     },
     {
       id: 'com.app.appstore',
+      screen: 0,
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
@@ -60,6 +66,7 @@ const useApps = () => {
     },
     {
       id: 'com.app.appstore2',
+      screen: 0,
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
@@ -69,6 +76,7 @@ const useApps = () => {
     },
     {
       id: 'com.app.appstore3',
+      screen: 0,
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
@@ -78,6 +86,7 @@ const useApps = () => {
     },
     {
       id: 'com.app.appstore4',
+      screen: 1,
       x: useValue(0),
       y: useValue(0),
       labelOpacity: useValue(1),
