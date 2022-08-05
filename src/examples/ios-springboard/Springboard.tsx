@@ -16,10 +16,9 @@ import {
 import {useWindowDimensions, View} from 'react-native';
 import {TimingConfig} from '@shopify/react-native-skia/lib/typescript/src/animation/types';
 import useSetInitialAppPositions from './hooks/useSetInitialAppPositions';
-import {AppType} from './types/AppType';
 import Wallpaper from './components/Wallpaper';
-import {getRandomColor} from './helpers/color';
 import {lightenDarkenColor} from '../../utils/color';
+import useApps from './hooks/useApps';
 
 const appSnapAnimationConfig: TimingConfig = {
   easing: Easing.out(Easing.exp),
@@ -29,65 +28,6 @@ const appSnapAnimationConfig: TimingConfig = {
 const DRAG_START_MS = 1400;
 
 const Springboard = () => {
-  const apps = useValue<AppType[]>([
-    {
-      x: useValue(0),
-      y: useValue(0),
-      labelOpacity: useValue(1),
-      name: 'Mail',
-      backgroundColor: useValue(getRandomColor()),
-    },
-    {
-      x: useValue(0),
-      y: useValue(0),
-      labelOpacity: useValue(1),
-      name: 'Notes',
-      backgroundColor: useValue(getRandomColor()),
-    },
-    {
-      x: useValue(0),
-      y: useValue(0),
-      labelOpacity: useValue(1),
-      name: 'Camera',
-      backgroundColor: useValue(getRandomColor()),
-    },
-    {
-      x: useValue(0),
-      y: useValue(0),
-      labelOpacity: useValue(1),
-      name: 'Settings',
-      backgroundColor: useValue(getRandomColor()),
-    },
-    {
-      x: useValue(0),
-      y: useValue(0),
-      labelOpacity: useValue(1),
-      name: 'Maps',
-      backgroundColor: useValue(getRandomColor()),
-    },
-    {
-      x: useValue(0),
-      y: useValue(0),
-      labelOpacity: useValue(1),
-      name: 'App Store',
-      backgroundColor: useValue(getRandomColor()),
-    },
-    {
-      x: useValue(0),
-      y: useValue(0),
-      labelOpacity: useValue(1),
-      name: 'App Store 2',
-      backgroundColor: useValue(getRandomColor()),
-    },
-    {
-      x: useValue(0),
-      y: useValue(0),
-      labelOpacity: useValue(1),
-      name: 'App Store 3',
-      backgroundColor: useValue(getRandomColor()),
-    },
-  ]);
-  const widgets = useValue([{name: 'clock'}]);
   const {width: screenWidth} = useWindowDimensions();
 
   const clock = useClockValue();
@@ -104,6 +44,9 @@ const Springboard = () => {
 
   const appIconSize = screenWidth * 0.175;
   const horizontalPadding = (screenWidth - appIconSize * 4) / 5;
+
+  const {apps} = useApps();
+  const widgets = useValue([{name: 'clock'}]);
 
   useSetInitialAppPositions({apps, horizontalPadding, appIconSize});
 
