@@ -60,6 +60,13 @@ const useApps = () => {
       name: 'App Store 3',
       backgroundColor: useValue(getRandomColor()),
     },
+    {
+      x: useValue(0),
+      y: useValue(0),
+      labelOpacity: useValue(1),
+      name: 'App Store 4',
+      backgroundColor: useValue(getRandomColor()),
+    },
   ]);
   return {apps};
 };
