@@ -11,6 +11,7 @@ import {TimingConfig} from '@shopify/react-native-skia/lib/typescript/src/animat
 import {useWindowDimensions} from 'react-native';
 import {lightenDarkenColor} from '../../../utils/color';
 import {
+  APP_DRAG_START_DARKEN_PERCENTAGE,
   APP_DRAG_START_MS,
   SCREEN_DRAG_SNAP_TO_SCREEN_TRAVEL_THRESHOLD,
 } from '../Config';
@@ -81,7 +82,7 @@ const useSpringboardTouchHandler = ({
           // show that counting has started to enable moveMode
           touchedApp.backgroundColor.current = lightenDarkenColor(
             touchedApp.backgroundColor.current,
-            -10,
+            -APP_DRAG_START_DARKEN_PERCENTAGE,
           );
         }
       }
@@ -130,7 +131,7 @@ const useSpringboardTouchHandler = ({
             // TODO: refactor with original color
             touchedApp.backgroundColor.current = lightenDarkenColor(
               touchedApp.backgroundColor.current,
-              10,
+              APP_DRAG_START_DARKEN_PERCENTAGE,
             );
           }
           runTiming(touchedApp.labelOpacity, 0, appSnapAnimationConfig);
@@ -257,7 +258,7 @@ const useSpringboardTouchHandler = ({
         // TODO: refactor with original color
         touchedApp.backgroundColor.current = lightenDarkenColor(
           touchedApp.backgroundColor.current,
-          10,
+          APP_DRAG_START_DARKEN_PERCENTAGE,
         );
       }
 

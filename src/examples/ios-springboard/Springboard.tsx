@@ -12,10 +12,14 @@ import Wallpaper from './components/Wallpaper';
 import useApps from './hooks/useApps';
 import useWidgets from './hooks/useWidgets';
 import AppComponent from './components/AppComponent';
+import {APP_ICON_SIZE_SCREENWIDTH_FACTOR} from './Config';
 
 const Springboard = () => {
-  const {width: screenWidth, height: screenHeight} = useWindowDimensions();
-  const appIconSize = screenWidth * 0.175;
+  const {width: screenWidth} = useWindowDimensions();
+  const appIconSize = screenWidth * APP_ICON_SIZE_SCREENWIDTH_FACTOR;
+
+  // 4 is the amount of icons in a row.
+  // 5 is the total amount of spaces horizontally. (3 between the apps, 2 on the sides)
   const horizontalPadding = (screenWidth - appIconSize * 4) / 5;
 
   const {apps} = useApps();
@@ -34,11 +38,7 @@ const Springboard = () => {
   });
 
   const transform = useComputedValue(
-    () => [
-      {
-        translateX: screensTranslateX.current,
-      },
-    ],
+    () => [{translateX: screensTranslateX.current}],
     [screensTranslateX],
   );
 
@@ -56,7 +56,7 @@ const Springboard = () => {
           onTouch={touchHandler}>
           <Wallpaper />
           <Group transform={transform}>
-            {apps.current.map((item, index) => (
+            {apps.current.map(item => (
               <AppComponent
                 item={item}
                 appIconSize={appIconSize}

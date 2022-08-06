@@ -2,6 +2,7 @@ import {SkiaMutableValue, vec} from '@shopify/react-native-skia';
 import {useEffect, useRef} from 'react';
 import {useWindowDimensions} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {APP_VERTICAL_PADDING_FACTOR} from '../Config';
 import {AppType} from '../types/AppType';
 
 interface Props {
@@ -19,7 +20,7 @@ const useSetInitialAppPositions = ({
   const insets = useSafeAreaInsets();
   const {width: screenWidth} = useWindowDimensions();
 
-  const verticalPadding = horizontalPadding * 1.5;
+  const verticalPadding = horizontalPadding * APP_VERTICAL_PADDING_FACTOR;
   const startPos = vec(horizontalPadding, insets.top + horizontalPadding); // this last property is also the horizontalpadding, as we'd like to keep the bounding padding similar
 
   useEffect(() => {
