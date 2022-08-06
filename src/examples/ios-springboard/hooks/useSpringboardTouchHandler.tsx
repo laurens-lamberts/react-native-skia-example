@@ -108,6 +108,7 @@ const useSpringboardTouchHandler = ({
           draggingAppIndex.current = touchedAppIndex.current;
 
           if (!moveMode.current) {
+            moveMode.current = true;
             runTiming(
               touchedApp.x,
               x - draggingAppPickupPos.current.x,
@@ -204,7 +205,6 @@ const useSpringboardTouchHandler = ({
             }
           }
         }
-        moveMode.current = true;
       }
     },
     onEnd: ({x, y}) => {
@@ -253,8 +253,7 @@ const useSpringboardTouchHandler = ({
       }
 
       if (touchedApp) {
-        // These stopped working....
-        /* runTiming(
+        runTiming(
           touchedApp.x,
           draggingAppOriginalPos.current.x,
           appSnapAnimationConfig,
@@ -264,10 +263,7 @@ const useSpringboardTouchHandler = ({
           draggingAppOriginalPos.current.y,
           appSnapAnimationConfig,
         );
-        runTiming(touchedApp.labelOpacity, 1, appSnapAnimationConfig); */
-        touchedApp.x.current = draggingAppOriginalPos.current.x;
-        touchedApp.y.current = draggingAppOriginalPos.current.y;
-        touchedApp.labelOpacity.current = 1;
+        runTiming(touchedApp.labelOpacity, 1, appSnapAnimationConfig);
       }
       // reset
       touchedAppIndex.current = -1;

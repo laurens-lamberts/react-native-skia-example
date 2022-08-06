@@ -52,6 +52,7 @@ const Springboard = () => {
           style={{
             flex: 1,
           }}
+          mode={'continuous'}
           onTouch={touchHandler}>
           <Wallpaper />
           <Group transform={transform}>
