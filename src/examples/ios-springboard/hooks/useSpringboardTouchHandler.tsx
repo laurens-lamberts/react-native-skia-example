@@ -10,15 +10,16 @@ import {
 import {TimingConfig} from '@shopify/react-native-skia/lib/typescript/src/animation/types';
 import {useWindowDimensions} from 'react-native';
 import {lightenDarkenColor} from '../../../utils/color';
+import {
+  APP_DRAG_START_MS,
+  SCREEN_DRAG_SNAP_TO_SCREEN_TRAVEL_THRESHOLD,
+} from '../Config';
 import {AppType} from '../types/AppType';
 
 const appSnapAnimationConfig: TimingConfig = {
   easing: Easing.out(Easing.exp),
   duration: 620,
 };
-
-const DRAG_START_MS = 1400;
-const SNAP_TO_SCREEN_TRAVEL_THRESHOLD = 0.3;
 
 interface Props {
   apps: SkiaMutableValue<AppType[]>;
@@ -101,7 +102,7 @@ const useSpringboardTouchHandler = ({
 
       if (
         moveMode.current ||
-        clock.current - touchClockStart.current > DRAG_START_MS
+        clock.current - touchClockStart.current > APP_DRAG_START_MS
       ) {
         if (draggingAppIndex.current === -1) {
           // pickup confirmed - executed once
@@ -221,14 +222,14 @@ const useSpringboardTouchHandler = ({
             screensTranslateX.current - screenTranslateStartX.current;
           if (
             horizontalDragTravel >
-              screenWidth * SNAP_TO_SCREEN_TRAVEL_THRESHOLD &&
+              screenWidth * SCREEN_DRAG_SNAP_TO_SCREEN_TRAVEL_THRESHOLD &&
             prevScreenIndex < 0
           ) {
             // travelled a fair amount of screen to the right
             newScreensTranslateX = screenWidth * (prevScreenIndex + 1);
           } else if (
             horizontalDragTravel <
-              -(screenWidth * SNAP_TO_SCREEN_TRAVEL_THRESHOLD) &&
+              -(screenWidth * SCREEN_DRAG_SNAP_TO_SCREEN_TRAVEL_THRESHOLD) &&
             prevScreenIndex > -1
           ) {
             newScreensTranslateX = screenWidth * (prevScreenIndex - 1);

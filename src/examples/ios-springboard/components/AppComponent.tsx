@@ -9,6 +9,10 @@ import {
   useLoop,
 } from '@shopify/react-native-skia';
 import React from 'react';
+import {
+  APP_WIGGLE_CYCLE_DURATION,
+  APP_WIGGLE_ROTATION_DISTANCE,
+} from '../Config';
 import {AppType} from '../types/AppType';
 
 interface Props {
@@ -36,12 +40,15 @@ const AppComponent = ({item, appIconSize, moveMode}: Props) => {
   }, [appIconSize, item.y]);
 
   //const clock = useClockValue();
-  const rotateAnimation = useLoop({duration: 120});
+  const rotateAnimation = useLoop({duration: APP_WIGGLE_CYCLE_DURATION});
 
   const transform = useDerivedValue(
     () => [
       {
-        rotate: moveMode.current ? rotateAnimation.current * 0.035 - 0.025 : 0,
+        rotate: moveMode.current
+          ? rotateAnimation.current * APP_WIGGLE_ROTATION_DISTANCE -
+            APP_WIGGLE_ROTATION_DISTANCE / 2
+          : 0,
       },
     ],
     [moveMode, rotateAnimation],
