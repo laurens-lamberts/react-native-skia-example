@@ -77,7 +77,7 @@ const useSpringboardTouchHandler = ({
         );
 
         if (!moveMode.current) {
-          // start counting to enable moveMode
+          // show that counting has started to enable moveMode
           touchedApp.backgroundColor.current = lightenDarkenColor(
             touchedApp.backgroundColor.current,
             -10,
@@ -126,6 +126,7 @@ const useSpringboardTouchHandler = ({
               },
             );
             touchedApp = apps.current[touchedAppIndex.current];
+            // TODO: refactor with original color
             touchedApp.backgroundColor.current = lightenDarkenColor(
               touchedApp.backgroundColor.current,
               10,
@@ -252,6 +253,7 @@ const useSpringboardTouchHandler = ({
       if (touchedAppIndex.current > -1 && draggingAppIndex.current === -1) {
         // we touched an app, but didn't wait until dragging threshold.
         // abort.
+        // TODO: refactor with original color
         touchedApp.backgroundColor.current = lightenDarkenColor(
           touchedApp.backgroundColor.current,
           10,
