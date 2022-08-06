@@ -234,9 +234,6 @@ const useSpringboardTouchHandler = ({
           } else {
             newScreensTranslateX = screenWidth * prevScreenIndex;
           }
-          //alert();
-          //const screenSnapIndex =
-
           runTiming(
             screensTranslateX,
             newScreensTranslateX,
@@ -245,11 +242,20 @@ const useSpringboardTouchHandler = ({
         }
       }
       //if (!moveMode.current) return;
-
       let touchedApp = apps.current[touchedAppIndex.current];
       if (!touchedApp) {
         // no app was dragged. Disable move-mode.
+        // TODO: actually not correct. Shoud check draggingAppIndex
         moveMode.current = false;
+      }
+
+      if (touchedAppIndex.current > -1 && draggingAppIndex.current === -1) {
+        // we touched an app, but didn't wait until dragging threshold.
+        // abort.
+        touchedApp.backgroundColor.current = lightenDarkenColor(
+          touchedApp.backgroundColor.current,
+          10,
+        );
       }
 
       if (touchedApp) {
