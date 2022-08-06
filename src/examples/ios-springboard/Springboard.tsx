@@ -22,6 +22,7 @@ const Springboard = () => {
   const {widgets} = useWidgets();
 
   const screensTranslateX = useValue(0);
+  const moveMode = useValue(false);
 
   useSetInitialAppPositions({apps, horizontalPadding, appIconSize});
   const touchHandler = useSpringboardTouchHandler({
@@ -29,6 +30,7 @@ const Springboard = () => {
     horizontalPadding,
     appIconSize,
     screensTranslateX,
+    moveMode,
   });
 
   const transform = useComputedValue(
@@ -58,6 +60,7 @@ const Springboard = () => {
                 item={item}
                 appIconSize={appIconSize}
                 key={item.id}
+                moveMode={moveMode}
               />
             ))}
           </Group>

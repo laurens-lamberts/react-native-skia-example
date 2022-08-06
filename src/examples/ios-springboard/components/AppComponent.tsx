@@ -2,9 +2,12 @@ import {
   Group,
   RoundedRect,
   Shadow,
+  SkiaMutableValue,
   Text,
+  useComputedValue,
   useDerivedValue,
   useFont,
+  useLoop,
 } from '@shopify/react-native-skia';
 import React from 'react';
 import {AppType} from '../types/AppType';
@@ -12,9 +15,10 @@ import {AppType} from '../types/AppType';
 interface Props {
   item: AppType;
   appIconSize: number;
+  moveMode: SkiaMutableValue<boolean>;
 }
 
-const AppComponent = ({item, appIconSize}: Props) => {
+const AppComponent = ({item, appIconSize, moveMode}: Props) => {
   const FONT_SIZE = 14;
   const LABEL_MARGIN = 4;
 
@@ -32,18 +36,31 @@ const AppComponent = ({item, appIconSize}: Props) => {
     return item.y.current + appIconSize + FONT_SIZE + LABEL_MARGIN;
   }, [appIconSize, item.y]);
 
+  const rotateAnimation = useLoop({duration: 120});
+
+  const transform = useComputedValue(
+    () => [
+      {
+        rotate: moveMode.current ? rotateAnimation.current * 0.4 - 0.3 : 0,
+      },
+    ],
+    [rotateAnimation],
+  );
+
+  const origin = useDerivedValue(
+    () => ({
+      x: item.x.current + appIconSize / 2,
+      y: item.y.current + appIconSize / 2,
+    }),
+    [appIconSize, item.x, item.y],
+  );
+
   if (font === null) {
     return null;
   }
 
   return (
-    <Group
-      key={item.id}
-      origin={{
-        x: item.x.current + appIconSize / 2,
-        y: item.y.current + appIconSize / 2,
-      }}
-      transform={[{rotate: 0}]}>
+    <Group key={item.id} origin={origin} transform={transform}>
       <RoundedRect
         x={item.x}
         y={item.y}

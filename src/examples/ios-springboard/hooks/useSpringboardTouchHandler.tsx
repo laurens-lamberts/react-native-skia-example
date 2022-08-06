@@ -77,6 +77,7 @@ const useSpringboardTouchHandler = ({
         );
 
         if (!moveMode.current) {
+          // start counting to enable moveMode
           touchedApp.backgroundColor.current = lightenDarkenColor(
             touchedApp.backgroundColor.current,
             -10,
