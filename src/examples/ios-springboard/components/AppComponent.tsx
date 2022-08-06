@@ -4,7 +4,6 @@ import {
   Shadow,
   SkiaMutableValue,
   Text,
-  useComputedValue,
   useDerivedValue,
   useFont,
   useLoop,
@@ -36,15 +35,16 @@ const AppComponent = ({item, appIconSize, moveMode}: Props) => {
     return item.y.current + appIconSize + FONT_SIZE + LABEL_MARGIN;
   }, [appIconSize, item.y]);
 
+  //const clock = useClockValue();
   const rotateAnimation = useLoop({duration: 120});
 
-  const transform = useComputedValue(
+  const transform = useDerivedValue(
     () => [
       {
-        rotate: moveMode.current ? rotateAnimation.current * 0.4 - 0.3 : 0,
+        rotate: moveMode.current ? rotateAnimation.current * 0.035 - 0.025 : 0,
       },
     ],
-    [rotateAnimation],
+    [moveMode, rotateAnimation],
   );
 
   const origin = useDerivedValue(

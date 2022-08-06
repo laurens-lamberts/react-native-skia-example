@@ -158,11 +158,6 @@ const useSpringboardTouchHandler = ({
               apps.current[otherAppUnderDraggingCursorIndex];
             console.log('drag collision', otherAppUnderDraggingCursor.name);
 
-            /* // move it aside
-            if (
-              Math.round(otherAppUnderDraggingCursor.y.current) ===
-              Math.round(draggingAppOriginalPos.current.y)
-            ) {*/
             const otherShouldGoRight =
               otherAppUnderDraggingCursor.x.current <
               draggingAppOriginalPos.current.x;
@@ -225,13 +220,15 @@ const useSpringboardTouchHandler = ({
             screensTranslateX.current - screenTranslateStartX.current;
           if (
             horizontalDragTravel >
-            screenWidth * SNAP_TO_SCREEN_TRAVEL_THRESHOLD
+              screenWidth * SNAP_TO_SCREEN_TRAVEL_THRESHOLD &&
+            prevScreenIndex < 0
           ) {
             // travelled a fair amount of screen to the right
             newScreensTranslateX = screenWidth * (prevScreenIndex + 1);
           } else if (
             horizontalDragTravel <
-            -(screenWidth * SNAP_TO_SCREEN_TRAVEL_THRESHOLD)
+              -(screenWidth * SNAP_TO_SCREEN_TRAVEL_THRESHOLD) &&
+            prevScreenIndex > -1
           ) {
             newScreensTranslateX = screenWidth * (prevScreenIndex - 1);
           } else {
