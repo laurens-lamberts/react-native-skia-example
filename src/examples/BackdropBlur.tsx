@@ -6,7 +6,7 @@ import {
   Image,
   useImage,
 } from '@shopify/react-native-skia';
-import {SafeAreaView, Text, useWindowDimensions, View} from 'react-native';
+import {Text, useWindowDimensions, View} from 'react-native';
 
 const BADGE_HEIGHT = 26;
 

@@ -9,6 +9,7 @@ import Mount from './src/examples/Mount';
 import Game from './src/examples/Flappy/Game';
 import LabyrinthGame from './src/examples/Labyrinth/Game';
 import CanvasResizeAnimation from './src/examples/CanvasResizeAnimation';
+import Springboard from './src/examples/ios-springboard/Springboard';
 
 const examples = [
   {name: 'Mount', component: Mount},
@@ -16,6 +17,7 @@ const examples = [
   {name: 'Resize', component: CanvasResizeAnimation},
   {name: 'Flappy', component: Game},
   {name: 'Maze', component: LabyrinthGame},
+  {name: 'Springboard', component: Springboard},
 ];
 
 export const FULL_SCREEN = false;
