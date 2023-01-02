@@ -6,8 +6,7 @@ import {
   SkiaMutableValue,
   SkiaValue,
   Text,
-  useCanvas,
-  useDerivedValue,
+  useComputedValue,
   useValue,
   useValueEffect,
   vec,
@@ -33,6 +32,7 @@ interface Props {
   points: SkiaMutableValue<number>;
   initialX: number;
   gameOver: () => void;
+  size: SkiaMutableValue<{width: number; height: number}>;
   minimumGapSize: number;
 }
 const Obstacle = ({
@@ -42,9 +42,9 @@ const Obstacle = ({
   gameOver,
   points,
   minimumGapSize,
+  size,
 }: Props) => {
   const {height, width} = useWindowDimensions();
-  const {size} = useCanvas();
   const canvasWidth = size.current.width || width;
   const canvasHeight = size.current.height
     ? size.current.height - FLOOR_HEIGHT
@@ -73,7 +73,7 @@ const Obstacle = ({
     }
   }, [GAP_Y_BOTTOM, GAP_Y_TOP, canvasHeight, minimumGapSize]);
 
-  const x = useDerivedValue(() => {
+  const x = useComputedValue(() => {
     let newX = 0;
     const progress = clock.current % (OBSTACLE_FREQ * 2000);
 

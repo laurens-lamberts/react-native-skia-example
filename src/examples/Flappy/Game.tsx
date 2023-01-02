@@ -5,9 +5,8 @@ import {
   SkiaClockValue,
   SkiaMutableValue,
   Text,
-  useCanvas,
   useClockValue,
-  useDerivedValue,
+  useComputedValue,
   useValueEffect,
 } from '@shopify/react-native-skia';
 import {
@@ -38,24 +37,25 @@ interface CanvasContentProps {
   clock: SkiaClockValue;
   gameOver: () => void;
   points: SkiaMutableValue<number>;
+  size: SkiaMutableValue<{width: number; height: number}>;
 }
 const CanvasContent = ({
   translateY,
   clock,
   gameOver,
   points,
+  size,
 }: CanvasContentProps) => {
-  const {size} = useCanvas();
   const canvasWidth = size.current.width;
   const canvasHeight = size.current.height;
 
   const birdY = useValue(0);
-  const bottom = useDerivedValue(
+  const bottom = useComputedValue(
     () => canvasHeight - BIRD_HEIGHT - FLOOR_HEIGHT ?? 0,
     [canvasHeight],
   );
 
-  useDerivedValue(() => {
+  useComputedValue(() => {
     birdY.current = bottom.current - translateY.current;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bottom, translateY]);
@@ -72,6 +72,7 @@ const CanvasContent = ({
         gameOver={gameOver}
         initialX={300}
         points={points}
+        size={size}
         minimumGapSize={OBSTACLE_MINIMUM_GAP_SIZE} // TODO: decrease over time
       />
       {/* <Obstacle
@@ -184,6 +185,8 @@ const Flappy = () => {
     },
   });
 
+  const size = useValue({width: 0, height: 0});
+
   return (
     <SafeAreaView style={{flex: 1}} edges={FULL_SCREEN ? ['left'] : ['bottom']}>
       <Canvas
@@ -192,12 +195,14 @@ const Flappy = () => {
           backgroundColor: 'white',
         }}
         debug={SHOW_DEBUG}
+        onSize={size}
         onTouch={touchHandler}>
         <CanvasContent
           translateY={translateY}
           clock={clock}
           gameOver={gameOver}
           points={points}
+          size={size}
         />
         {SHOW_DEBUG && (
           <>

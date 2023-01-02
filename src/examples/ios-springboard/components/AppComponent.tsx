@@ -4,7 +4,7 @@ import {
   Shadow,
   SkiaMutableValue,
   Text,
-  useDerivedValue,
+  useComputedValue,
   useFont,
   useLoop,
 } from '@shopify/react-native-skia';
@@ -32,17 +32,17 @@ const AppComponent = ({item, appIconSize, moveMode}: Props) => {
   const labelWidth = font?.measureText(item.name).width;
   //const labelWidth = font.getTextWidth(item.name); this is not precise?
 
-  const textX = useDerivedValue(() => {
+  const textX = useComputedValue(() => {
     return item.x.current + (appIconSize - (labelWidth || 0)) / 2;
   }, [appIconSize, item.x, labelWidth]);
-  const textY = useDerivedValue(() => {
+  const textY = useComputedValue(() => {
     return item.y.current + appIconSize + FONT_SIZE + LABEL_MARGIN;
   }, [appIconSize, item.y]);
 
   //const clock = useClockValue();
   const rotateAnimation = useLoop({duration: APP_WIGGLE_CYCLE_DURATION});
 
-  const transform = useDerivedValue(
+  const transform = useComputedValue(
     () => [
       {
         rotate: moveMode.current
@@ -54,7 +54,7 @@ const AppComponent = ({item, appIconSize, moveMode}: Props) => {
     [moveMode, rotateAnimation],
   );
 
-  const origin = useDerivedValue(
+  const origin = useComputedValue(
     () => ({
       x: item.x.current + appIconSize / 2,
       y: item.y.current + appIconSize / 2,

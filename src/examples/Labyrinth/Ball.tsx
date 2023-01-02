@@ -5,7 +5,7 @@ import {
   Shadow,
   SkiaMutableValue,
   SkiaValue,
-  useDerivedValue,
+  useComputedValue,
   useValue,
   useValueEffect,
   Vector,
@@ -42,14 +42,14 @@ const Ball = ({
   const ballShadowX = useValue(0);
   const ballShadowY = useValue(0);
 
-  useDerivedValue(() => {
+  useComputedValue(() => {
     ballShadowX.current = shadowX.current * BALL_SHADOW_OFFSET_FACTOR;
     ballShadowY.current = shadowY.current * BALL_SHADOW_OFFSET_FACTOR;
   }, [ballShadowX, ballShadowY, shadowX, shadowY]);
 
-  const positionKey = useDerivedValue(() => x.current + y.current, [x, y]);
+  const positionKey = useComputedValue(() => x.current + y.current, [x, y]);
 
-  /* const ballColor = useDerivedValue(
+  /* const ballColor = useComputedValue(
     () =>
       interpolateColors(
         ballRadius.current,
