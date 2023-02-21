@@ -29,8 +29,7 @@ const AppComponent = ({item, appIconSize, moveMode}: Props) => {
     require('../assets/fonts/SFPRODISPLAYREGULAR.otf'),
     FONT_SIZE,
   );
-  const labelWidth = font?.measureText(item.name).width;
-  //const labelWidth = font.getTextWidth(item.name); this is not precise?
+  const labelWidth = font?.getTextWidth(item.name);
 
   const textX = useComputedValue(() => {
     return item.x.current + (appIconSize - (labelWidth || 0)) / 2;
