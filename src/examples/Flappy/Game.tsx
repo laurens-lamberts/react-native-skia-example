@@ -4,7 +4,6 @@ import {
   Rect,
   SkiaClockValue,
   SkiaMutableValue,
-  Text,
   useClockValue,
   useComputedValue,
   useValueEffect,
@@ -106,14 +105,14 @@ const CanvasContent = ({
         height={3}
         color="#666"
       />
-      <Text
+      {/* <Text
         x={canvasWidth / 2 - 8} // TODO: actual center
         y={120}
         text={points.current.toString()}
         familyName="serif"
         size={40}
         color="white"
-      />
+      /> */}
     </Group>
   );
 };
@@ -204,7 +203,7 @@ const Flappy = () => {
           points={points}
           size={size}
         />
-        {SHOW_DEBUG && (
+        {/* {SHOW_DEBUG && (
           <>
             <Text
               x={10}
@@ -248,7 +247,7 @@ const Flappy = () => {
               size={16}
             />
           </>
-        )}
+        )} */}
       </Canvas>
     </SafeAreaView>
   );
