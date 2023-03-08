@@ -1,5 +1,7 @@
 import React from 'react';
-import {Points, vec} from '@shopify/react-native-skia';
+import {Path, Skia, vec} from '@shopify/react-native-skia';
+
+const ARROW_THICKNESS = 32;
 
 const Arrow = ({
   height,
@@ -10,34 +12,32 @@ const Arrow = ({
   translateX: number;
   translateY: number;
 }) => {
-  const width = height * 0.2;
+  const width = height * 0.7;
   const headStart = height * 0.6;
 
-  translateY += height / 2;
-  translateX += width / 2;
+  translateY -= height / 2;
+  translateX += width / 2 - ARROW_THICKNESS * 0.75;
 
   const points = [
-    vec(0, 0),
-    vec(0, -headStart),
-    vec(-width, -headStart),
-    vec(width / 2, -height),
-    vec(width * 2, -headStart),
-    vec(width, -headStart),
-    vec(width, 0),
-    vec(0, 0),
+    vec(0, height),
+    vec(-width / 2, headStart),
+    vec(0, height),
+    vec(width / 2, headStart),
   ];
+  const path = points.reduce((current, point) => {
+    current.lineTo(point.x, point.y);
+    return current;
+  }, Skia.Path.Make());
   return (
-    <Points
-      transform={[{translateX}, {translateY}, {rotate: Math.PI}]}
-      origin={vec(width / 2, -height / 2)}
-      points={points}
-      mode="polygon"
-      color="white"
-      style="fill"
-      strokeJoin="bevel"
+    <Path
+      transform={[{translateX}, {translateY}]}
+      origin={vec(0, height / 2)}
+      path={path}
+      style="stroke"
+      strokeWidth={32}
+      strokeJoin="round"
       strokeCap="round"
-      strokeMiter={200}
-      strokeWidth={6}
+      color="white"
     />
   );
 };

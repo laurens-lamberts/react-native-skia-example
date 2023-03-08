@@ -33,9 +33,8 @@ import Geolocation, {
 import Arrow from './components/Arrow';
 
 const MARGIN = 20;
-const ENABLE_COMPASS = false;
 const SHOW_DESTINATION = true;
-const ARROW_HEIGHT = 200;
+const ARROW_HEIGHT = 160;
 
 const Compass = () => {
   const {height, width} = useWindowDimensions();
@@ -49,6 +48,8 @@ const Compass = () => {
   const compassRadius = middleX - MARGIN;
   const middleY = height / 2 - compassRadius / 2;
   const origin = vec(middleX, middleY);
+
+  const enableCompass = useValue(false);
 
   const compassRotationValue = useValue(Math.PI);
   const compassRotationTransform = useComputedValue(
@@ -106,7 +107,7 @@ const Compass = () => {
   }, [currentLat, currentLong, destinationLat, destinationLong]);
 
   useSharedValueEffect(() => {
-    if (!ENABLE_COMPASS) return;
+    if (!enableCompass.current) return;
     //const {yaw} = sensor.value;
 
     let {x, y, z} = magnet.value;
@@ -131,6 +132,7 @@ const Compass = () => {
   }, magnet);
 
   const calculateBearingToDestination = useCallback(() => {
+    if (!enableCompass.current) return;
     // calculate the bearing from the current location to the destination
     const newBearing = bearing(
       currentLat.current,
@@ -168,6 +170,7 @@ const Compass = () => {
     destinationLat,
     destinationLong,
     destinationRotationValue,
+    enableCompass,
   ]);
 
   const processCurrentLocation = useCallback(
@@ -274,12 +277,15 @@ const Compass = () => {
           style="stroke"
           strokeWidth={4}
         />
-        {/* <Circle cx={middleX} cy={middleY} r={12} color="white" /> */}
         <Group transform={compassRotationTransform} origin={origin}>
-          <Arrow
-            translateX={middleX - ARROW_HEIGHT * 0.2}
-            translateY={middleY}
-            height={ARROW_HEIGHT}
+          <SkiaText
+            x={middleX - 16}
+            y={middleY + compassRadius + 10}
+            font={font}
+            color="red"
+            text={'N'}
+            transform={[{rotate: Math.PI}]}
+            origin={vec(middleX, middleY + compassRadius - 10)}
           />
           {/* <Rect
             x={middleX - NEEDLE_WIDTH / 2}
@@ -288,17 +294,32 @@ const Compass = () => {
             height={NEEDLE_HEIGHT}
             color="white"
           /> */}
-          {SHOW_DESTINATION && (
+          <Group
+            transform={destinationRotationTransform}
+            origin={vec(middleX, middleY)}>
+            <Arrow
+              translateX={middleX - ARROW_HEIGHT * 0.2}
+              translateY={middleY}
+              height={ARROW_HEIGHT}
+            />
             <Circle
               cx={middleX}
               cy={middleY + compassRadius}
               r={12}
               color="lime"
-              origin={vec(middleX, middleY)}
-              transform={destinationRotationTransform}
             />
-          )}
+            <SkiaText
+              x={middleX - 16}
+              y={middleY + compassRadius + 10}
+              font={font}
+              color="lime"
+              text={'DEST'}
+              transform={[{rotate: Math.PI}]}
+              origin={vec(middleX, middleY + compassRadius - 10)}
+            />
+          </Group>
         </Group>
+        {/* <Circle cx={middleX} cy={middleY} r={12} color="red" /> */}
         <SkiaText x={40} y={40} font={font} color="white" text={debugText} />
         <SkiaText x={40} y={60} font={font} color="white" text={accuracyText} />
         <SkiaText
@@ -354,11 +375,17 @@ const Compass = () => {
               marginRight: 8,
             }}
             onPress={() => {
-              init();
-              forceGetCurrentLocation();
+              if (!enableCompass.current) {
+                calibrate();
+                init();
+                forceGetCurrentLocation();
+              }
+
+              enableCompass.current = !enableCompass.current;
             }}>
-            <Text style={{textAlign: 'center'}}>re-init</Text>
+            <Text style={{textAlign: 'center'}}>start/stop</Text>
           </TouchableOpacity>
+
           <TouchableOpacity
             style={{
               backgroundColor: 'tomato',
