@@ -33,7 +33,6 @@ import Geolocation, {
 import Arrow from './components/Arrow';
 
 const MARGIN = 20;
-const SHOW_DESTINATION = true;
 const ARROW_HEIGHT = 160;
 
 const Compass = () => {
@@ -278,6 +277,7 @@ const Compass = () => {
           strokeWidth={4}
         />
         <Group transform={compassRotationTransform} origin={origin}>
+          {/* This group points north */}
           <SkiaText
             x={middleX - 16}
             y={middleY + compassRadius + 10}
@@ -297,6 +297,8 @@ const Compass = () => {
           <Group
             transform={destinationRotationTransform}
             origin={vec(middleX, middleY)}>
+            {/* This group points towards the destination. Relative to north. */}
+
             <Arrow
               translateX={middleX - ARROW_HEIGHT * 0.2}
               translateY={middleY}
