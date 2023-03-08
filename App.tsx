@@ -10,8 +10,10 @@ import Game from './src/examples/Flappy/Game';
 import LabyrinthGame from './src/examples/Labyrinth/Game';
 import CanvasResizeAnimation from './src/examples/CanvasResizeAnimation';
 import Springboard from './src/examples/ios-springboard/Springboard';
+import Compass from './src/examples/compass';
 
 const examples = [
+  {name: 'Compass', component: Compass},
   {name: 'Mount', component: Mount},
   {name: 'Blur', component: BackdropBlur},
   {name: 'Resize', component: CanvasResizeAnimation},
@@ -35,7 +37,7 @@ const Example = ({activeExample}: ExampleProps) => {
 };
 
 const App = () => {
-  const [activeExample, setActiveExample] = useState(2);
+  const [activeExample, setActiveExample] = useState(0);
   const insets = useSafeAreaInsets();
 
   return (

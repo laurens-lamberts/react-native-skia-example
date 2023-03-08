@@ -26,7 +26,7 @@ const AppComponent = ({item, appIconSize, moveMode}: Props) => {
   const LABEL_MARGIN = 4;
 
   const font = useFont(
-    require('../assets/fonts/SFPRODISPLAYREGULAR.otf'),
+    require('../../../assets/fonts/SFPRODISPLAYREGULAR.otf'),
     FONT_SIZE,
   );
   const labelWidth = font?.getTextWidth(item.name);
