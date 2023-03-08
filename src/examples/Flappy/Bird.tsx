@@ -74,33 +74,39 @@ const Bird = ({birdY, clock}: Props) => {
       )}
       {!USE_STATIC_IMAGE && (
         <>
-          <Image
-            x={BIRD_X}
-            y={birdY}
-            width={BIRD_WIDTH}
-            height={BIRD_HEIGHT}
-            image={images[0]}
-            fit="contain"
-            opacity={currentImage.current === 0 ? 1 : 0}
-          />
-          <Image
-            x={BIRD_X}
-            y={birdY}
-            width={BIRD_WIDTH}
-            height={BIRD_HEIGHT}
-            image={images[1]}
-            fit="contain"
-            opacity={currentImage.current === 1 ? 1 : 0}
-          />
-          <Image
-            x={BIRD_X}
-            y={birdY}
-            width={BIRD_WIDTH}
-            height={BIRD_HEIGHT}
-            image={images[2]}
-            fit="contain"
-            opacity={currentImage.current === 2 ? 1 : 0}
-          />
+          {!!images[0] && (
+            <Image
+              x={BIRD_X}
+              y={birdY}
+              width={BIRD_WIDTH}
+              height={BIRD_HEIGHT}
+              image={images[0]}
+              fit="contain"
+              opacity={currentImage.current === 0 ? 1 : 0}
+            />
+          )}
+          {!!images[1] && (
+            <Image
+              x={BIRD_X}
+              y={birdY}
+              width={BIRD_WIDTH}
+              height={BIRD_HEIGHT}
+              image={images[1]}
+              fit="contain"
+              opacity={currentImage.current === 1 ? 1 : 0}
+            />
+          )}
+          {!!images[2] && (
+            <Image
+              x={BIRD_X}
+              y={birdY}
+              width={BIRD_WIDTH}
+              height={BIRD_HEIGHT}
+              image={images[2]}
+              fit="contain"
+              opacity={currentImage.current === 2 ? 1 : 0}
+            />
+          )}
         </>
       )}
     </Group>
