@@ -34,6 +34,7 @@ import Arrow from './components/Arrow';
 
 const MARGIN = 20;
 const ARROW_HEIGHT = 160;
+const DESTINATION_REACHED_MARGIN_IN_METERS = 10;
 
 /* const CALIBRATION_INTERVAL = 100;
 const CALIBRATION_INTERVALS = 50; // this makes 5 seconds
@@ -82,6 +83,16 @@ const Compass = () => {
   const destinationLong = useValue(0);
   const destinationBearing = useValue(0);
   const destinationDistance = useValue(0);
+
+  const arrowColor = useComputedValue(() => {
+    if (
+      destinationDistance.current < DESTINATION_REACHED_MARGIN_IN_METERS &&
+      destinationBearing.current !== 0
+    ) {
+      return 'lime';
+    }
+    return 'white';
+  }, [destinationDistance]);
 
   const debugText = useValue('no destination yet');
   const accuracyText = useValue('');
@@ -236,8 +247,8 @@ const Compass = () => {
         ' m';
       debugText.current = text;
     }
+    destinationDistance.current = distance * 1000;
     destinationBearing.current = newBearing;
-    destinationDistance.current = distance;
 
     destinationRotationValue.current = (newBearing * Math.PI) / 180;
   }, [
@@ -383,6 +394,7 @@ const Compass = () => {
               translateX={middleX - ARROW_HEIGHT * 0.2}
               translateY={middleY}
               height={ARROW_HEIGHT}
+              color={arrowColor}
             />
             <Circle
               cx={middleX}
