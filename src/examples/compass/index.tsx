@@ -9,7 +9,7 @@ import {
   Text as SkiaText,
   useFont,
 } from '@shopify/react-native-skia';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   Alert,
   Text,
@@ -26,26 +26,28 @@ import {
   bearing,
   generateLocation,
   getDistanceFromLatLonInKm,
-  toDegrees,
 } from './helpers/geo';
 import Geolocation, {
   GeolocationResponse,
 } from '@react-native-community/geolocation';
 import Arrow from './components/Arrow';
-import {getAverage} from './helpers/math';
 
 const MARGIN = 20;
 const ARROW_HEIGHT = 160;
 
-const CALIBRATION_INTERVAL = 100;
+/* const CALIBRATION_INTERVAL = 100;
 const CALIBRATION_INTERVALS = 50; // this makes 5 seconds
 const CALIBRATION_COUNTDOWN_INITIAL_VALUE =
-  CALIBRATION_INTERVAL * CALIBRATION_INTERVALS;
+  CALIBRATION_INTERVAL * CALIBRATION_INTERVALS; */
 
 const Compass = () => {
   const {height, width} = useWindowDimensions();
   //const {sensor} = useAnimatedSensor(SensorType.ROTATION, {interval: 'auto'});
   const {sensor: magnet} = useAnimatedSensor(SensorType.MAGNETIC_FIELD, {
+    interval: 'auto',
+    iosReferenceFrame: IOSReferenceFrame.XTrueNorthZVertical,
+  });
+  const {sensor: rotationSensor} = useAnimatedSensor(SensorType.ROTATION, {
     interval: 'auto',
     iosReferenceFrame: IOSReferenceFrame.XTrueNorthZVertical,
   });
@@ -55,7 +57,7 @@ const Compass = () => {
   const middleY = height / 2 - compassRadius / 2;
   const origin = vec(middleX, middleY);
 
-  const enableCompass = useValue(false);
+  const enableCompass = useValue(true);
 
   const compassRotationValue = useValue(Math.PI);
   const compassRotationTransform = useComputedValue(
@@ -68,9 +70,9 @@ const Compass = () => {
     [destinationRotationValue],
   );
 
-  const calibrationX = useValue(0);
+  /* const calibrationX = useValue(0);
   const calibrationY = useValue(0);
-  const calibrationZ = useValue(0);
+  const calibrationZ = useValue(0); */
 
   const currentLat = useValue(0);
   const currentLong = useValue(0);
@@ -84,16 +86,16 @@ const Compass = () => {
   const debugText = useValue('no destination yet');
   const accuracyText = useValue('');
 
-  const calibrationCountdownValue = useValue(
+  /* const calibrationCountdownValue = useValue(
     CALIBRATION_COUNTDOWN_INITIAL_VALUE,
   );
   const calibrationInterval = useRef<NodeJS.Timer>();
-  const calibrationIntervalsPassed = useRef(0);
+  const calibrationIntervalsPassed = useRef(0); */
   const calibrationCountdownText = useValue('');
 
   const [showCalibrationTexts, setShowCalibrationTexts] = useState(false);
 
-  let xValues = useRef<number[]>([]);
+  /* let xValues = useRef<number[]>([]);
   let yValues = useRef<number[]>([]);
   let zValues = useRef<number[]>([]);
 
@@ -146,7 +148,7 @@ const Compass = () => {
 
       calibrationIntervalsPassed.current += 1;
     }, CALIBRATION_INTERVAL);
-  };
+  }; */
 
   const generateRandomDestination = useCallback(async () => {
     if (!currentLat.current || !currentLong.current) {
@@ -174,40 +176,38 @@ const Compass = () => {
     if (!enableCompass.current) return;
     //const {yaw} = sensor.value;
 
-    let {x, y, z} = magnet.value;
-    if (!calibrationX.current) {
+    /* let {x, y, z} = magnet.value; */
+    const {yaw} = rotationSensor.value;
+
+    /* if (!calibrationX.current) {
       // auto calibrate
       if (!calibrationInterval.current) {
         calibrate();
       }
       return;
-    }
+    } */
 
-    const correctionX = calibrationX.current || x;
+    /* const correctionX = calibrationX.current || x;
     const correctionY = calibrationY.current || y;
     const correctionZ = calibrationZ.current || z;
     x -= correctionX;
     y -= correctionY;
     z -= correctionZ;
-    const headingInRadians = Math.atan2(y, x) * (180 / Math.PI);
+
+    const xCorrected = Math.cos(pitch) * x - Math.sin(pitch) * z;
+    const yCorrected = Math.cos(roll) * y - Math.sin(roll) * z;
+
+    const headingInRadians =
+      Math.atan2(yCorrected, xCorrected) * (180 / Math.PI);
     const headingInDegrees =
       (toDegrees(headingInRadians) / 180) * Math.PI + 180;
     const headingInRotationValue = (headingInDegrees / 180) * Math.PI;
-    //console.log(yaw);
 
-    //let heading = Math.atan2(y, x) * (180 / Math.PI);
-    /* console.log(
-      'heading: ' +
-        heading +
-        ', PI: ' +
-        heading * Math.PI +
-        ', res: ' +
-        (heading * Math.PI - 180),
-    ); */
+    console.log(headingInRadians); */
 
     // rotation scale: -PI to PI
     //console.log(headingInRotationValue);
-    compassRotationValue.current = -headingInRotationValue;
+    compassRotationValue.current = yaw - Math.PI / 2;
   }, magnet);
 
   const calculateBearingToDestination = useCallback(() => {
@@ -359,7 +359,7 @@ const Compass = () => {
         <Group transform={compassRotationTransform} origin={origin}>
           {/* This group points north */}
           <SkiaText
-            x={middleX - 16}
+            x={middleX - 5} // TODO: fix magic number
             y={middleY + compassRadius + 10}
             font={font}
             color="red"
@@ -439,7 +439,7 @@ const Compass = () => {
           style={{
             flexDirection: 'row',
           }}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{
               backgroundColor: 'tomato',
               padding: 8,
@@ -448,7 +448,7 @@ const Compass = () => {
             }}
             onPress={calibrate}>
             <Text style={{textAlign: 'center'}}>Calibrate</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity
             style={{
               backgroundColor: 'tomato',
