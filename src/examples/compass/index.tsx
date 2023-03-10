@@ -8,6 +8,7 @@ import {
   vec,
   Text as SkiaText,
   useFont,
+  runSpring,
 } from '@shopify/react-native-skia';
 import React, {useCallback, useEffect, useState} from 'react';
 import {
@@ -250,7 +251,10 @@ const Compass = () => {
     destinationDistance.current = distance * 1000;
     destinationBearing.current = newBearing;
 
-    destinationRotationValue.current = (newBearing * Math.PI) / 180;
+    const newDestinationRotationValue = (newBearing * Math.PI) / 180;
+    if (destinationRotationValue.current !== newDestinationRotationValue) {
+      runSpring(destinationRotationValue, newDestinationRotationValue);
+    }
   }, [
     currentLat,
     currentLong,
