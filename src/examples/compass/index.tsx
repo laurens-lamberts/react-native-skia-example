@@ -9,7 +9,7 @@ import {
   Text as SkiaText,
   useFont,
 } from '@shopify/react-native-skia';
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Alert,
   Text,
@@ -31,9 +31,15 @@ import Geolocation, {
   GeolocationResponse,
 } from '@react-native-community/geolocation';
 import Arrow from './components/Arrow';
+import {getAverage} from './helpers/math';
 
 const MARGIN = 20;
 const ARROW_HEIGHT = 160;
+
+const CALIBRATION_INTERVAL = 100;
+const CALIBRATION_INTERVALS = 50; // this makes 5 seconds
+const CALIBRATION_COUNTDOWN_INITIAL_VALUE =
+  CALIBRATION_INTERVAL * CALIBRATION_INTERVALS;
 
 const Compass = () => {
   const {height, width} = useWindowDimensions();
@@ -77,12 +83,70 @@ const Compass = () => {
   const debugText = useValue('no destination yet');
   const accuracyText = useValue('');
 
+  const calibrationCountdownValue = useValue(
+    CALIBRATION_COUNTDOWN_INITIAL_VALUE,
+  );
+  const calibrationInterval = useRef<NodeJS.Timer>();
+  const calibrationIntervalsPassed = useRef(0);
+  const calibrationCountdownText = useValue('');
+
+  const [showCalibrationTexts, setShowCalibrationTexts] = useState(false);
+
+  let xValues = useRef<number[]>([]);
+  let yValues = useRef<number[]>([]);
+  let zValues = useRef<number[]>([]);
+
   const calibrate = () => {
-    let {x, y, z} = magnet.value;
-    calibrationX.current = x;
-    calibrationY.current = y;
-    calibrationZ.current = z;
+    if (calibrationInterval.current) {
+      console.log('calibration already in progress');
+      return;
+    }
+    calibrationCountdownValue.current = CALIBRATION_COUNTDOWN_INITIAL_VALUE;
+    console.log('calibration started...');
+    setShowCalibrationTexts(true);
+
+    calibrationInterval.current = setInterval(() => {
+      if (calibrationIntervalsPassed.current >= CALIBRATION_INTERVALS) {
+        console.log('calibration done.');
+        setShowCalibrationTexts(false);
+        calibrationIntervalsPassed.current = 0;
+
+        !!calibrationInterval.current &&
+          clearInterval(calibrationInterval.current);
+        calibrationInterval.current = undefined;
+        calibrationCountdownValue.current = 0;
+
+        // 2. take the average of this data for each axis
+        const xAverage = getAverage(xValues.current);
+        const yAverage = getAverage(yValues.current);
+        const zAverage = getAverage(zValues.current);
+
+        calibrationX.current = xAverage;
+        calibrationY.current = yAverage;
+        calibrationZ.current = zAverage;
+
+        // 3. subtract the average from the current value as correction
+        // this is done within the useSharedValueEffect
+        return;
+      }
+
+      // 1. record the min and max values of the magnetometer over a period of time
+      let {x, y, z} = magnet.value;
+      xValues.current = [...xValues.current, x];
+      yValues.current = [...yValues.current, y];
+      zValues.current = [...zValues.current, z];
+
+      const remainingCalibrationDuration =
+        calibrationCountdownValue.current - CALIBRATION_INTERVAL;
+
+      calibrationCountdownValue.current = remainingCalibrationDuration;
+      calibrationCountdownText.current =
+        remainingCalibrationDuration.toString();
+
+      calibrationIntervalsPassed.current += 1;
+    }, CALIBRATION_INTERVAL);
   };
+
   const generateRandomDestination = useCallback(async () => {
     if (!currentLat.current || !currentLong.current) {
       Alert.alert('', 'no current location');
@@ -110,7 +174,7 @@ const Compass = () => {
     //const {yaw} = sensor.value;
 
     let {x, y, z} = magnet.value;
-    if (!calibrationX.current) {
+    if (!calibrationX.current && !calibrationInterval.current) {
       calibrate(); // auto calibrate
     }
 
@@ -120,11 +184,18 @@ const Compass = () => {
     x -= correctionX;
     y -= correctionY;
     z -= correctionZ;
-    const heading = Math.atan2(y, x) * (180 / Math.PI); // calculateAngle(x, y);
+    const heading = Math.atan2(y, x) * (180 / Math.PI);
     //console.log(yaw);
 
     //let heading = Math.atan2(y, x) * (180 / Math.PI);
-    //console.log(heading);
+    /* console.log(
+      'heading: ' +
+        heading +
+        ', PI: ' +
+        heading * Math.PI +
+        ', res: ' +
+        (heading * Math.PI - 180),
+    ); */
 
     // rotation scale: -PI to PI
     compassRotationValue.current = (heading * Math.PI) / -180;
@@ -331,6 +402,24 @@ const Compass = () => {
           color="white"
           text={currentlocationUpdateDateTime}
         />
+        {showCalibrationTexts && (
+          <>
+            <SkiaText
+              x={40}
+              y={120}
+              font={font}
+              color="white"
+              text={'Calibrating... Move the device over all axes. '}
+            />
+            <SkiaText
+              x={40}
+              y={140}
+              font={font}
+              color="white"
+              text={calibrationCountdownText}
+            />
+          </>
+        )}
       </Canvas>
       <View
         style={{
