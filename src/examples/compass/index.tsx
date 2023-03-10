@@ -26,6 +26,7 @@ import {
   bearing,
   generateLocation,
   getDistanceFromLatLonInKm,
+  toDegrees,
 } from './helpers/geo';
 import Geolocation, {
   GeolocationResponse,
@@ -174,8 +175,12 @@ const Compass = () => {
     //const {yaw} = sensor.value;
 
     let {x, y, z} = magnet.value;
-    if (!calibrationX.current && !calibrationInterval.current) {
-      calibrate(); // auto calibrate
+    if (!calibrationX.current) {
+      // auto calibrate
+      if (!calibrationInterval.current) {
+        calibrate();
+      }
+      return;
     }
 
     const correctionX = calibrationX.current || x;
@@ -184,7 +189,10 @@ const Compass = () => {
     x -= correctionX;
     y -= correctionY;
     z -= correctionZ;
-    const heading = Math.atan2(y, x) * (180 / Math.PI);
+    const headingInRadians = Math.atan2(y, x) * (180 / Math.PI);
+    const headingInDegrees =
+      (toDegrees(headingInRadians) / 180) * Math.PI + 180;
+    const headingInRotationValue = (headingInDegrees / 180) * Math.PI;
     //console.log(yaw);
 
     //let heading = Math.atan2(y, x) * (180 / Math.PI);
@@ -198,7 +206,8 @@ const Compass = () => {
     ); */
 
     // rotation scale: -PI to PI
-    compassRotationValue.current = (heading * Math.PI) / -180;
+    //console.log(headingInRotationValue);
+    compassRotationValue.current = -headingInRotationValue;
   }, magnet);
 
   const calculateBearingToDestination = useCallback(() => {
@@ -467,7 +476,6 @@ const Compass = () => {
             }}
             onPress={() => {
               if (!enableCompass.current) {
-                calibrate();
                 init();
                 forceGetCurrentLocation();
               }
