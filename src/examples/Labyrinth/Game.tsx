@@ -30,19 +30,25 @@ import {useObstacle} from './hooks/useObstacle';
 const MAGIC_NUMBER_VERTICAL_COLLISION = 10; // Unsure why, but this value is necessary to get a correct collision detection vertically with the bounds of the game box.
 const AROUND_GAMEBOX_MARGIN = 10;
 
+const FIXED_MENU_HEIGHT = 50;
+
 const LabyrinthGame = () => {
   const insets = useSafeAreaInsets();
   const {width: screenWidth, height: screenHeight} = useWindowDimensions();
   const animatedSensor = useAnimatedSensor(SensorType.ROTATION, {interval: 10}); // <- initialization
   const [fellDown, setFellDown] = useState(false);
 
+  const effectiveScreenHeight = FULL_SCREEN
+    ? screenHeight
+    : screenHeight - FIXED_MENU_HEIGHT;
+
   const BALL_RADIUS = BALL_SIZE / 2;
   const ballRadius = useValue(BALL_RADIUS);
   const startX = screenWidth / 2 - BALL_SIZE / 2;
   const startY =
-    screenHeight / 2 -
+    effectiveScreenHeight / 2 -
     BALL_SIZE / 2 -
-    (FULL_SCREEN ? BALL_SIZE * 2 : insets.top - 50); // 50 is the fixed menu height;
+    (FULL_SCREEN ? BALL_SIZE * 2 : FIXED_MENU_HEIGHT + insets.top);
   const ballX = useValue(startX + BALL_RADIUS);
   const ballY = useValue(startY + BALL_RADIUS);
   const shadowX = useValue(startX);
@@ -196,20 +202,20 @@ const LabyrinthGame = () => {
 
   // GAME LOOP (based on motion)
   useSharedValueEffect(() => {
-    const yaw = animatedSensor.sensor.value.yaw;
-    const pitch = animatedSensor.sensor.value.pitch;
+    const {yaw, pitch, roll} = animatedSensor.sensor.value;
 
     // Move the ball based on motion over time
     // TODO: give the ball a mass (acceleration)
-    const xDelta = pitch * ((screenWidth / screenHeight) * screenWidth);
-    const yDelta = yaw * ((screenWidth / screenHeight) * screenWidth);
+    const xDelta = roll * ((screenWidth / effectiveScreenHeight) * screenWidth);
+    const yDelta =
+      pitch * ((screenWidth / effectiveScreenHeight) * screenWidth);
 
     moveShadows(xDelta, yDelta);
     if (falling.current) return;
 
     moveBall(xDelta, yDelta);
     checkHoles();
-  }, animatedSensor);
+  }, animatedSensor.sensor);
 
   return (
     <>
@@ -246,7 +252,7 @@ const LabyrinthGame = () => {
         <Animated.View
           style={{
             position: 'absolute',
-            top: screenHeight - gameBoxStartY - 100,
+            top: effectiveScreenHeight - gameBoxStartY - 100,
             alignSelf: 'center',
           }}
           entering={FadeIn}
