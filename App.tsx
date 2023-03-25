@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -14,15 +14,16 @@ import Compass from './src/examples/compass';
 
 const examples = [
   {name: 'Compass', component: Compass},
+  {name: 'Maze', component: LabyrinthGame},
+  {name: 'Flappy', component: Game},
+  {name: 'Springboard', component: Springboard},
   {name: 'Mount', component: Mount},
   {name: 'Blur', component: BackdropBlur},
   {name: 'Resize', component: CanvasResizeAnimation},
-  {name: 'Flappy', component: Game},
-  {name: 'Maze', component: LabyrinthGame},
-  {name: 'Springboard', component: Springboard},
 ];
 
 export const FULL_SCREEN = false;
+export const FIXED_MENU_HEIGHT = 40;
 
 interface ExampleProps {
   activeExample: number;
@@ -41,23 +42,23 @@ const App = () => {
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, backgroundColor: 'black'}}>
       {!FULL_SCREEN && (
-        <View
+        <ScrollView
+          horizontal
           style={{
             width: '100%',
-            flexDirection: 'row',
-            backgroundColor: 'tomato',
-            paddingTop: insets.top,
+            marginTop: insets.top,
+            maxHeight: FIXED_MENU_HEIGHT,
           }}>
           {examples.map((e, index) => (
             <View
               key={e.name}
               style={{
-                height: 50,
                 flex: 1,
                 borderRightWidth: 1,
-                borderColor: 'rgba(0, 0, 0, 0.2)',
+                borderColor: 'rgba(255, 255, 255, 0.2)',
+                paddingHorizontal: 8,
               }}>
               <TouchableOpacity
                 style={{
@@ -66,11 +67,11 @@ const App = () => {
                   justifyContent: 'center',
                 }}
                 onPress={() => setActiveExample(index)}>
-                <Text>{e.name}</Text>
+                <Text style={{color: 'white'}}>{e.name}</Text>
               </TouchableOpacity>
             </View>
           ))}
-        </View>
+        </ScrollView>
       )}
 
       <Example activeExample={activeExample} />

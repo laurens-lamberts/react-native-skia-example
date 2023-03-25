@@ -14,7 +14,7 @@ import Animated, {
   useAnimatedSensor,
 } from 'react-native-reanimated';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {FULL_SCREEN} from '../../../App';
+import {FIXED_MENU_HEIGHT, FULL_SCREEN} from '../../../App';
 import Ball from './Ball';
 import {
   BALL_SPEED_FACTOR,
@@ -29,8 +29,6 @@ import {useObstacle} from './hooks/useObstacle';
 
 const MAGIC_NUMBER_VERTICAL_COLLISION = 10; // Unsure why, but this value is necessary to get a correct collision detection vertically with the bounds of the game box.
 const AROUND_GAMEBOX_MARGIN = 10;
-
-const FIXED_MENU_HEIGHT = 50;
 
 const LabyrinthGame = () => {
   const insets = useSafeAreaInsets();

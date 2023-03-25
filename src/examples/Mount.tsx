@@ -33,13 +33,14 @@ const Screen = () => {
   }, []);
 
   return (
-    <>
+    <View style={{backgroundColor: 'black', flex: 1}}>
       <TouchableOpacity
         style={{
           backgroundColor: randomColor,
           alignItems: 'center',
           marginHorizontal: 20,
           paddingVertical: 20,
+          marginTop: 20,
         }}
         activeOpacity={0.8}
         onPress={onPress}>
@@ -75,7 +76,7 @@ const Screen = () => {
           </View>
         </View>
       )}
-    </>
+    </View>
   );
 };
 
