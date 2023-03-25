@@ -83,10 +83,11 @@ const ExampleMount = () => {
   const insets = useSafeAreaInsets();
   return (
     <NavigationContainer>
-      <Tab.Navigator sceneContainerStyle={{marginTop: -insets.top}}>
+      {/* <Tab.Navigator sceneContainerStyle={{marginTop: -insets.top}}>
         <Tab.Screen name="One" component={Screen} />
         <Tab.Screen name="Two" component={Screen} />
-      </Tab.Navigator>
+      </Tab.Navigator> */}
+      <Screen />
     </NavigationContainer>
   );
 };
