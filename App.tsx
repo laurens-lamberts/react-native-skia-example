@@ -1,5 +1,11 @@
-import React, {useState} from 'react';
-import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+  useWindowDimensions,
+} from 'react-native';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -11,6 +17,13 @@ import LabyrinthGame from './src/examples/Labyrinth/Game';
 import CanvasResizeAnimation from './src/examples/CanvasResizeAnimation';
 import Springboard from './src/examples/ios-springboard/Springboard';
 import Compass from './src/examples/compass';
+
+import {
+  Canvas,
+  Image,
+  SkImage,
+  makeImageFromView,
+} from '@shopify/react-native-skia';
 
 const examples = [
   {name: 'Compass', component: Compass},
@@ -39,10 +52,19 @@ const Example = ({activeExample}: ExampleProps) => {
 
 const App = () => {
   const [activeExample, setActiveExample] = useState(0);
+  const [image, setImage] = useState<SkImage | null>(null);
   const insets = useSafeAreaInsets();
 
+  const {width, height} = useWindowDimensions();
+  const viewRef = useRef<View>(null);
+
+  const makeSnapshot = async () => {
+    const snapCurr = await makeImageFromView(viewRef);
+    setImage(snapCurr);
+  };
+
   return (
-    <View style={{flex: 1, backgroundColor: 'black'}}>
+    <View ref={viewRef} style={{flex: 1, backgroundColor: 'black'}}>
       {!FULL_SCREEN && (
         <ScrollView
           horizontal
@@ -75,6 +97,54 @@ const App = () => {
       )}
 
       <Example activeExample={activeExample} />
+      <TouchableOpacity
+        style={{
+          position: 'absolute',
+          top: insets.top + 40,
+          right: 8,
+          backgroundColor: 'lime',
+        }}
+        onPress={async () => {
+          await makeSnapshot();
+          // Alert.alert('snapshot taken');
+        }}>
+        <Text>Take snapshot</Text>
+      </TouchableOpacity>
+      {image && (
+        <View
+          style={{
+            position: 'absolute',
+            borderWidth: 2,
+            borderColor: 'red',
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'black',
+          }}>
+          <Canvas
+            style={{
+              width: width - 4,
+              height: height - 4,
+            }}>
+            <Image
+              x={0}
+              y={0}
+              width={width - 4}
+              height={height - 4}
+              image={image}
+            />
+          </Canvas>
+          <TouchableOpacity
+            style={{
+              position: 'absolute',
+              top: insets.top + 40,
+              right: 8,
+              backgroundColor: 'lime',
+            }}
+            onPress={() => setImage(null)}>
+            <Text style={{}}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
