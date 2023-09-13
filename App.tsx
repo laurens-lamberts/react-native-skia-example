@@ -24,8 +24,14 @@ import {
   SkImage,
   makeImageFromView,
 } from '@shopify/react-native-skia';
+import Fire from './src/examples/fire/Fire';
+import FloatingBalls from './src/examples/floating-balls/FloatingBalls';
+
+const SHOW_SNAPSHOT_BUTTON = false;
 
 const examples = [
+  {name: 'Balls', component: FloatingBalls},
+  {name: 'Fire', component: Fire},
   {name: 'Compass', component: Compass},
   {name: 'Maze', component: LabyrinthGame},
   {name: 'Flappy', component: Game},
@@ -97,19 +103,22 @@ const App = () => {
       )}
 
       <Example activeExample={activeExample} />
-      <TouchableOpacity
-        style={{
-          position: 'absolute',
-          top: insets.top + 40,
-          right: 8,
-          backgroundColor: 'lime',
-        }}
-        onPress={async () => {
-          await makeSnapshot();
-          // Alert.alert('snapshot taken');
-        }}>
-        <Text>Take snapshot</Text>
-      </TouchableOpacity>
+      {SHOW_SNAPSHOT_BUTTON && (
+        <TouchableOpacity
+          style={{
+            position: 'absolute',
+            top: insets.top + 40,
+            right: 8,
+            backgroundColor: 'lime',
+          }}
+          onPress={async () => {
+            await makeSnapshot();
+            // Alert.alert('snapshot taken');
+          }}>
+          <Text>Take snapshot</Text>
+        </TouchableOpacity>
+      )}
+
       {image && (
         <View
           style={{

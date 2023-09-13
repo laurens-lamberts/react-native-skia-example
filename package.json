@@ -17,7 +17,7 @@
     "@react-native-community/geolocation": "^3.0.5",
     "@react-navigation/bottom-tabs": "^6.3.1",
     "@react-navigation/native": "^6.0.10",
-    "@shopify/react-native-skia": "^0.1.193",
+    "@shopify/react-native-skia": "^0.1.203",
     "react": "18.1.0",
     "react-native": "0.70.6",
     "react-native-reanimated": "^3.0.1",
