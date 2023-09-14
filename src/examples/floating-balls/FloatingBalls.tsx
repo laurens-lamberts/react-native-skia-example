@@ -23,12 +23,13 @@ const DEFAULT_AMPLITUDE = 10;
 export const DEFAULT_BALL_RADIUS = 20;
 export const TRAPEZIUM_EFFECT = 1.2; // lower value is more depth
 const NUMBER_OF_DEPTH_ROWS = 7;
-const VIEWING_ANGLE = 45; // in degrees
+const VIEWING_ANGLE_VERTICAL = 45; // in degrees
+const VIEWING_ANGLE_HORIZONTAL = -7; // in degrees
 
 // Make configurable in interface;
 // 1. Amplitude
 // 2. Speed (timing duration)
-// 3. viewing angle
+// 3. viewing angle (both horizontal and vertical)
 
 export default function FloatingBalls() {
   const {width: screenWidth, height: screenHeight} = useWindowDimensions();
@@ -41,6 +42,9 @@ export default function FloatingBalls() {
 
   const amplitude = useValue(DEFAULT_AMPLITUDE);
   const amplitudeSliderX = useSharedValue(20);
+
+  //const viewingAngleVertical = useValue(VIEWING_ANGLE_VERTICAL);
+  //const viewingAngleHorizontal = useValue(VIEWING_ANGLE_HORIZONTAL);
 
   const dynamicNumberOfBallsHorizontally = Math.floor(
     screenWidth / (DEFAULT_BALL_RADIUS * 2),
@@ -66,10 +70,16 @@ export default function FloatingBalls() {
     for (let i = 0; i < NUMBER_OF_DEPTH_ROWS; i++) {
       // calculate yStart based on viewing angle and index i
       const yStart =
-        Math.tan((VIEWING_ANGLE * Math.PI) / 180) * DEFAULT_BALL_RADIUS * i;
+        Math.tan((VIEWING_ANGLE_VERTICAL * Math.PI) / 180) *
+        DEFAULT_BALL_RADIUS *
+        i;
       console.log(yStart);
       _lines.push({
         yStart,
+        xStart:
+          Math.tan((VIEWING_ANGLE_HORIZONTAL * Math.PI) / 180) *
+          DEFAULT_BALL_RADIUS *
+          i,
       });
     }
     return _lines.reverse();
@@ -100,6 +110,7 @@ export default function FloatingBalls() {
             offsetY={offsetY}
             amplitude={amplitude}
             yStart={line.yStart}
+            xStart={line.xStart}
             numberOfBallsHorizontally={numberOfBallsHorizontally}
           />
         ))}

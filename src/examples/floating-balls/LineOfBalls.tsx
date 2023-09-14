@@ -8,6 +8,7 @@ interface Props {
   offsetY: SkiaValue<number>;
   amplitude: SkiaValue<number>;
   yStart: number;
+  xStart: number;
   numberOfBallsHorizontally: number;
 }
 
@@ -15,6 +16,7 @@ const LineOfBalls = ({
   offsetY,
   amplitude,
   yStart,
+  xStart,
   numberOfBallsHorizontally,
 }: Props) => {
   const {width: screenWidth, height: screenHeight} = useWindowDimensions();
@@ -40,11 +42,12 @@ const LineOfBalls = ({
         x:
           i * (widthToOccupy / numberOfBallsHorizontally) +
           Math.max(0, margin / 2) +
-          lineMargin / 2,
+          lineMargin / 2 +
+          xStart,
       });
     }
     return _balls;
-  }, [lineMargin, margin, numberOfBallsHorizontally, widthToOccupy]);
+  }, [lineMargin, margin, numberOfBallsHorizontally, widthToOccupy, xStart]);
 
   return (
     <Group transform={[{translateX: radius}, {translateY: yStart}]}>

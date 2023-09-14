@@ -12,6 +12,7 @@ import {
   useTiming,
   Easing,
 } from '@shopify/react-native-skia';
+import {DEFAULT_BALL_RADIUS} from './FloatingBalls';
 
 interface Props {
   x: number;
@@ -21,13 +22,18 @@ interface Props {
   radius: number;
 }
 
-const STRING_WIDTH = 1;
+const DEFAULT_STRING_WIDTH = 1.2;
 const LINE_EXTENSION = 400;
 const HORIZONTAL_DEVIATION = 1;
 
 export default function Ball({x, offsetY, index, amplitude, radius}: Props) {
   const {height: screenHeight} = useWindowDimensions();
   const STATIC_VERTICAL_OFFSET = screenHeight / 2 - 100;
+
+  const factor = radius / DEFAULT_BALL_RADIUS;
+  const stringWidth = DEFAULT_STRING_WIDTH * factor;
+
+  console.log(stringWidth);
 
   const y = useValue(0);
 
@@ -73,9 +79,9 @@ export default function Ball({x, offsetY, index, amplitude, radius}: Props) {
     <Group transform={angleToRotate} origin={vec(0, -100)}>
       {/* TODO: the origin is a guess, but does the trick pretty well */}
       <Rect
-        x={x - STRING_WIDTH / 2}
+        x={x - stringWidth / 2}
         y={-LINE_EXTENSION}
-        width={STRING_WIDTH}
+        width={stringWidth}
         height={lineHeight}
         color="black"
       />
