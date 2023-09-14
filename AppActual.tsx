@@ -90,7 +90,6 @@ const App = () => {
             <View
               key={e.name}
               style={{
-                flex: 1,
                 borderRightWidth: 1,
                 borderColor: "rgba(255, 255, 255, 0.2)",
                 paddingHorizontal: 8,
