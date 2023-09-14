@@ -11,9 +11,9 @@ import {
   useValue,
 } from '@shopify/react-native-skia';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-/* import {Gesture, GestureDetector} from 'react-native-gesture-handler'; */
-import {useSharedValue} from 'react-native-reanimated';
+import {withDecay} from 'react-native-reanimated';
 import LineOfBalls from './LineOfBalls';
+import {GestureDetector, Gesture} from 'react-native-gesture-handler';
 
 const STATIC_NUMBER_OF_BALLS_HORIZONTALLY = 8;
 const USE_DYNAMIC_NUMBER_OF_BALLS_HORIZONTALLY = true;
@@ -39,10 +39,10 @@ export default function FloatingBalls() {
   );
 
   const amplitude = useValue(DEFAULT_AMPLITUDE);
-  const amplitudeSliderX = useSharedValue(20);
+  //const amplitudeSliderX = useSharedValue(20);
 
-  //const viewingAngleVertical = useValue(VIEWING_ANGLE_VERTICAL);
-  //const viewingAngleHorizontal = useValue(VIEWING_ANGLE_HORIZONTAL);
+  const viewingAngleVertical = useValue(VIEWING_ANGLE_VERTICAL);
+  const viewingAngleHorizontal = useValue(VIEWING_ANGLE_HORIZONTAL);
 
   const dynamicNumberOfBallsHorizontally = Math.floor(
     screenWidth / (DEFAULT_BALL_RADIUS * 2),
@@ -51,17 +51,6 @@ export default function FloatingBalls() {
   const numberOfBallsHorizontally = USE_DYNAMIC_NUMBER_OF_BALLS_HORIZONTALLY
     ? dynamicNumberOfBallsHorizontally
     : STATIC_NUMBER_OF_BALLS_HORIZONTALLY;
-
-  /* const gesture = Gesture.Pan()
-    .onChange(e => {
-      amplitudeSliderX.value += e.changeX;
-    })
-    .onEnd(e => {
-      amplitudeSliderX.value = withDecay({
-        velocity: e.velocityX,
-        clamp: [20, screenWidth - 40],
-      });
-    }); */
 
   const lines = React.useMemo(() => {
     const _lines: {yStart: number; xStart: number}[] = new Array(
@@ -85,36 +74,53 @@ export default function FloatingBalls() {
     return _lines.reverse();
   }, []);
 
+  const gesture = Gesture.Pan()
+    .onChange(e => {
+      //translateX.value += e.changeX;
+      viewingAngleHorizontal.current += e.changeX / 10;
+      viewingAngleVertical.current += e.changeY / 10;
+    })
+    .onEnd(e => {
+      viewingAngleHorizontal.current = withDecay({
+        velocity: e.velocityX,
+        clamp: [-30, 30],
+      });
+      viewingAngleVertical.current = withDecay({
+        velocity: e.velocityY,
+        clamp: [-65, 65],
+      });
+    });
+
   return (
     <View
       style={{
         flex: 1,
         backgroundColor: 'black',
       }}>
-      {/* <GestureDetector gesture={gesture}> */}
-      <Canvas
-        style={{width: screenWidth, height: screenHeight}}
-        mode="continuous">
-        <RoundedRect
-          rect={rrect(
-            rect(0, 0, screenWidth, screenHeight - insets.bottom - 70),
-            0,
-            0,
-          )}
-          color={'white'}>
-          <BlurMask blur={12} style="normal" />
-        </RoundedRect>
-        {lines.map((line, index) => (
-          <LineOfBalls
-            key={index}
-            offsetY={offsetY}
-            amplitude={amplitude}
-            yStart={line.yStart}
-            xStart={line.xStart}
-            numberOfBallsHorizontally={numberOfBallsHorizontally}
-          />
-        ))}
-        {/* <Group transform={[{translateY: screenHeight - insets.bottom - 120}]}>
+      <GestureDetector gesture={gesture}>
+        <Canvas
+          style={{width: screenWidth, height: screenHeight}}
+          mode="continuous">
+          <RoundedRect
+            rect={rrect(
+              rect(0, 0, screenWidth, screenHeight - insets.bottom - 70),
+              0,
+              0,
+            )}
+            color={'white'}>
+            <BlurMask blur={12} style="normal" />
+          </RoundedRect>
+          {lines.map((line, index) => (
+            <LineOfBalls
+              key={index}
+              offsetY={offsetY}
+              amplitude={amplitude}
+              yStart={line.yStart}
+              xStart={line.xStart}
+              numberOfBallsHorizontally={numberOfBallsHorizontally}
+            />
+          ))}
+          {/* <Group transform={[{translateY: screenHeight - insets.bottom - 120}]}>
           <RoundedRect
             x={20}
             y={0}
@@ -125,18 +131,18 @@ export default function FloatingBalls() {
           />
           <Circle cx={amplitudeSliderX} cy={4} r={10} />
         </Group> */}
-      </Canvas>
-      <View
-        style={{
-          alignSelf: 'center',
-          position: 'absolute',
-          alignItems: 'center',
-          bottom: Math.max(insets.bottom, 20),
-        }}>
-        <Text style={{marginBottom: 4}}>swipe to change viewing angle</Text>
-        <Text>pinch to change amplitude</Text>
-      </View>
-      {/* </GestureDetector> */}
+        </Canvas>
+        <View
+          style={{
+            alignSelf: 'center',
+            position: 'absolute',
+            alignItems: 'center',
+            bottom: Math.max(insets.bottom, 20),
+          }}>
+          <Text style={{marginBottom: 4}}>swipe to change viewing angle</Text>
+          <Text>pinch to change amplitude</Text>
+        </View>
+      </GestureDetector>
     </View>
   );
 }

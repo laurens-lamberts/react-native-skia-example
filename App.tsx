@@ -25,7 +25,7 @@ import {
   makeImageFromView,
 } from '@shopify/react-native-skia';
 import Fire from './src/examples/fire/Fire';
-import FloatingBalls from './src/examples/floating-balls/FloatingBalls';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 const SHOW_SNAPSHOT_BUTTON = false;
 
@@ -161,7 +161,12 @@ const App = () => {
 export default () => {
   return (
     <SafeAreaProvider>
+      <GestureHandlerRootView
+        style={{
+          flex: 1,
+        }}>
       <App />
+      </GestureHandlerRootView>
     </SafeAreaProvider>
   );
 };
