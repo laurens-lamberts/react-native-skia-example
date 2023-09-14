@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 import {
   Group,
   Rect,
@@ -7,14 +7,17 @@ import {
   useClockValue,
   useComputedValue,
   useValueEffect,
-} from '@shopify/react-native-skia';
+} from "@shopify/react-native-skia";
 import {
   Canvas,
   Fill,
   useTouchHandler,
   useValue,
-} from '@shopify/react-native-skia';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+} from "@shopify/react-native-skia";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import {
   BIRD_HEIGHT,
   FALLING_SPEED,
@@ -26,17 +29,17 @@ import {
   VELOCITY_MAX,
   FLOOR_HEIGHT,
   GRASS_HEIGHT,
-} from './Config';
-import Bird from './Bird';
-import Obstacle from './Obstacle';
-import {FULL_SCREEN} from '../../../App';
+} from "./Config";
+import Bird from "./Bird";
+import Obstacle from "./Obstacle";
+import { FULL_SCREEN } from "../../../App";
 
 interface CanvasContentProps {
   translateY: SkiaMutableValue<number>;
   clock: SkiaClockValue;
   gameOver: () => void;
   points: SkiaMutableValue<number>;
-  size: SkiaMutableValue<{width: number; height: number}>;
+  size: SkiaMutableValue<{ width: number; height: number }>;
 }
 const CanvasContent = ({
   translateY,
@@ -51,7 +54,7 @@ const CanvasContent = ({
   const birdY = useValue(0);
   const bottom = useComputedValue(
     () => canvasHeight - BIRD_HEIGHT - FLOOR_HEIGHT ?? 0,
-    [canvasHeight],
+    [canvasHeight]
   );
 
   useComputedValue(() => {
@@ -184,18 +187,22 @@ const Flappy = () => {
     },
   });
 
-  const size = useValue({width: 0, height: 0});
+  const size = useValue({ width: 0, height: 0 });
 
   return (
-    <SafeAreaView style={{flex: 1}} edges={FULL_SCREEN ? ['left'] : ['bottom']}>
+    <SafeAreaView
+      style={{ flex: 1 }}
+      edges={FULL_SCREEN ? ["left"] : ["bottom"]}
+    >
       <Canvas
         style={{
           flex: 1,
-          backgroundColor: 'white',
+          backgroundColor: "white",
         }}
         debug={SHOW_DEBUG}
         onSize={size}
-        onTouch={touchHandler}>
+        onTouch={touchHandler}
+      >
         <CanvasContent
           translateY={translateY}
           clock={clock}

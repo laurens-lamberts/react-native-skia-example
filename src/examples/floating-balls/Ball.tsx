@@ -1,5 +1,5 @@
-import React from 'react';
-import {useWindowDimensions} from 'react-native';
+import React from "react";
+import { useWindowDimensions } from "react-native";
 import {
   Group,
   Circle,
@@ -11,8 +11,8 @@ import {
   TwoPointConicalGradient,
   useTiming,
   Easing,
-} from '@shopify/react-native-skia';
-import {DEFAULT_BALL_RADIUS} from './FloatingBalls';
+} from "@shopify/react-native-skia";
+import { DEFAULT_BALL_RADIUS } from "./FloatingBalls";
 
 interface Props {
   x: number;
@@ -26,14 +26,12 @@ const DEFAULT_STRING_WIDTH = 1.2;
 const LINE_EXTENSION = 400;
 const HORIZONTAL_DEVIATION = 1;
 
-export default function Ball({x, offsetY, index, amplitude, radius}: Props) {
-  const {height: screenHeight} = useWindowDimensions();
+export default function Ball({ x, offsetY, index, amplitude, radius }: Props) {
+  const { height: screenHeight } = useWindowDimensions();
   const STATIC_VERTICAL_OFFSET = screenHeight / 2 - 100;
 
   const factor = radius / DEFAULT_BALL_RADIUS;
   const stringWidth = DEFAULT_STRING_WIDTH * factor;
-
-  console.log(stringWidth);
 
   const y = useValue(0);
 
@@ -60,8 +58,8 @@ export default function Ball({x, offsetY, index, amplitude, radius}: Props) {
   }, [y]);
 
   const horizontalDeviationTimer = useTiming(
-    {from: 0, to: 1, loop: true, yoyo: true},
-    {duration: 2000, easing: Easing.bezier(0.5, 0.01, 0.5, 1)},
+    { from: 0, to: 1, loop: true, yoyo: true },
+    { duration: 2000, easing: Easing.bezier(0.5, 0.01, 0.5, 1) }
   );
 
   const angleToRotate = useComputedValue(() => {
@@ -104,7 +102,7 @@ export default function Ball({x, offsetY, index, amplitude, radius}: Props) {
             startR={10}
             end={vec(x, 0)}
             endR={60}
-            colors={['black', 'white']}
+            colors={["black", "white"]}
           />
         </Circle>
       </Group>
