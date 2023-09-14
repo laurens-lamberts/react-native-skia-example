@@ -1,5 +1,5 @@
-import React from 'react';
-import {Text, View, useWindowDimensions} from 'react-native';
+import React from "react";
+import { Text, View, useWindowDimensions } from "react-native";
 import {
   BlurMask,
   Canvas,
@@ -9,11 +9,11 @@ import {
   rrect,
   useTiming,
   useValue,
-} from '@shopify/react-native-skia';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {withDecay} from 'react-native-reanimated';
-import LineOfBalls from './LineOfBalls';
-import {GestureDetector, Gesture} from 'react-native-gesture-handler';
+} from "@shopify/react-native-skia";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSharedValue, withDecay } from "react-native-reanimated";
+import LineOfBalls from "./LineOfBalls";
+import { GestureDetector, Gesture } from "react-native-gesture-handler";
 
 const STATIC_NUMBER_OF_BALLS_HORIZONTALLY = 8;
 const USE_DYNAMIC_NUMBER_OF_BALLS_HORIZONTALLY = true;
@@ -30,22 +30,22 @@ const VIEWING_ANGLE_HORIZONTAL = -7; // in degrees
 // 3. viewing angle (both horizontal and vertical)
 
 export default function FloatingBalls() {
-  const {width: screenWidth, height: screenHeight} = useWindowDimensions();
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
   const insets = useSafeAreaInsets();
 
   const offsetY = useTiming(
-    {from: 0, to: 1, loop: true, yoyo: false},
-    {duration: 2000, easing: Easing.linear},
+    { from: 0, to: 1, loop: true, yoyo: false },
+    { duration: 2000, easing: Easing.linear }
   );
 
   const amplitude = useValue(DEFAULT_AMPLITUDE);
   //const amplitudeSliderX = useSharedValue(20);
 
-  const viewingAngleVertical = useValue(VIEWING_ANGLE_VERTICAL);
-  const viewingAngleHorizontal = useValue(VIEWING_ANGLE_HORIZONTAL);
+  const viewingAngleVertical = useSharedValue(VIEWING_ANGLE_VERTICAL);
+  const viewingAngleHorizontal = useSharedValue(VIEWING_ANGLE_HORIZONTAL);
 
   const dynamicNumberOfBallsHorizontally = Math.floor(
-    screenWidth / (DEFAULT_BALL_RADIUS * 2),
+    screenWidth / (DEFAULT_BALL_RADIUS * 2)
   );
 
   const numberOfBallsHorizontally = USE_DYNAMIC_NUMBER_OF_BALLS_HORIZONTALLY
@@ -53,8 +53,8 @@ export default function FloatingBalls() {
     : STATIC_NUMBER_OF_BALLS_HORIZONTALLY;
 
   const lines = React.useMemo(() => {
-    const _lines: {yStart: number; xStart: number}[] = new Array(
-      NUMBER_OF_DEPTH_ROWS,
+    const _lines: { yStart: number; xStart: number }[] = new Array(
+      NUMBER_OF_DEPTH_ROWS
     );
     for (let i = 0; i < NUMBER_OF_DEPTH_ROWS; i++) {
       // calculate yStart based on viewing angle and index i
@@ -62,7 +62,6 @@ export default function FloatingBalls() {
         Math.tan((VIEWING_ANGLE_VERTICAL * Math.PI) / 180) *
         DEFAULT_BALL_RADIUS *
         i;
-      console.log(yStart);
       _lines.push({
         yStart,
         xStart:
@@ -75,39 +74,42 @@ export default function FloatingBalls() {
   }, []);
 
   const gesture = Gesture.Pan()
-    .onChange(e => {
+    .onChange((e) => {
       //translateX.value += e.changeX;
-      viewingAngleHorizontal.current += e.changeX / 10;
-      viewingAngleVertical.current += e.changeY / 10;
+      viewingAngleHorizontal.value += e.changeX / 10;
+      viewingAngleVertical.value += e.changeY / 10;
     })
-    .onEnd(e => {
-      viewingAngleHorizontal.current = withDecay({
+    .onEnd((e) => {
+      /*  viewingAngleHorizontal.current = withDecay({
         velocity: e.velocityX,
         clamp: [-30, 30],
       });
       viewingAngleVertical.current = withDecay({
         velocity: e.velocityY,
         clamp: [-65, 65],
-      });
+      }); */
     });
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: 'black',
-      }}>
-      <GestureDetector gesture={gesture}>
+    <GestureDetector gesture={gesture}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "black",
+        }}
+      >
         <Canvas
-          style={{width: screenWidth, height: screenHeight}}
-          mode="continuous">
+          style={{ width: screenWidth, height: screenHeight }}
+          mode="continuous"
+        >
           <RoundedRect
             rect={rrect(
               rect(0, 0, screenWidth, screenHeight - insets.bottom - 70),
               0,
-              0,
+              0
             )}
-            color={'white'}>
+            color={"white"}
+          >
             <BlurMask blur={12} style="normal" />
           </RoundedRect>
           {lines.map((line, index) => (
@@ -134,15 +136,16 @@ export default function FloatingBalls() {
         </Canvas>
         <View
           style={{
-            alignSelf: 'center',
-            position: 'absolute',
-            alignItems: 'center',
+            alignSelf: "center",
+            position: "absolute",
+            alignItems: "center",
             bottom: Math.max(insets.bottom, 20),
-          }}>
-          <Text style={{marginBottom: 4}}>swipe to change viewing angle</Text>
+          }}
+        >
+          <Text style={{ marginBottom: 4 }}>swipe to change viewing angle</Text>
           <Text>pinch to change amplitude</Text>
         </View>
-      </GestureDetector>
-    </View>
+      </View>
+    </GestureDetector>
   );
 }

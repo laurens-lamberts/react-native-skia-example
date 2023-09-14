@@ -4,36 +4,38 @@ import {
   runSpring,
   useSharedValueEffect,
   useValue,
-} from '@shopify/react-native-skia';
-import React, {useState} from 'react';
-import {Text, TouchableOpacity, useWindowDimensions} from 'react-native';
+} from "@shopify/react-native-skia";
+import React, { useState } from "react";
+import { Text, TouchableOpacity, useWindowDimensions } from "react-native";
 import Animated, {
   FadeIn,
   FadeOut,
   SensorType,
   useAnimatedSensor,
-} from 'react-native-reanimated';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {FIXED_MENU_HEIGHT, FULL_SCREEN} from '../../../App';
-import Ball from './Ball';
+} from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { FIXED_MENU_HEIGHT, FULL_SCREEN } from "../../../App";
+import Ball from "./Ball";
 import {
   BALL_SPEED_FACTOR,
   BALL_SIZE,
   WALL_WIDTH,
   HOLE_SIZE,
   BALL_FALL_SENSITIVITY,
-} from './Config';
-import Floor from './Floor';
-import GameBox from './GameBox';
-import {useObstacle} from './hooks/useObstacle';
+} from "./Config";
+import Floor from "./Floor";
+import GameBox from "./GameBox";
+import { useObstacle } from "./hooks/useObstacle";
 
 const MAGIC_NUMBER_VERTICAL_COLLISION = 10; // Unsure why, but this value is necessary to get a correct collision detection vertically with the bounds of the game box.
 const AROUND_GAMEBOX_MARGIN = 10;
 
 const LabyrinthGame = () => {
   const insets = useSafeAreaInsets();
-  const {width: screenWidth, height: screenHeight} = useWindowDimensions();
-  const animatedSensor = useAnimatedSensor(SensorType.ROTATION, {interval: 10}); // <- initialization
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
+  const animatedSensor = useAnimatedSensor(SensorType.ROTATION, {
+    interval: 10,
+  }); // <- initialization
   const [fellDown, setFellDown] = useState(false);
 
   const effectiveScreenHeight = FULL_SCREEN
@@ -73,14 +75,14 @@ const LabyrinthGame = () => {
     },
   ];
 
-  const {isInObstacle: isInObstacleOne} = useObstacle({
+  const { isInObstacle: isInObstacleOne } = useObstacle({
     id: 0,
     gameBoxHeight,
     gameBoxWidth,
     gameBoxX: gameBoxStartX,
     gameBoxY: gameBoxStartY,
   });
-  const {isInObstacle: isInObstacleTwo} = useObstacle({
+  const { isInObstacle: isInObstacleTwo } = useObstacle({
     id: 1,
     gameBoxHeight,
     gameBoxWidth,
@@ -110,13 +112,13 @@ const LabyrinthGame = () => {
   const checkHoles = () => {
     if (
       holes.find(
-        hole =>
+        (hole) =>
           hole.x < ballX.current - BALL_RADIUS &&
           hole.x + HOLE_SIZE >
             ballX.current + BALL_SIZE - BALL_FALL_SENSITIVITY - BALL_RADIUS &&
           hole.y < ballY.current - BALL_RADIUS &&
           hole.y + HOLE_SIZE >
-            ballY.current + BALL_SIZE - BALL_FALL_SENSITIVITY - BALL_RADIUS,
+            ballY.current + BALL_SIZE - BALL_FALL_SENSITIVITY - BALL_RADIUS
       )
     ) {
       fallInHole();
@@ -200,7 +202,7 @@ const LabyrinthGame = () => {
 
   // GAME LOOP (based on motion)
   useSharedValueEffect(() => {
-    const {yaw, pitch, roll} = animatedSensor.sensor.value;
+    const { yaw, pitch, roll } = animatedSensor.sensor.value;
 
     // Move the ball based on motion over time
     // TODO: give the ball a mass (acceleration)
@@ -217,7 +219,7 @@ const LabyrinthGame = () => {
 
   return (
     <>
-      <Canvas style={{flex: 1, backgroundColor: 'tomato'}}>
+      <Canvas style={{ flex: 1, backgroundColor: "tomato" }}>
         <Group>
           <Floor
             startY={startY}
@@ -232,7 +234,8 @@ const LabyrinthGame = () => {
             shadowY={shadowY}
             width={gameBoxWidth}
             height={gameBoxHeight}
-            holes={holes}>
+            holes={holes}
+          >
             <Ball
               x={ballX}
               y={ballY}
@@ -249,21 +252,23 @@ const LabyrinthGame = () => {
       {fellDown && (
         <Animated.View
           style={{
-            position: 'absolute',
+            position: "absolute",
             top: effectiveScreenHeight - gameBoxStartY - 100,
-            alignSelf: 'center',
+            alignSelf: "center",
           }}
           entering={FadeIn}
-          exiting={FadeOut}>
+          exiting={FadeOut}
+        >
           <TouchableOpacity
             style={{
-              backgroundColor: 'teal',
+              backgroundColor: "teal",
               paddingVertical: 20,
               paddingHorizontal: 40,
               borderRadius: 4,
             }}
-            onPress={reset}>
-            <Text style={{color: 'white'}}>Restart</Text>
+            onPress={reset}
+          >
+            <Text style={{ color: "white" }}>Restart</Text>
           </TouchableOpacity>
         </Animated.View>
       )}
