@@ -1,24 +1,34 @@
 import React from 'react';
 import {View, useWindowDimensions} from 'react-native';
 import {
+  BlurMask,
   Canvas,
   Circle,
   Easing,
-  Fill,
   Group,
   RoundedRect,
+  rect,
+  rrect,
   useTiming,
   useValue,
 } from '@shopify/react-native-skia';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import Ball from './Ball';
 /* import {Gesture, GestureDetector} from 'react-native-gesture-handler'; */
 import {useSharedValue} from 'react-native-reanimated';
+import LineOfBalls from './LineOfBalls';
 
 const STATIC_NUMBER_OF_BALLS_HORIZONTALLY = 8;
 const USE_DYNAMIC_NUMBER_OF_BALLS_HORIZONTALLY = true;
-export const BALL_RADIUS = 20;
-const DEFAULT_AMPLITUDE = 40;
+const DEFAULT_AMPLITUDE = 10;
+export const DEFAULT_BALL_RADIUS = 20;
+export const TRAPEZIUM_EFFECT = 1.2; // lower value is more depth
+const NUMBER_OF_DEPTH_ROWS = 7;
+const VIEWING_ANGLE = 45; // in degrees
+
+// Make configurable in interface;
+// 1. Amplitude
+// 2. Speed (timing duration)
+// 3. viewing angle
 
 export default function FloatingBalls() {
   const {width: screenWidth, height: screenHeight} = useWindowDimensions();
@@ -29,33 +39,16 @@ export default function FloatingBalls() {
     {duration: 2000, easing: Easing.linear},
   );
 
+  const amplitude = useValue(DEFAULT_AMPLITUDE);
+  const amplitudeSliderX = useSharedValue(20);
+
   const dynamicNumberOfBallsHorizontally = Math.floor(
-    screenWidth / (BALL_RADIUS * 2),
+    screenWidth / (DEFAULT_BALL_RADIUS * 2),
   );
 
   const numberOfBallsHorizontally = USE_DYNAMIC_NUMBER_OF_BALLS_HORIZONTALLY
     ? dynamicNumberOfBallsHorizontally
     : STATIC_NUMBER_OF_BALLS_HORIZONTALLY;
-
-  const margin =
-    (screenWidth - numberOfBallsHorizontally * (BALL_RADIUS * 2)) /
-    numberOfBallsHorizontally;
-
-  const balls = React.useMemo(() => {
-    const _balls: {x: number}[] = new Array(numberOfBallsHorizontally);
-
-    for (let i = 0; i < numberOfBallsHorizontally; i++) {
-      _balls.push({
-        x:
-          i * (screenWidth / numberOfBallsHorizontally) +
-          Math.max(0, margin / 2),
-      });
-    }
-    return _balls;
-  }, [margin, numberOfBallsHorizontally, screenWidth]);
-
-  const amplitude = useValue(DEFAULT_AMPLITUDE);
-  const amplitudeSliderX = useSharedValue(20);
 
   /* const gesture = Gesture.Pan()
     .onChange(e => {
@@ -68,6 +61,20 @@ export default function FloatingBalls() {
       });
     }); */
 
+  const lines = React.useMemo(() => {
+    const _lines: {yStart: number}[] = new Array(NUMBER_OF_DEPTH_ROWS);
+    for (let i = 0; i < NUMBER_OF_DEPTH_ROWS; i++) {
+      // calculate yStart based on viewing angle and index i
+      const yStart =
+        Math.tan((VIEWING_ANGLE * Math.PI) / 180) * DEFAULT_BALL_RADIUS * i;
+      console.log(yStart);
+      _lines.push({
+        yStart,
+      });
+    }
+    return _lines.reverse();
+  }, []);
+
   return (
     <View
       style={{
@@ -78,18 +85,24 @@ export default function FloatingBalls() {
       <Canvas
         style={{width: screenWidth, height: screenHeight}}
         mode="continuous">
-        <Fill color={'white'} />
-        <Group transform={[{translateX: BALL_RADIUS}]}>
-          {balls.map((ball, index) => (
-            <Ball
-              key={index}
-              x={ball.x}
-              offsetY={offsetY}
-              index={index}
-              amplitude={amplitude}
-            />
-          ))}
-        </Group>
+        <RoundedRect
+          rect={rrect(
+            rect(0, 0, screenWidth, screenHeight - insets.bottom - 70),
+            0,
+            0,
+          )}
+          color={'white'}>
+          <BlurMask blur={12} style="normal" />
+        </RoundedRect>
+        {lines.map((line, index) => (
+          <LineOfBalls
+            key={index}
+            offsetY={offsetY}
+            amplitude={amplitude}
+            yStart={line.yStart}
+            numberOfBallsHorizontally={numberOfBallsHorizontally}
+          />
+        ))}
         <Group transform={[{translateY: screenHeight - insets.bottom - 120}]}>
           <RoundedRect
             x={20}
