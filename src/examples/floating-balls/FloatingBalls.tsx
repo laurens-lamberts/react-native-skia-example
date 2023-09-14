@@ -1,11 +1,9 @@
 import React from 'react';
-import {View, useWindowDimensions} from 'react-native';
+import {Text, View, useWindowDimensions} from 'react-native';
 import {
   BlurMask,
   Canvas,
-  Circle,
   Easing,
-  Group,
   RoundedRect,
   rect,
   rrect,
@@ -66,7 +64,9 @@ export default function FloatingBalls() {
     }); */
 
   const lines = React.useMemo(() => {
-    const _lines: {yStart: number}[] = new Array(NUMBER_OF_DEPTH_ROWS);
+    const _lines: {yStart: number; xStart: number}[] = new Array(
+      NUMBER_OF_DEPTH_ROWS,
+    );
     for (let i = 0; i < NUMBER_OF_DEPTH_ROWS; i++) {
       // calculate yStart based on viewing angle and index i
       const yStart =
@@ -114,7 +114,7 @@ export default function FloatingBalls() {
             numberOfBallsHorizontally={numberOfBallsHorizontally}
           />
         ))}
-        <Group transform={[{translateY: screenHeight - insets.bottom - 120}]}>
+        {/* <Group transform={[{translateY: screenHeight - insets.bottom - 120}]}>
           <RoundedRect
             x={20}
             y={0}
@@ -124,8 +124,18 @@ export default function FloatingBalls() {
             color="black"
           />
           <Circle cx={amplitudeSliderX} cy={4} r={10} />
-        </Group>
+        </Group> */}
       </Canvas>
+      <View
+        style={{
+          alignSelf: 'center',
+          position: 'absolute',
+          alignItems: 'center',
+          bottom: Math.max(insets.bottom, 20),
+        }}>
+        <Text style={{marginBottom: 4}}>swipe to change viewing angle</Text>
+        <Text>pinch to change amplitude</Text>
+      </View>
       {/* </GestureDetector> */}
     </View>
   );
