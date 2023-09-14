@@ -11,7 +11,11 @@ import {
   useValue,
 } from "@shopify/react-native-skia";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useSharedValue, withDecay } from "react-native-reanimated";
+import Animated, {
+  runOnJS,
+  useSharedValue,
+  withDecay,
+} from "react-native-reanimated";
 import LineOfBalls from "./LineOfBalls";
 import { GestureDetector, Gesture } from "react-native-gesture-handler";
 
@@ -64,10 +68,7 @@ export default function FloatingBalls() {
         i;
       _lines.push({
         yStart,
-        xStart:
-          Math.tan((VIEWING_ANGLE_HORIZONTAL * Math.PI) / 180) *
-          DEFAULT_BALL_RADIUS *
-          i,
+        xStart: DEFAULT_BALL_RADIUS * i,
       });
     }
     return _lines.reverse();
@@ -75,7 +76,6 @@ export default function FloatingBalls() {
 
   const gesture = Gesture.Pan()
     .onChange((e) => {
-      //translateX.value += e.changeX;
       viewingAngleHorizontal.value += e.changeX / 10;
       viewingAngleVertical.value += e.changeY / 10;
     })
@@ -120,6 +120,7 @@ export default function FloatingBalls() {
               yStart={line.yStart}
               xStart={line.xStart}
               numberOfBallsHorizontally={numberOfBallsHorizontally}
+              viewingAngleHorizontal={viewingAngleHorizontal}
             />
           ))}
           {/* <Group transform={[{translateY: screenHeight - insets.bottom - 120}]}>

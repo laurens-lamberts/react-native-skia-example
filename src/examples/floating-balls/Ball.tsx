@@ -13,6 +13,7 @@ import {
   Easing,
 } from "@shopify/react-native-skia";
 import { DEFAULT_BALL_RADIUS } from "./FloatingBalls";
+import { SharedValue } from "react-native-reanimated";
 
 interface Props {
   x: number;
@@ -49,7 +50,7 @@ export default function Ball({ x, offsetY, index, amplitude, radius }: Props) {
     return y.current + LINE_EXTENSION;
   }, [y]);
 
-  const groupTransform = useComputedValue(() => {
+  const ballTransform = useComputedValue(() => {
     return [
       {
         translateY: y.current,
@@ -62,7 +63,7 @@ export default function Ball({ x, offsetY, index, amplitude, radius }: Props) {
     { duration: 2000, easing: Easing.bezier(0.5, 0.01, 0.5, 1) }
   );
 
-  const angleToRotate = useComputedValue(() => {
+  const ballStringTransform = useComputedValue(() => {
     const deviation = horizontalDeviationTimer.current * HORIZONTAL_DEVIATION;
     const randomness = (Math.random() - 0.5) * 0.05; // TODO: this is no proper randomness. It cannot be amplified.
     return [
@@ -74,7 +75,7 @@ export default function Ball({ x, offsetY, index, amplitude, radius }: Props) {
   }, [offsetY, horizontalDeviationTimer]);
 
   return (
-    <Group transform={angleToRotate} origin={vec(0, -100)}>
+    <Group transform={ballStringTransform} origin={vec(0, -100)}>
       {/* TODO: the origin is a guess, but does the trick pretty well */}
       <Rect
         x={x - stringWidth / 2}
@@ -83,7 +84,7 @@ export default function Ball({ x, offsetY, index, amplitude, radius }: Props) {
         height={lineHeight}
         color="black"
       />
-      <Group transform={groupTransform}>
+      <Group transform={ballTransform}>
         <Rect
           x={x - 2}
           y={-(radius * 1.3)}

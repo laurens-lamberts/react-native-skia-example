@@ -1,8 +1,19 @@
-import React from 'react';
-import {Group, SkiaValue} from '@shopify/react-native-skia';
-import Ball from './Ball';
-import {useWindowDimensions} from 'react-native';
-import {DEFAULT_BALL_RADIUS, TRAPEZIUM_EFFECT} from './FloatingBalls';
+import React, { useEffect } from "react";
+import {
+  Group,
+  SkiaValue,
+  useComputedValue,
+  useSharedValueEffect,
+} from "@shopify/react-native-skia";
+import Ball from "./Ball";
+import { useWindowDimensions } from "react-native";
+import { DEFAULT_BALL_RADIUS, TRAPEZIUM_EFFECT } from "./FloatingBalls";
+import {
+  SharedValue,
+  useAnimatedProps,
+  useAnimatedStyle,
+  useDerivedValue,
+} from "react-native-reanimated";
 
 interface Props {
   offsetY: SkiaValue<number>;
@@ -10,6 +21,7 @@ interface Props {
   yStart: number;
   xStart: number;
   numberOfBallsHorizontally: number;
+  viewingAngleHorizontal: SharedValue<number>;
 }
 
 const LineOfBalls = ({
@@ -18,8 +30,9 @@ const LineOfBalls = ({
   yStart,
   xStart,
   numberOfBallsHorizontally,
+  viewingAngleHorizontal,
 }: Props) => {
-  const {width: screenWidth, height: screenHeight} = useWindowDimensions();
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
   let radius = DEFAULT_BALL_RADIUS;
 
   let widthToOccupy = screenWidth; // for the first row, the entire width of screen may be occupied
@@ -35,22 +48,42 @@ const LineOfBalls = ({
   const lineMargin = screenWidth - widthToOccupy;
 
   const balls = React.useMemo(() => {
-    const _balls: {x: number}[] = new Array(numberOfBallsHorizontally);
+    const _balls: { x: number }[] = new Array(numberOfBallsHorizontally);
 
     for (let i = 0; i < numberOfBallsHorizontally; i++) {
       _balls.push({
         x:
           i * (widthToOccupy / numberOfBallsHorizontally) +
           Math.max(0, margin / 2) +
-          lineMargin / 2 +
-          xStart,
+          lineMargin / 2,
       });
     }
     return _balls;
   }, [lineMargin, margin, numberOfBallsHorizontally, widthToOccupy, xStart]);
 
+  const groupTransform = useComputedValue(
+    () => [
+      {
+        translateX:
+          Math.tan((viewingAngleHorizontal.value * Math.PI) / 180) * xStart +
+          radius,
+      },
+      { translateY: yStart },
+    ],
+    [xStart, viewingAngleHorizontal]
+  );
+
+  const groupTransform2 = useDerivedValue(() => [
+    {
+      translateX:
+        Math.tan((viewingAngleHorizontal.value * Math.PI) / 180) * xStart +
+        radius,
+    },
+    { translateY: yStart },
+  ]);
+
   return (
-    <Group transform={[{translateX: radius}, {translateY: yStart}]}>
+    <Group transform={groupTransform}>
       {balls.map((ball, index) => (
         <Ball
           key={index}
