@@ -92,8 +92,11 @@ export default function FloatingBalls() {
       pinchOrigin.value = e.scale;
     })
     .onChange((e) => {
+      // pinching-in seems to go slower. Temp fix for that.
+      const pinchFactor = PINCH_FACTOR * (e.scale < pinchOrigin.value ? 6 : 1);
+
       const newValue =
-        (amplitude.value + (e.scale - pinchOrigin.value)) * PINCH_FACTOR;
+        amplitude.value + (e.scale - pinchOrigin.value) * pinchFactor;
       const clampedValue = Math.min(Math.max(newValue, 1), 200);
       amplitude.value = clampedValue;
     });
