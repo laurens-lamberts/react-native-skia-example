@@ -7,12 +7,13 @@ import {
   SkiaValue,
   Text,
   useComputedValue,
+  useFont,
   useValue,
   useValueEffect,
   vec,
-} from '@shopify/react-native-skia';
-import React, {useCallback} from 'react';
-import {useWindowDimensions} from 'react-native';
+} from "@shopify/react-native-skia";
+import React, { useCallback } from "react";
+import { useWindowDimensions } from "react-native";
 import {
   BIRD_WIDTH,
   BIRD_HEIGHT,
@@ -22,7 +23,7 @@ import {
   BIRD_X,
   SHOW_DEBUG,
   FLOOR_HEIGHT,
-} from './Config';
+} from "./Config";
 
 interface Props {
   canvasWidth: number;
@@ -32,7 +33,7 @@ interface Props {
   points: SkiaMutableValue<number>;
   initialX: number;
   gameOver: () => void;
-  size: SkiaMutableValue<{width: number; height: number}>;
+  size: SkiaMutableValue<{ width: number; height: number }>;
   minimumGapSize: number;
 }
 const Obstacle = ({
@@ -44,7 +45,7 @@ const Obstacle = ({
   minimumGapSize,
   size,
 }: Props) => {
-  const {height, width} = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
   const canvasWidth = size.current.width || width;
   const canvasHeight = size.current.height
     ? size.current.height - FLOOR_HEIGHT
@@ -135,6 +136,11 @@ const Obstacle = ({
     vec(x.current + OBSTACLE_WIDTH, canvasHeight),
   ];
 
+  const font = useFont(
+    require("../../assets/fonts/SFPRODISPLAYREGULAR.otf"),
+    16
+  );
+
   return (
     <Group>
       <Group>
@@ -176,10 +182,9 @@ const Obstacle = ({
         <>
           <Text
             x={10}
-            y={146}
-            text={'obstacle: ' + Math.round(x.current).toString() + ' x'}
-            familyName="serif"
-            size={16}
+            y={160}
+            text={"obstacle: " + Math.round(x.current).toString() + " x"}
+            font={font}
           />
         </>
       )}

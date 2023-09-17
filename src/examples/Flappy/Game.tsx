@@ -7,6 +7,8 @@ import {
   useClockValue,
   useComputedValue,
   useValueEffect,
+  Text,
+  useFont,
 } from "@shopify/react-native-skia";
 import {
   Canvas,
@@ -50,6 +52,8 @@ const CanvasContent = ({
 }: CanvasContentProps) => {
   const canvasWidth = size.current.width;
   const canvasHeight = size.current.height;
+
+  const font = useFont(require("../../assets/fonts/SFPRODISPLAYBOLD.otf"), 40);
 
   const birdY = useValue(0);
   const bottom = useComputedValue(
@@ -108,14 +112,13 @@ const CanvasContent = ({
         height={3}
         color="#666"
       />
-      {/* <Text
+      <Text
         x={canvasWidth / 2 - 8} // TODO: actual center
         y={120}
         text={points.current.toString()}
-        familyName="serif"
-        size={40}
+        font={font}
         color="white"
-      /> */}
+      />
     </Group>
   );
 };
@@ -143,6 +146,11 @@ const Flappy = () => {
     clock.stop();
     resetOnNextTap.current = 1;
   };
+
+  const font = useFont(
+    require("../../assets/fonts/SFPRODISPLAYREGULAR.otf"),
+    16
+  );
 
   // GAME LOOP
   useValueEffect(clock, () => {
@@ -210,51 +218,46 @@ const Flappy = () => {
           points={points}
           size={size}
         />
-        {/* {SHOW_DEBUG && (
+        {SHOW_DEBUG && (
           <>
             <Text
               x={10}
               y={insets.top}
-              text={'taps: ' + taps.current.toString()}
-              familyName="serif"
-              size={16}
+              font={font}
+              text={"taps: " + taps.current.toString()}
             />
             <Text
               x={10}
               y={insets.top + 20}
-              text={'clock: ' + Math.round(clock.current).toString() + ' ms'}
-              familyName="serif"
-              size={16}
+              text={"clock: " + Math.round(clock.current).toString() + " ms"}
+              font={font}
             />
             <Text
               x={10}
               y={insets.top + 40}
               text={
-                'translate: ' + Math.round(translateY.current).toString() + ' y'
+                "translate: " + Math.round(translateY.current).toString() + " y"
               }
-              familyName="serif"
-              size={16}
+              font={font}
             />
             <Text
               x={10}
               y={insets.top + 60}
               text={
-                'velocity: ' + Math.round(velocityY.current).toString() + ' y'
+                "velocity: " + Math.round(velocityY.current).toString() + " y"
               }
-              familyName="serif"
-              size={16}
+              font={font}
             />
             <Text
               x={10}
               y={insets.top + 80}
               text={
-                'falling: ' + Math.round(fallingStart.current).toString() + ' y'
+                "falling: " + Math.round(fallingStart.current).toString() + " y"
               }
-              familyName="serif"
-              size={16}
+              font={font}
             />
           </>
-        )} */}
+        )}
       </Canvas>
     </SafeAreaView>
   );
