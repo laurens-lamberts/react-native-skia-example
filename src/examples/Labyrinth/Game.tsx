@@ -14,7 +14,7 @@ import Animated, {
   useAnimatedSensor,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { FIXED_MENU_HEIGHT, FULL_SCREEN } from "../../../App";
+import { FIXED_MENU_HEIGHT, FULL_SCREEN } from "../../../AppActual";
 import Ball from "./Ball";
 import {
   BALL_SPEED_FACTOR,

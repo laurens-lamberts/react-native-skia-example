@@ -29,6 +29,7 @@ export const TRAPEZIUM_EFFECT = 1.2; // lower value is more depth
 const NUMBER_OF_DEPTH_ROWS = 7;
 const VIEWING_ANGLE_VERTICAL = 45; // in degrees
 const VIEWING_ANGLE_HORIZONTAL = -7; // in degrees
+const PINCH_FACTOR = 1;
 
 // Make configurable in interface;
 // 1. Amplitude
@@ -98,7 +99,8 @@ export default function FloatingBalls() {
       pinchOrigin.value = e.scale;
     })
     .onChange((e) => {
-      const newValue = amplitude.value + (e.scale - pinchOrigin.value) * 10;
+      const newValue =
+        amplitude.value + (e.scale - pinchOrigin.value) * PINCH_FACTOR;
       const clampedValue = Math.min(Math.max(newValue, 1), 200);
       amplitude.value = clampedValue;
     });

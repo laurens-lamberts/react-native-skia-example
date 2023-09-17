@@ -32,7 +32,7 @@ import {
 } from "./Config";
 import Bird from "./Bird";
 import Obstacle from "./Obstacle";
-import { FULL_SCREEN } from "../../../App";
+import { FULL_SCREEN } from "../../../AppActual";
 
 interface CanvasContentProps {
   translateY: SkiaMutableValue<number>;
