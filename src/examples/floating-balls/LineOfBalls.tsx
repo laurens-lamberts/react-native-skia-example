@@ -1,9 +1,14 @@
 import React, { useEffect } from "react";
 import {
   Group,
+  SkMatrix,
+  Skia,
+  SkiaMutableValue,
   SkiaValue,
+  processTransform2d,
   useComputedValue,
   useSharedValueEffect,
+  useValue,
 } from "@shopify/react-native-skia";
 import Ball from "./Ball";
 import { useWindowDimensions } from "react-native";
@@ -17,11 +22,12 @@ import {
 
 interface Props {
   offsetY: SkiaValue<number>;
-  amplitude: SkiaValue<number>;
+  amplitude: SharedValue<number>;
   yStart: number;
   xStart: number;
   numberOfBallsHorizontally: number;
   viewingAngleHorizontal: SharedValue<number>;
+  matrix: SharedValue<SkMatrix>;
 }
 
 const LineOfBalls = ({
@@ -31,6 +37,7 @@ const LineOfBalls = ({
   xStart,
   numberOfBallsHorizontally,
   viewingAngleHorizontal,
+  matrix,
 }: Props) => {
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
   let radius = DEFAULT_BALL_RADIUS;
@@ -72,18 +79,29 @@ const LineOfBalls = ({
     ],
     [xStart, viewingAngleHorizontal]
   );
-
-  const groupTransform2 = useDerivedValue(() => [
+  /* const groupTransform2 = useDerivedValue(() => [
     {
       translateX:
         Math.tan((viewingAngleHorizontal.value * Math.PI) / 180) * xStart +
         radius,
     },
     { translateY: yStart },
-  ]);
+  ]); */
+
+  /* 
+  const groupMatrix = useComputedValue(() => {
+    return processTransform2d([
+      {
+        translateX:
+          Math.tan((viewingAngleHorizontal.value * Math.PI) / 180) * xStart +
+          radius,
+      },
+      { translateY: yStart },
+    ]);
+  }, [matrix]); */
 
   return (
-    <Group transform={groupTransform}>
+    <Group transform={groupTransform} /* matrix={matrix} */>
       {balls.map((ball, index) => (
         <Ball
           key={index}

@@ -11,6 +11,8 @@ import {
   TwoPointConicalGradient,
   useTiming,
   Easing,
+  Skia,
+  processTransform2d,
 } from "@shopify/react-native-skia";
 import { DEFAULT_BALL_RADIUS } from "./FloatingBalls";
 import { SharedValue } from "react-native-reanimated";
@@ -19,7 +21,7 @@ interface Props {
   x: number;
   offsetY: SkiaValue<number>;
   index: number;
-  amplitude: SkiaValue<number>;
+  amplitude: SharedValue<number>;
   radius: number;
 }
 
@@ -42,7 +44,7 @@ export default function Ball({ x, offsetY, index, amplitude, radius }: Props) {
   useComputedValue(() => {
     const offsetYWithIndex = offsetY.current + index * 0.1;
     y.current =
-      Math.sin(offsetYWithIndex * Math.PI * 2) * amplitude.current +
+      Math.sin(offsetYWithIndex * Math.PI * 2) * amplitude.value +
       STATIC_VERTICAL_OFFSET;
   }, [offsetY, index]);
 

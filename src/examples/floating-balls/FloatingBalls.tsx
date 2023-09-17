@@ -5,6 +5,7 @@ import {
   Canvas,
   Easing,
   RoundedRect,
+  Skia,
   rect,
   rrect,
   useTiming,
@@ -18,6 +19,7 @@ import Animated, {
 } from "react-native-reanimated";
 import LineOfBalls from "./LineOfBalls";
 import { GestureDetector, Gesture } from "react-native-gesture-handler";
+import { GestureHandler } from "../../helpers/GestureHandler";
 
 const STATIC_NUMBER_OF_BALLS_HORIZONTALLY = 8;
 const USE_DYNAMIC_NUMBER_OF_BALLS_HORIZONTALLY = true;
@@ -42,7 +44,7 @@ export default function FloatingBalls() {
     { duration: 2000, easing: Easing.linear }
   );
 
-  const amplitude = useValue(DEFAULT_AMPLITUDE);
+  const amplitude = useSharedValue(DEFAULT_AMPLITUDE);
   //const amplitudeSliderX = useSharedValue(20);
 
   const viewingAngleVertical = useSharedValue(VIEWING_ANGLE_VERTICAL);
@@ -90,8 +92,22 @@ export default function FloatingBalls() {
       }); */
     });
 
+  const pinchOrigin = useSharedValue(0);
+  const pinch = Gesture.Pinch()
+    .onBegin((e) => {
+      pinchOrigin.value = e.scale;
+    })
+    .onChange((e) => {
+      const newValue = amplitude.value + (e.scale - pinchOrigin.value) * 10;
+      const clampedValue = Math.min(Math.max(newValue, 1), 200);
+      amplitude.value = clampedValue;
+    });
+
+  const matrix = useSharedValue(Skia.Matrix());
+  const dimensions = rect(0, 0, screenWidth, screenHeight);
+
   return (
-    <GestureDetector gesture={gesture}>
+    <GestureDetector gesture={Gesture.Race(pinch, gesture)}>
       <View
         style={{
           flex: 1,
@@ -121,6 +137,7 @@ export default function FloatingBalls() {
               xStart={line.xStart}
               numberOfBallsHorizontally={numberOfBallsHorizontally}
               viewingAngleHorizontal={viewingAngleHorizontal}
+              matrix={matrix}
             />
           ))}
           {/* <Group transform={[{translateY: screenHeight - insets.bottom - 120}]}>
@@ -129,18 +146,19 @@ export default function FloatingBalls() {
             y={0}
             width={screenWidth - 40}
             height={6}
-            r={25}
+            r={25} 
             color="black"
           />
           <Circle cx={amplitudeSliderX} cy={4} r={10} />
         </Group> */}
         </Canvas>
+        {/* <GestureHandler matrix={matrix} dimensions={dimensions} /> */}
         <View
           style={{
             alignSelf: "center",
             position: "absolute",
             alignItems: "center",
-            bottom: Math.max(insets.bottom, 20),
+            bottom: Math.max(insets.bottom, 60),
           }}
         >
           <Text style={{ marginBottom: 4 }}>swipe to change viewing angle</Text>
