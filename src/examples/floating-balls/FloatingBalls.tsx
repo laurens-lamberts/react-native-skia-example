@@ -9,17 +9,11 @@ import {
   rect,
   rrect,
   useTiming,
-  useValue,
 } from "@shopify/react-native-skia";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Animated, {
-  runOnJS,
-  useSharedValue,
-  withDecay,
-} from "react-native-reanimated";
+import { useSharedValue } from "react-native-reanimated";
 import LineOfBalls from "./LineOfBalls";
 import { GestureDetector, Gesture } from "react-native-gesture-handler";
-import { GestureHandler } from "../../helpers/GestureHandler";
 
 const STATIC_NUMBER_OF_BALLS_HORIZONTALLY = 8;
 const USE_DYNAMIC_NUMBER_OF_BALLS_HORIZONTALLY = true;
@@ -46,7 +40,6 @@ export default function FloatingBalls() {
   );
 
   const amplitude = useSharedValue(DEFAULT_AMPLITUDE);
-  //const amplitudeSliderX = useSharedValue(20);
 
   const viewingAngleVertical = useSharedValue(VIEWING_ANGLE_VERTICAL);
   const viewingAngleHorizontal = useSharedValue(VIEWING_ANGLE_HORIZONTAL);
@@ -100,7 +93,7 @@ export default function FloatingBalls() {
     })
     .onChange((e) => {
       const newValue =
-        amplitude.value + (e.scale - pinchOrigin.value) * PINCH_FACTOR;
+        (amplitude.value + (e.scale - pinchOrigin.value)) * PINCH_FACTOR;
       const clampedValue = Math.min(Math.max(newValue, 1), 200);
       amplitude.value = clampedValue;
     });
