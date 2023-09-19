@@ -35,7 +35,6 @@ const SHOW_SNAPSHOT_BUTTON = false;
 
 const examples = [
   { name: "Balls", component: FloatingBalls },
-  { name: "Fire", component: Fire },
   /* { name: "Compass", component: Compass }, */
   { name: "Maze", component: LabyrinthGame },
   { name: "Flappy", component: Game },
@@ -43,6 +42,7 @@ const examples = [
   { name: "Mount", component: Mount },
   { name: "Blur", component: BackdropBlur },
   { name: "Resize", component: CanvasResizeAnimation },
+  { name: "Fire", component: Fire },
 ];
 
 export const FULL_SCREEN = false;
