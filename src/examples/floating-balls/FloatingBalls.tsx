@@ -58,10 +58,7 @@ export default function FloatingBalls() {
     );
     for (let i = 0; i < NUMBER_OF_DEPTH_ROWS; i++) {
       // calculate yStart based on viewing angle and index i
-      const yStart =
-        Math.tan((VIEWING_ANGLE_VERTICAL * Math.PI) / 180) *
-        DEFAULT_BALL_RADIUS *
-        i;
+      const yStart = DEFAULT_BALL_RADIUS * i;
       _lines.push({
         yStart,
         xStart: DEFAULT_BALL_RADIUS * i,
@@ -70,7 +67,7 @@ export default function FloatingBalls() {
     return _lines.reverse();
   }, []);
 
-  const gesture = Gesture.Pan()
+  const pan = Gesture.Pan()
     .onChange((e) => {
       viewingAngleHorizontal.value += e.changeX / 10;
       viewingAngleVertical.value += e.changeY / 10;
@@ -102,10 +99,10 @@ export default function FloatingBalls() {
     });
 
   const matrix = useSharedValue(Skia.Matrix());
-  const dimensions = rect(0, 0, screenWidth, screenHeight);
+  //const dimensions = rect(0, 0, screenWidth, screenHeight);
 
   return (
-    <GestureDetector gesture={Gesture.Race(pinch, gesture)}>
+    <GestureDetector gesture={Gesture.Race(pinch, pan)}>
       <View
         style={{
           flex: 1,
@@ -135,6 +132,7 @@ export default function FloatingBalls() {
               xStart={line.xStart}
               numberOfBallsHorizontally={numberOfBallsHorizontally}
               viewingAngleHorizontal={viewingAngleHorizontal}
+              viewingAngleVertical={viewingAngleVertical}
               matrix={matrix}
             />
           ))}
@@ -150,7 +148,6 @@ export default function FloatingBalls() {
           <Circle cx={amplitudeSliderX} cy={4} r={10} />
         </Group> */}
         </Canvas>
-        {/* <GestureHandler matrix={matrix} dimensions={dimensions} /> */}
         <View
           style={{
             alignSelf: "center",

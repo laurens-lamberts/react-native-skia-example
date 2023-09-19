@@ -15,7 +15,11 @@ import {
   processTransform2d,
 } from "@shopify/react-native-skia";
 import { DEFAULT_BALL_RADIUS } from "./FloatingBalls";
-import { SharedValue } from "react-native-reanimated";
+import {
+  SharedValue,
+  useDerivedValue,
+  useSharedValue,
+} from "react-native-reanimated";
 
 interface Props {
   x: number;
@@ -23,39 +27,47 @@ interface Props {
   index: number;
   amplitude: SharedValue<number>;
   radius: number;
+  viewingAngleVertical: SharedValue<number>;
 }
 
 const DEFAULT_STRING_WIDTH = 1.2;
 const LINE_EXTENSION = 400;
 const HORIZONTAL_DEVIATION = 1;
 
-export default function Ball({ x, offsetY, index, amplitude, radius }: Props) {
+export default function Ball({
+  x,
+  offsetY,
+  index,
+  amplitude,
+  radius,
+  viewingAngleVertical,
+}: Props) {
   const { height: screenHeight } = useWindowDimensions();
   const STATIC_VERTICAL_OFFSET = screenHeight / 2 - 100;
 
   const factor = radius / DEFAULT_BALL_RADIUS;
   const stringWidth = DEFAULT_STRING_WIDTH * factor;
 
-  const y = useValue(0);
+  const y = useSharedValue(0);
 
   /*   const MIN_Y = 100;
   const MAX_Y = screenHeight - insets.bottom - 200; */
 
   useComputedValue(() => {
     const offsetYWithIndex = offsetY.current + index * 0.1;
-    y.current =
+    y.value =
       Math.sin(offsetYWithIndex * Math.PI * 2) * amplitude.value +
       STATIC_VERTICAL_OFFSET;
   }, [offsetY, index]);
 
-  const lineHeight = useComputedValue(() => {
-    return y.current + LINE_EXTENSION;
+  const lineHeight = useDerivedValue(() => {
+    return y.value + LINE_EXTENSION;
   }, [y]);
 
-  const ballTransform = useComputedValue(() => {
+  const ballTransform = useDerivedValue(() => {
     return [
       {
-        translateY: y.current,
+        translateY: y.value,
       },
     ];
   }, [y]);

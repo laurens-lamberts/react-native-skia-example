@@ -10,6 +10,7 @@ import {
   useSharedValueEffect,
   useValue,
 } from "@shopify/react-native-skia";
+import { translate } from "../../helpers/MatrixHelpers";
 import Ball from "./Ball";
 import { useWindowDimensions } from "react-native";
 import { DEFAULT_BALL_RADIUS, TRAPEZIUM_EFFECT } from "./FloatingBalls";
@@ -27,6 +28,7 @@ interface Props {
   xStart: number;
   numberOfBallsHorizontally: number;
   viewingAngleHorizontal: SharedValue<number>;
+  viewingAngleVertical: SharedValue<number>;
   matrix: SharedValue<SkMatrix>;
 }
 
@@ -37,6 +39,7 @@ const LineOfBalls = ({
   xStart,
   numberOfBallsHorizontally,
   viewingAngleHorizontal,
+  viewingAngleVertical,
   matrix,
 }: Props) => {
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
@@ -68,7 +71,17 @@ const LineOfBalls = ({
     return _balls;
   }, [lineMargin, margin, numberOfBallsHorizontally, widthToOccupy, xStart]);
 
-  const groupTransform = useComputedValue(
+  const matrixOffset = useDerivedValue(
+    () =>
+      translate(
+        matrix.value,
+        Math.tan((viewingAngleHorizontal.value * Math.PI) / 180) * xStart +
+          radius,
+        Math.tan((viewingAngleVertical.value * Math.PI) / 180) * yStart
+      ),
+    [xStart, viewingAngleHorizontal, matrix]
+  );
+  /* const groupTransform = useComputedValue(
     () => [
       {
         translateX:
@@ -78,30 +91,10 @@ const LineOfBalls = ({
       { translateY: yStart },
     ],
     [xStart, viewingAngleHorizontal]
-  );
-  /* const groupTransform2 = useDerivedValue(() => [
-    {
-      translateX:
-        Math.tan((viewingAngleHorizontal.value * Math.PI) / 180) * xStart +
-        radius,
-    },
-    { translateY: yStart },
-  ]); */
-
-  /* 
-  const groupMatrix = useComputedValue(() => {
-    return processTransform2d([
-      {
-        translateX:
-          Math.tan((viewingAngleHorizontal.value * Math.PI) / 180) * xStart +
-          radius,
-      },
-      { translateY: yStart },
-    ]);
-  }, [matrix]); */
+  ); */
 
   return (
-    <Group transform={groupTransform} /* matrix={matrix} */>
+    <Group /* transform={groupTransform}  */ matrix={matrixOffset}>
       {balls.map((ball, index) => (
         <Ball
           key={index}
@@ -110,6 +103,7 @@ const LineOfBalls = ({
           index={index}
           amplitude={amplitude}
           radius={radius}
+          viewingAngleVertical={viewingAngleVertical}
         />
       ))}
     </Group>
