@@ -35,7 +35,7 @@ const SHOW_SNAPSHOT_BUTTON = false;
 
 const examples = [
   { name: "Balls", component: FloatingBalls },
-  /* { name: "Compass", component: Compass }, */
+  { name: "Compass", component: Compass },
   { name: "Maze", component: LabyrinthGame },
   { name: "Flappy", component: Game },
   { name: "Springboard", component: Springboard },
