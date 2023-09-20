@@ -67,21 +67,15 @@ export default function FloatingBalls() {
     return _lines.reverse();
   }, []);
 
-  const pan = Gesture.Pan()
-    .onChange((e) => {
-      viewingAngleHorizontal.value += e.changeX / 10;
-      viewingAngleVertical.value += e.changeY / 10;
-    })
-    .onEnd((e) => {
-      /*  viewingAngleHorizontal.current = withDecay({
-        velocity: e.velocityX,
-        clamp: [-30, 30],
-      });
-      viewingAngleVertical.current = withDecay({
-        velocity: e.velocityY,
-        clamp: [-65, 65],
-      }); */
-    });
+  const pan = Gesture.Pan().onChange((e) => {
+    const newHorizontal = viewingAngleHorizontal.value + e.changeX / 6;
+    if (newHorizontal > -45 && newHorizontal < 45)
+      viewingAngleHorizontal.value = newHorizontal;
+
+    const newVertical = viewingAngleVertical.value + e.changeY / 4;
+    if (newVertical > -60 && newVertical < 60)
+      viewingAngleVertical.value = newVertical;
+  });
 
   const pinchOrigin = useSharedValue(0);
   const pinch = Gesture.Pinch()
