@@ -4,6 +4,7 @@ Example project for debugging and showcasing purposes on react-native-skia
 
 ## Current content
 
+- Floating balls: A 3d simulation of an artpiece of balls hanging by a thread in the Dark Matter museum in Berlin. Gesture handler supports changing the viewing angle and the amplitude of the sinusoidal movement.
 - Compass: points north + gives direction to a generated target nearby.
 - Maze: Ball in a maze game. This showcases running a gameloop on react-native-skia. (performs quite poor on Android at the moment)
 - Flappy: Flappy Bird example. This showcases running a gameloop on react-native-skia.
