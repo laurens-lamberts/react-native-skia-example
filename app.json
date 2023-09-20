@@ -11,12 +11,14 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.laurens.skiaexamples"
+      "bundleIdentifier": "com.laurens.skiaexamples",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app uses the location to point the compass to another location",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app uses the location to point the compass to another location"
+      }
     },
     "android": {
       "adaptiveIcon": {
