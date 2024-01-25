@@ -3,7 +3,6 @@ import { Skia } from "@shopify/react-native-skia";
 import React from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
-  runOnJS,
   SharedValue,
   useAnimatedReaction,
   useAnimatedStyle,
@@ -13,13 +12,6 @@ import { Matrix4, multiply4, toMatrix3, identity4 } from "react-native-redash";
 
 import { concat, vec3 } from "./MatrixHelpers";
 import { useWindowDimensions } from "react-native";
-
-type Region = {
-  latitude: number;
-  longitude: number;
-  latitudeDelta: number;
-  longitudeDelta: number;
-};
 
 interface GestureHandlerProps {
   matrix: SharedValue<SkMatrix>;
@@ -46,20 +38,14 @@ export const GestureHandler = ({
   );
 
   const pan = Gesture.Pan()
-    .onBegin((e) => {
-      offset.value = matrix.value;
-    })
     .onChange((e) => {
       matrix.value = multiply4(
         Matrix4.translate(e.changeX, e.changeY, 0),
         matrix.value
       );
-
-      origin.value = [
-        e.absoluteX + screenWidth / 2,
-        e.absoluteY + screenHeight / 2,
-        0,
-      ];
+    })
+    .onEnd(() => {
+      offset.value = matrix.value;
     });
 
   const rotate = Gesture.Rotation()
@@ -67,9 +53,17 @@ export const GestureHandler = ({
       offset.value = matrix.value;
     })
     .onChange((e) => {
-      matrix.value = concat(offset.value, origin.value, [
-        { rotateZ: e.rotation },
-      ]);
+      const centerX = screenWidth / 2;
+      const centerY = screenHeight / 2;
+
+      const translateToCenter = Matrix4.translate(centerX, centerY, 0);
+      const rotateMatrix = Matrix4.rotateZ(e.rotation);
+      const translateBack = Matrix4.translate(-centerX, -centerY, 0);
+
+      let combinedMatrix = multiply4(translateToCenter, rotateMatrix);
+      combinedMatrix = multiply4(combinedMatrix, translateBack);
+
+      matrix.value = multiply4(combinedMatrix, offset.value);
     });
 
   const scale = Gesture.Pinch()
@@ -77,8 +71,35 @@ export const GestureHandler = ({
       offset.value = matrix.value;
     })
     .onChange((e) => {
-      matrix.value = concat(offset.value, origin.value, [{ scale: e.scale }]);
-      /* 
+      const centerX = screenWidth / 2;
+      const centerY = screenHeight / 2;
+
+      const translateToCenter = Matrix4.translate(centerX, centerY, 0);
+      const scaleMatrix = Matrix4.scale(e.scale, e.scale, 1);
+      const translateBack = Matrix4.translate(-centerX, -centerY, 0);
+
+      let combinedMatrix = multiply4(translateToCenter, scaleMatrix);
+      combinedMatrix = multiply4(combinedMatrix, translateBack);
+
+      matrix.value = multiply4(combinedMatrix, offset.value);
+    });
+
+  const style = useAnimatedStyle(() => ({
+    position: "absolute",
+    left: x,
+    top: y,
+    width,
+    height,
+    backgroundColor: debug ? "rgba(100, 200, 300, 0.1)" : "transparent",
+  }));
+
+  return (
+    <GestureDetector gesture={Gesture.Simultaneous(scale, pan, rotate)}>
+      <Animated.View style={style} />
+    </GestureDetector>
+  );
+};
+/* 
       const FACTOR = 0.1;
       const topLeft = { x: e.focalX, y: e.focalY };
       const bottomRight = {
@@ -93,19 +114,3 @@ export const GestureHandler = ({
 
       runOnJS(onRegionChange)(region); 
       */
-    });
-
-  const style = useAnimatedStyle(() => ({
-    position: "absolute",
-    left: x,
-    top: y,
-    width,
-    height,
-    backgroundColor: debug ? "rgba(100, 200, 300, 0.1)" : "transparent",
-  }));
-  return (
-    <GestureDetector gesture={Gesture.Simultaneous(scale, pan /* rotate */)}>
-      <Animated.View style={style} />
-    </GestureDetector>
-  );
-};

@@ -3,7 +3,10 @@ import { SharedValue } from "react-native-reanimated";
 import type { Matrix4, Transforms3d, Vec3 } from "react-native-redash";
 import { multiply4, processTransform3d } from "react-native-redash";
 
-export const vec3 = (x: number, y: number, z: number) => [x, y, z] as const;
+export const vec3 = (x: number, y: number, z: number) => {
+  "worklet";
+  return [x, y, z] as const;
+};
 
 export const transformOrigin3d = (
   origin: Vec3,
