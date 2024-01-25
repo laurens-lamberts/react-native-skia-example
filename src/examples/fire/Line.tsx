@@ -1,25 +1,24 @@
-import React, {useMemo} from 'react';
-import {useWindowDimensions} from 'react-native';
+import React, { useMemo } from "react";
+import { useWindowDimensions } from "react-native";
 import {
   Box,
   rect,
   LinearGradient,
   vec,
   Group,
-  useComputedValue,
-  useTiming,
-  Easing,
-} from '@shopify/react-native-skia';
+} from "@shopify/react-native-skia";
+import { useTiming } from "../../hooks/animations";
+import { Easing, useDerivedValue } from "react-native-reanimated";
 
 const MAX_GRADIENT_REPETITIONS = 5;
 const FIRE_COLORS = [
-  '#FFF7D6',
-  '#FFE39F',
-  '#FFC700',
-  '#FFA000',
-  '#FF6F00',
-  '#FF3D00',
-  '#FF0000',
+  "#FFF7D6",
+  "#FFE39F",
+  "#FFC700",
+  "#FFA000",
+  "#FF6F00",
+  "#FF3D00",
+  "#FF0000",
 ];
 
 interface Props {
@@ -30,8 +29,8 @@ interface Props {
   index: number;
 }
 
-export default function Line({lineObject, index}: Props) {
-  const {height: screenHeight} = useWindowDimensions();
+export default function Line({ lineObject, index }: Props) {
+  const { height: screenHeight } = useWindowDimensions();
 
   const gradient = useMemo(() => {
     //return FIRE_COLORS;
@@ -53,50 +52,50 @@ export default function Line({lineObject, index}: Props) {
   }, [lineObject.height, screenHeight]);
 
   const loopAnimation = useTiming(
-    {from: 1, to: 0, loop: true},
-    {duration: 2000, easing: Easing.ease},
+    { from: 1, to: 0, duration: 2000, easing: Easing.ease },
+    {}
   );
 
-  const deviatedHeight = useComputedValue(() => {
+  const deviatedHeight = useDerivedValue(() => {
     return lineObject.height * (Math.random() * 0.2 + 0.85);
   }, [lineObject, loopAnimation]);
-  const deviatedBox = useComputedValue(() => {
+  const deviatedBox = useDerivedValue(() => {
     return rect(
       0 + index * lineObject.width,
       0,
       lineObject.width,
-      deviatedHeight.current,
+      deviatedHeight.value
     );
   }, [deviatedHeight, index, lineObject.width]);
-  const deviatedTransform = useComputedValue(() => {
+  const deviatedTransform = useDerivedValue(() => {
     return [
       {
-        translateY: -deviatedHeight.current,
+        translateY: -deviatedHeight.value,
       },
     ];
   }, [deviatedHeight]);
-  const deviatedGradientEnd = useComputedValue(() => {
-    return vec(0, deviatedHeight.current);
+  const deviatedGradientEnd = useDerivedValue(() => {
+    return vec(0, deviatedHeight.value);
   }, [deviatedHeight]);
 
-  const gradientPositions = useComputedValue(() => {
+  const gradientPositions = useDerivedValue(() => {
     // should interpolate colors at loopAnimation
 
     /* return interpolateColors(
-      loopAnimation.current,
+      loopAnimation.value,
       [0, 1],
       ['#FFF7D6', '#FF0000'], //gradient
     ); */
     return gradient.map((v, _index) => {
       return Math.abs(
-        loopAnimation.current * _index * Math.max(Math.random(), 0.7),
+        loopAnimation.value * _index * Math.max(Math.random(), 0.7)
       );
     });
   }, [gradient, loopAnimation]);
 
   return (
     <Group transform={deviatedTransform}>
-      <Box color={'#FF6F00'} box={deviatedBox}>
+      <Box color={"#FF6F00"} box={deviatedBox}>
         <LinearGradient
           start={vec(0, 0)}
           end={deviatedGradientEnd}

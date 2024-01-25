@@ -9,6 +9,7 @@ import {
   runOnJS,
   useSharedValue,
   withRepeat,
+  withSpring,
   withTiming,
 } from "react-native-reanimated";
 import { SpringConfig } from "react-native-reanimated/lib/typescript/reanimated2/animation/springUtils";
@@ -65,7 +66,7 @@ export const useTiming = (
   userConfig?: WithTimingConfig,
   callback?: () => void
 ) => {
-  const progress = useSharedValue<number | AnimatableValue>(0);
+  const progress = useSharedValue(0);
   useEffect(() => {
     progress.value = withTiming(value, userConfig, () => {
       if (callback) runOnJS(callback)();
@@ -75,4 +76,18 @@ export const useTiming = (
     };
   }, [progress, value, callback, userConfig]);
   return progress;
+};
+
+export const runSpring = (
+  value: number,
+  userConfig?: SpringConfig,
+  callback?: () => void
+) => {
+  const progress = useSharedValue(0);
+  progress.value = withSpring(value, userConfig, () => {
+    if (callback) runOnJS(callback)();
+  });
+  return () => {
+    cancelAnimation(progress);
+  };
 };

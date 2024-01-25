@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Canvas,
-  Group,
-  useValue,
-  useComputedValue,
-} from "@shopify/react-native-skia";
+import { Canvas, Group } from "@shopify/react-native-skia";
 import { useWindowDimensions, View } from "react-native";
 import useSetInitialAppPositions from "./hooks/useSetInitialAppPositions";
 import useSpringboardTouchHandler from "./hooks/useSpringboardTouchHandler";
@@ -13,6 +8,7 @@ import useApps from "./hooks/useApps";
 import useWidgets from "./hooks/useWidgets";
 import AppComponent from "./components/AppComponent";
 import { APP_ICON_SIZE_SCREENWIDTH_FACTOR } from "./Config";
+import { useDerivedValue, useSharedValue } from "react-native-reanimated";
 
 const Springboard = () => {
   const { width: screenWidth } = useWindowDimensions();
@@ -25,8 +21,8 @@ const Springboard = () => {
   const { apps } = useApps();
   const { widgets } = useWidgets();
 
-  const screensTranslateX = useValue(0);
-  const moveMode = useValue(false);
+  const screensTranslateX = useSharedValue(0);
+  const moveMode = useSharedValue(false);
 
   useSetInitialAppPositions({ apps, horizontalPadding, appIconSize });
   const touchHandler = useSpringboardTouchHandler({
@@ -37,8 +33,8 @@ const Springboard = () => {
     moveMode,
   });
 
-  const transform = useComputedValue(
-    () => [{ translateX: screensTranslateX.current }],
+  const transform = useDerivedValue(
+    () => [{ translateX: screensTranslateX.value }],
     [screensTranslateX]
   );
 
@@ -58,7 +54,7 @@ const Springboard = () => {
         >
           <Wallpaper />
           <Group transform={transform}>
-            {apps.current.map((item) => (
+            {apps.value.map((item) => (
               <AppComponent
                 item={item}
                 appIconSize={appIconSize}

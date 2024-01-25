@@ -1,6 +1,6 @@
-import {vec} from '@shopify/react-native-skia';
-import {useMemo} from 'react';
-import {BALL_RADIUS, WALL_WIDTH} from '../Config';
+import { vec } from "@shopify/react-native-skia";
+import { useMemo } from "react";
+import { BALL_RADIUS, WALL_WIDTH } from "../Config";
 
 interface ObstacleProps {
   gameBoxWidth: number;
@@ -22,41 +22,41 @@ export const useObstacle = ({
       {
         leftTop: vec(
           gameBoxX,
-          gameBoxY + gameBoxHeight * 0.33 - WALL_WIDTH / 2,
+          gameBoxY + gameBoxHeight * 0.33 - WALL_WIDTH / 2
         ),
         rightTop: vec(
           gameBoxX + gameBoxWidth * 0.66,
-          gameBoxY + gameBoxHeight * 0.33 - WALL_WIDTH / 2,
+          gameBoxY + gameBoxHeight * 0.33 - WALL_WIDTH / 2
         ),
         rightBottom: vec(
           gameBoxX + gameBoxWidth * 0.66,
-          gameBoxY + gameBoxHeight * 0.33 + WALL_WIDTH - WALL_WIDTH / 2,
+          gameBoxY + gameBoxHeight * 0.33 + WALL_WIDTH - WALL_WIDTH / 2
         ),
         leftBottom: vec(
           gameBoxX,
-          gameBoxY + gameBoxHeight * 0.33 + WALL_WIDTH - WALL_WIDTH / 2,
+          gameBoxY + gameBoxHeight * 0.33 + WALL_WIDTH - WALL_WIDTH / 2
         ),
       },
       {
         leftTop: vec(
           gameBoxX + gameBoxWidth * 0.33,
-          gameBoxY + gameBoxHeight * 0.66 - WALL_WIDTH / 2,
+          gameBoxY + gameBoxHeight * 0.66 - WALL_WIDTH / 2
         ),
         rightTop: vec(
           gameBoxWidth + gameBoxX,
-          gameBoxY + gameBoxHeight * 0.66 - WALL_WIDTH / 2,
+          gameBoxY + gameBoxHeight * 0.66 - WALL_WIDTH / 2
         ),
         rightBottom: vec(
           gameBoxWidth + gameBoxX,
-          gameBoxY + gameBoxHeight * 0.66 + WALL_WIDTH - WALL_WIDTH / 2,
+          gameBoxY + gameBoxHeight * 0.66 + WALL_WIDTH - WALL_WIDTH / 2
         ),
         leftBottom: vec(
           gameBoxX + gameBoxWidth * 0.33,
-          gameBoxY + gameBoxHeight * 0.66 + WALL_WIDTH - WALL_WIDTH / 2,
+          gameBoxY + gameBoxHeight * 0.66 + WALL_WIDTH - WALL_WIDTH / 2
         ),
       },
     ],
-    [gameBoxX, gameBoxY, gameBoxHeight, gameBoxWidth],
+    [gameBoxX, gameBoxY, gameBoxHeight, gameBoxWidth]
   );
 
   const obstacle = useMemo(() => {
@@ -69,8 +69,9 @@ export const useObstacle = ({
   }, [id, vectors]);
 
   const isInObstacle = (ballX: number, ballY: number) => {
+    "worklet";
     const obstacleVectors = vectors[id];
-    const {leftTop, rightTop, rightBottom, leftBottom} = obstacleVectors;
+    const { leftTop, rightTop, rightBottom, leftBottom } = obstacleVectors;
     // For now we assume the obstacle is always square
     if (
       leftTop.x < ballX + BALL_RADIUS &&
@@ -88,5 +89,5 @@ export const useObstacle = ({
     return false;
   };
 
-  return {obstacle, isInObstacle};
+  return { obstacle, isInObstacle };
 };

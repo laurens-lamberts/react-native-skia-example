@@ -2,20 +2,11 @@ import React, { useState } from "react";
 import {
   Group,
   Rect,
-  SkiaClockValue,
-  SkiaMutableValue,
-  useClockValue,
-  useComputedValue,
-  useValueEffect,
   Text,
+  useClock,
   useFont,
 } from "@shopify/react-native-skia";
-import {
-  Canvas,
-  Fill,
-  useTouchHandler,
-  useValue,
-} from "@shopify/react-native-skia";
+import { Canvas, Fill, useTouchHandler } from "@shopify/react-native-skia";
 import {
   SafeAreaView,
   useSafeAreaInsets,
@@ -35,13 +26,20 @@ import {
 import Bird from "./Bird";
 import Obstacle from "./Obstacle";
 import { FULL_SCREEN } from "../../../AppActual";
+import {
+  SharedValue,
+  runOnJS,
+  useAnimatedReaction,
+  useDerivedValue,
+  useSharedValue,
+} from "react-native-reanimated";
 
 interface CanvasContentProps {
-  translateY: SkiaMutableValue<number>;
-  clock: SkiaClockValue;
+  translateY: SharedValue<number>;
+  clock: SharedValue<number>;
   gameOver: () => void;
-  points: SkiaMutableValue<number>;
-  size: SkiaMutableValue<{ width: number; height: number }>;
+  points: SharedValue<number>;
+  size: SharedValue<{ width: number; height: number }>;
 }
 const CanvasContent = ({
   translateY,
@@ -50,19 +48,19 @@ const CanvasContent = ({
   points,
   size,
 }: CanvasContentProps) => {
-  const canvasWidth = size.current.width;
-  const canvasHeight = size.current.height;
+  const canvasWidth = size.value.width;
+  const canvasHeight = size.value.height;
 
   const font = useFont(require("../../assets/fonts/SFPRODISPLAYBOLD.otf"), 40);
 
-  const birdY = useValue(0);
-  const bottom = useComputedValue(
+  const birdY = useSharedValue(0);
+  const bottom = useDerivedValue(
     () => canvasHeight - BIRD_HEIGHT - FLOOR_HEIGHT ?? 0,
     [canvasHeight]
   );
 
-  useComputedValue(() => {
-    birdY.current = bottom.current - translateY.current;
+  useDerivedValue(() => {
+    birdY.value = bottom.value - translateY.value;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bottom, translateY]);
 
@@ -115,7 +113,7 @@ const CanvasContent = ({
       <Text
         x={canvasWidth / 2 - 8} // TODO: actual center
         y={120}
-        text={points.current.toString()}
+        text={points.value.toString()}
         font={font}
         color="white"
       />
@@ -127,24 +125,26 @@ const Flappy = () => {
   const insets = useSafeAreaInsets();
   // This unused state variable ensures Skia values can be drawn on screen
   const [clockState, setClockState] = useState(-1);
-  const resetOnNextTap = useValue(0);
+  const resetOnNextTap = useSharedValue(0);
 
-  const translateY = useValue(0);
-  const velocityY = useValue(0);
-  const fallingStart = useValue(0);
-  const taps = useValue(0);
-  const points = useValue(0);
+  const translateY = useSharedValue(0);
+  const velocityY = useSharedValue(0);
+  const fallingStart = useSharedValue(0);
+  const taps = useSharedValue(0);
+  const points = useSharedValue(0);
 
-  const clock = useClockValue();
+  const clock = useClock();
 
   const reset = () => {
-    resetOnNextTap.current = 0;
-    points.current = 0;
-    clock.start();
+    "worklet";
+    resetOnNextTap.value = 0;
+    points.value = 0;
+    // clock.start(); // TODO: fix
   };
   const gameOver = () => {
-    clock.stop();
-    resetOnNextTap.current = 1;
+    "worklet";
+    // clock.stop(); // TODO: fix
+    resetOnNextTap.value = 1;
   };
 
   const font = useFont(
@@ -153,49 +153,51 @@ const Flappy = () => {
   );
 
   // GAME LOOP
-  useValueEffect(clock, () => {
-    // TODO: with the current setup setting state seems necessary to get the values out for drawings, but drops the JS thread to 30fps on low-end Android.
-    // All drawings should be done- and calculations should compute on GPU.
-    setClockState(clock.current);
+  useAnimatedReaction(
+    () => clock.value,
+    (value) => {
+      // TODO: with the current setup setting state seems necessary to get the values out for drawings, but drops the JS thread to 30fps on low-end Android.
+      // All drawings should be done- and calculations should compute on GPU.
+      runOnJS(setClockState)(value);
 
-    if (translateY.current <= 0 && velocityY.current === 0) {
-      // Flappy is at the bottom
-      fallingStart.current = 0;
-      return;
+      if (translateY.value <= 0 && velocityY.value === 0) {
+        // Flappy is at the bottom
+        fallingStart.value = 0;
+        return;
+      }
+
+      let acceleratedFallingSpeed = FALLING_SPEED;
+      if (fallingStart.value > 0) {
+        acceleratedFallingSpeed *=
+          (fallingStart.value / translateY.value) * FALL_ACCELERATE_FACTOR + 1;
+      }
+
+      translateY.value =
+        translateY.value - acceleratedFallingSpeed + velocityY.value;
+
+      if (velocityY.value > 0) {
+        velocityY.value -= VELOCITY_DECREASE;
+      } else if (fallingStart.value === 0) {
+        fallingStart.value = translateY.value;
+      }
+      if (translateY.value < 0) translateY.value = 0;
     }
-
-    let acceleratedFallingSpeed = FALLING_SPEED;
-    if (fallingStart.current > 0) {
-      acceleratedFallingSpeed *=
-        (fallingStart.current / translateY.current) * FALL_ACCELERATE_FACTOR +
-        1;
-    }
-
-    translateY.current =
-      translateY.current - acceleratedFallingSpeed + velocityY.current;
-
-    if (velocityY.current > 0) {
-      velocityY.current -= VELOCITY_DECREASE;
-    } else if (fallingStart.current === 0) {
-      fallingStart.current = translateY.current;
-    }
-    if (translateY.current < 0) translateY.current = 0;
-  });
+  );
 
   const touchHandler = useTouchHandler({
     onStart: ({}) => {
-      if (resetOnNextTap.current === 1) {
+      if (resetOnNextTap.value === 1) {
         reset();
       }
 
-      taps.current++;
-      velocityY.current += VELOCITY_INCREASE;
-      if (velocityY.current > VELOCITY_MAX) velocityY.current = VELOCITY_MAX;
-      fallingStart.current = 0;
+      taps.value++;
+      velocityY.value += VELOCITY_INCREASE;
+      if (velocityY.value > VELOCITY_MAX) velocityY.value = VELOCITY_MAX;
+      fallingStart.value = 0;
     },
   });
 
-  const size = useValue({ width: 0, height: 0 });
+  const size = useSharedValue({ width: 0, height: 0 });
 
   return (
     <SafeAreaView
@@ -224,19 +226,19 @@ const Flappy = () => {
               x={10}
               y={insets.top}
               font={font}
-              text={"taps: " + taps.current.toString()}
+              text={"taps: " + taps.value.toString()}
             />
             <Text
               x={10}
               y={insets.top + 20}
-              text={"clock: " + Math.round(clock.current).toString() + " ms"}
+              text={"clock: " + Math.round(clock.value).toString() + " ms"}
               font={font}
             />
             <Text
               x={10}
               y={insets.top + 40}
               text={
-                "translate: " + Math.round(translateY.current).toString() + " y"
+                "translate: " + Math.round(translateY.value).toString() + " y"
               }
               font={font}
             />
@@ -244,7 +246,7 @@ const Flappy = () => {
               x={10}
               y={insets.top + 60}
               text={
-                "velocity: " + Math.round(velocityY.current).toString() + " y"
+                "velocity: " + Math.round(velocityY.value).toString() + " y"
               }
               font={font}
             />
@@ -252,7 +254,7 @@ const Flappy = () => {
               x={10}
               y={insets.top + 80}
               text={
-                "falling: " + Math.round(fallingStart.current).toString() + " y"
+                "falling: " + Math.round(fallingStart.value).toString() + " y"
               }
               font={font}
             />
