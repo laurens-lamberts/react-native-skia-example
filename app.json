@@ -17,7 +17,8 @@
       "bundleIdentifier": "com.laurens.skiaexamples",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "This app uses the location to point the compass to another location",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app uses the location to point the compass to another location"
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app uses the location to point the compass to another location",
+        "CADisableMinimumFrameDurationOnPhones": true
       }
     },
     "android": {
