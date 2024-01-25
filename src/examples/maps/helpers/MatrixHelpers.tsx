@@ -29,13 +29,11 @@ export const concat = (m: Matrix4, origin: Vec3, transform: Transforms3d) => {
 export const getMarkerMatrixBasedOnGestureMatrix = ({
   coordinateXY,
   matrix,
-  width,
-  height,
+  offsetXY,
 }: {
   coordinateXY: { x: number; y: number };
+  offsetXY: { x: number; y: number };
   matrix: SharedValue<SkMatrix>;
-  width: number;
-  height: number;
 }) => {
   "worklet";
   const originalMatrix = matrix.value.get();
@@ -44,20 +42,14 @@ export const getMarkerMatrixBasedOnGestureMatrix = ({
   const scale = originalMatrix[0];
 
   // Calculate the new marker translations
-  const markerTranslationX =
-    (coordinateXY.x + originalMatrix[2] / scale) * scale;
-  const markerTranslationY =
-    (coordinateXY.y + originalMatrix[5] / scale) * scale;
+  const x = coordinateXY.x * scale + originalMatrix[2] - offsetXY.x * scale;
+  const y = coordinateXY.y * scale + originalMatrix[5] - offsetXY.y * scale;
 
-  return [
-    1, // [0] = scaleX
-    0, // [1] = rotateX
-    markerTranslationX, // [2] = translateX
-    0, // [3] = rotateY
-    1, // [4] = scaleY
-    markerTranslationY, // [5] = translateY
-    0,
-    0,
-    1,
-  ];
+  // [0] = scaleX
+  // [1] = rotateX
+  // [2] = translateX
+  // [3] = rotateY
+  // [4] = scaleY
+  // [5] = translateY
+  return [1, 0, x, 0, 1, y, 0, 0, 1];
 };

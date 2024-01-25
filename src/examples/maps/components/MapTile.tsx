@@ -10,7 +10,6 @@ interface Props {
 const MapTile = ({ x, y, tileURL }: Props) => {
   // TODO: apply caching.
   const skiaTileImage = useImage(tileURL);
-
   if (!skiaTileImage) return null;
 
   return (

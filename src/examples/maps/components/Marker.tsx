@@ -25,10 +25,6 @@ const CENTER = CANVAS_SIZE / 2;
 export const MIN_SIZE = 40;
 
 const CustomMarker = ({ marker, region, matrix }: Props) => {
-  const size = useSharedValue(20);
-  const r = useDerivedValue(() => size.value / 2, [size]);
-  const rBorderShrunk = useSharedValue(size.value / 4);
-
   const coordinateXY = coordinateToXY({
     latitude: marker.latitude,
     longitude: marker.longitude,
@@ -40,33 +36,35 @@ const CustomMarker = ({ marker, region, matrix }: Props) => {
 
   const markerMatrix = useDerivedValue(() => {
     return getMarkerMatrixBasedOnGestureMatrix({
-      coordinateXY: {
-        x: coordinateXY.x - CENTER,
-        y: coordinateXY.y - CENTER,
-      },
       matrix,
-      width: size.value,
-      height: size.value,
+      coordinateXY: {
+        x: coordinateXY.x,
+        y: coordinateXY.y,
+      },
+      offsetXY: {
+        x: -CENTER,
+        y: -CENTER,
+      },
     });
   }, [matrix.value, coordinateXY.x, coordinateXY.y]);
 
   return (
     <Group matrix={markerMatrix}>
       {/* marker border */}
-      <Circle cx={CANVAS_SIZE / 2} cy={CANVAS_SIZE / 2} r={r} color={"#444"} />
+      <Circle cx={CANVAS_SIZE / 2} cy={CANVAS_SIZE / 2} r={10} color={"#444"} />
       <Group>
         {/* Background */}
         <Circle
           cx={CANVAS_SIZE / 2}
           cy={CANVAS_SIZE / 2}
-          r={size}
+          r={10}
           color={"white"}
         />
         {/* marker-small center dot */}
         <Circle
           cx={CANVAS_SIZE / 2}
           cy={CANVAS_SIZE / 2}
-          r={rBorderShrunk}
+          r={5}
           color={"#666"}
         />
       </Group>

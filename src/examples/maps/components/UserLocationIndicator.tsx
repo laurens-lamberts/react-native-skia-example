@@ -121,13 +121,15 @@ const UserLocationIndicator = ({
 
   const userLocationIndicatorMatrix = useDerivedValue(() => {
     return getMarkerMatrixBasedOnGestureMatrix({
-      coordinateXY: {
-        x: coordinateXY.x - CENTER,
-        y: coordinateXY.y - CENTER,
-      },
       matrix,
-      width: SIZE,
-      height: SIZE,
+      coordinateXY: {
+        x: coordinateXY.x,
+        y: coordinateXY.y,
+      },
+      offsetXY: {
+        x: -CENTER,
+        y: -CENTER,
+      },
     });
   }, [matrix.value, coordinateXY.x, coordinateXY.y]);
 
