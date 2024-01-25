@@ -3,17 +3,16 @@ import { Text, View, useWindowDimensions } from "react-native";
 import {
   BlurMask,
   Canvas,
-  Easing,
   RoundedRect,
   Skia,
   rect,
   rrect,
-  useTiming,
 } from "@shopify/react-native-skia";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useSharedValue } from "react-native-reanimated";
+import { Easing, useSharedValue } from "react-native-reanimated";
 import LineOfBalls from "./LineOfBalls";
 import { GestureDetector, Gesture } from "react-native-gesture-handler";
+import { useLoop, useTiming } from "../../hooks/animations";
 
 const STATIC_NUMBER_OF_BALLS_HORIZONTALLY = 8;
 const USE_DYNAMIC_NUMBER_OF_BALLS_HORIZONTALLY = true;
@@ -34,10 +33,12 @@ export default function FloatingBalls() {
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
   const insets = useSafeAreaInsets();
 
-  const offsetY = useTiming(
-    { from: 0, to: 1, loop: true, yoyo: false },
-    { duration: 2000, easing: Easing.linear }
-  );
+  const offsetY = useLoop({
+    from: 0,
+    to: 1,
+    duration: 2000,
+    easing: Easing.linear,
+  });
 
   const amplitude = useSharedValue(DEFAULT_AMPLITUDE);
 

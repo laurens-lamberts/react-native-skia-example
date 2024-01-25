@@ -4,26 +4,21 @@ import {
   Group,
   Circle,
   Rect,
-  SkiaValue,
-  useValue,
-  useComputedValue,
   vec,
   TwoPointConicalGradient,
-  useTiming,
-  Easing,
-  Skia,
-  processTransform2d,
 } from "@shopify/react-native-skia";
 import { DEFAULT_BALL_RADIUS } from "./FloatingBalls";
 import {
+  Easing,
   SharedValue,
   useDerivedValue,
   useSharedValue,
 } from "react-native-reanimated";
+import { useLoop } from "../../hooks/animations";
 
 interface Props {
   x: number;
-  offsetY: SkiaValue<number>;
+  offsetY: SharedValue<number>;
   index: number;
   amplitude: SharedValue<number>;
   radius: number;
@@ -53,8 +48,8 @@ export default function Ball({
   /*   const MIN_Y = 100;
   const MAX_Y = screenHeight - insets.bottom - 200; */
 
-  useComputedValue(() => {
-    const offsetYWithIndex = offsetY.current + index * 0.1;
+  useDerivedValue(() => {
+    const offsetYWithIndex = offsetY.value + index * 0.1;
     y.value =
       Math.sin(offsetYWithIndex * Math.PI * 2) * amplitude.value +
       STATIC_VERTICAL_OFFSET;
@@ -72,13 +67,15 @@ export default function Ball({
     ];
   }, [y]);
 
-  const horizontalDeviationTimer = useTiming(
-    { from: 0, to: 1, loop: true, yoyo: true },
-    { duration: 2000, easing: Easing.bezier(0.5, 0.01, 0.5, 1) }
-  );
+  const horizontalDeviationTimer = useLoop({
+    from: 0,
+    to: 1,
+    duration: 2000,
+    easing: Easing.bezier(0.5, 0.01, 0.5, 1),
+  });
 
-  const ballStringTransform = useComputedValue(() => {
-    const deviation = horizontalDeviationTimer.current * HORIZONTAL_DEVIATION;
+  const ballStringTransform = useDerivedValue(() => {
+    const deviation = horizontalDeviationTimer.value * HORIZONTAL_DEVIATION;
     const randomness = (Math.random() - 0.5) * 0.05; // TODO: this is no proper randomness. It cannot be amplified.
     return [
       {

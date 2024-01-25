@@ -30,6 +30,8 @@ import {
 import Fire from "./src/examples/fire/Fire";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import FloatingBalls from "./src/examples/floating-balls/FloatingBalls";
+import SkiaFont from "./src/examples/macbook-pro-font/SkiaFont";
+import SkiaMaps from "./src/examples/maps/SkiaMap";
 
 const SHOW_SNAPSHOT_BUTTON = false;
 
@@ -43,6 +45,8 @@ const examples = [
   { name: "Blur", component: BackdropBlur },
   { name: "Resize", component: CanvasResizeAnimation },
   { name: "Fire", component: Fire },
+  { name: "SkiaFont", component: SkiaFont },
+  { name: "Maps", component: SkiaMaps },
 ];
 
 export const FULL_SCREEN = false;
@@ -63,7 +67,7 @@ const Example = ({ activeExample }: ExampleProps) => {
 };
 
 const App = () => {
-  const [activeExample, setActiveExample] = useState(0);
+  const [activeExample, setActiveExample] = useState(10);
   const [image, setImage] = useState<SkImage | null>(null);
   const insets = useSafeAreaInsets();
 

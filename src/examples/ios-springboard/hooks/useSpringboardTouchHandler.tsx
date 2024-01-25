@@ -1,21 +1,19 @@
-import {
-  Easing,
-  runTiming,
-  SkiaMutableValue,
-  useClockValue,
-  useTouchHandler,
-  useValue,
-  vec,
-} from '@shopify/react-native-skia';
-import {TimingConfig} from '@shopify/react-native-skia/lib/typescript/src/animation/types';
-import {useWindowDimensions} from 'react-native';
-import {lightenDarkenColor} from '../../../utils/color';
+import { useClock, useTouchHandler, vec } from "@shopify/react-native-skia";
+import { TimingConfig } from "@shopify/react-native-skia/lib/typescript/src/animation/types";
+import { useWindowDimensions } from "react-native";
+import { lightenDarkenColor } from "../../../utils/color";
 import {
   APP_DRAG_START_DARKEN_PERCENTAGE,
   APP_DRAG_START_MS,
   SCREEN_DRAG_SNAP_TO_SCREEN_TRAVEL_THRESHOLD,
-} from '../Config';
-import {AppType} from '../types/AppType';
+} from "../Config";
+import { AppType } from "../types/AppType";
+import {
+  Easing,
+  SharedValue,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 const appSnapAnimationConfig: TimingConfig = {
   easing: Easing.out(Easing.exp),
@@ -23,11 +21,11 @@ const appSnapAnimationConfig: TimingConfig = {
 };
 
 interface Props {
-  apps: SkiaMutableValue<AppType[]>;
+  apps: SharedValue<AppType[]>;
   horizontalPadding: number;
   appIconSize: number;
-  screensTranslateX: SkiaMutableValue<number>;
-  moveMode: SkiaMutableValue<boolean>;
+  screensTranslateX: SharedValue<number>;
+  moveMode: SharedValue<boolean>;
 }
 
 const useSpringboardTouchHandler = ({
@@ -37,170 +35,167 @@ const useSpringboardTouchHandler = ({
   screensTranslateX,
   moveMode,
 }: Props) => {
-  const {width: screenWidth} = useWindowDimensions();
+  const { width: screenWidth } = useWindowDimensions();
 
-  const clock = useClockValue();
-  const touchClockStart = useValue(0);
-  const touchedAppIndex = useValue(-1);
-  const screenTranslateStartX = useValue(0);
-  const touchStartPos = useValue(vec(0, 0));
-  const draggingAppIndex = useValue(-1);
-  const draggingAppPickupPos = useValue(vec(0, 0));
-  const draggingAppOriginalPos = useValue(vec(0, 0));
-  const draggingAppSnappedX = useValue(false);
-  const draggingAppSnappedY = useValue(false);
+  const clock = useClock();
+  const touchClockStart = useSharedValue(0);
+  const touchedAppIndex = useSharedValue(-1);
+  const screenTranslateStartX = useSharedValue(0);
+  const touchStartPos = useSharedValue(vec(0, 0));
+  const draggingAppIndex = useSharedValue(-1);
+  const draggingAppPickupPos = useSharedValue(vec(0, 0));
+  const draggingAppOriginalPos = useSharedValue(vec(0, 0));
+  const draggingAppSnappedX = useSharedValue(false);
+  const draggingAppSnappedY = useSharedValue(false);
 
   const touchHandler = useTouchHandler({
-    onStart: ({x, y}) => {
+    onStart: ({ x, y }) => {
       // correct x with the screen you're on
-      const screenXFactor = screensTranslateX.current / screenWidth + 1;
+      const screenXFactor = screensTranslateX.value / screenWidth + 1;
 
-      touchStartPos.current = vec(x, y);
-      screenTranslateStartX.current = screensTranslateX.current;
-      const newTouchedAppIndex = apps.current.findIndex(
-        a =>
-          a.x.current < x &&
-          a.x.current + appIconSize > x &&
-          a.y.current < y &&
-          a.y.current + appIconSize > y,
+      touchStartPos.value = vec(x, y);
+      screenTranslateStartX.value = screensTranslateX.value;
+      const newTouchedAppIndex = apps.value.findIndex(
+        (a) =>
+          a.x.value < x &&
+          a.x.value + appIconSize > x &&
+          a.y.value < y &&
+          a.y.value + appIconSize > y
       );
 
       if (newTouchedAppIndex > -1) {
-        touchedAppIndex.current = newTouchedAppIndex;
-        let touchedApp = apps.current[touchedAppIndex.current];
+        touchedAppIndex.value = newTouchedAppIndex;
+        let touchedApp = apps.value[touchedAppIndex.value];
 
-        draggingAppOriginalPos.current = vec(
-          touchedApp.x.current,
-          touchedApp.y.current,
+        draggingAppOriginalPos.value = vec(
+          touchedApp.x.value,
+          touchedApp.y.value
         );
-        draggingAppPickupPos.current = vec(
-          x - touchedApp.x.current,
-          y - touchedApp.y.current,
+        draggingAppPickupPos.value = vec(
+          x - touchedApp.x.value,
+          y - touchedApp.y.value
         );
 
-        if (!moveMode.current) {
+        if (!moveMode.value) {
           // show that counting has started to enable moveMode
-          touchedApp.backgroundColor.current = lightenDarkenColor(
-            touchedApp.backgroundColor.current,
-            -APP_DRAG_START_DARKEN_PERCENTAGE,
+          touchedApp.backgroundColor.value = lightenDarkenColor(
+            touchedApp.backgroundColor.value,
+            -APP_DRAG_START_DARKEN_PERCENTAGE
           );
         }
       }
 
-      touchClockStart.current = clock.current;
+      touchClockStart.value = clock.value;
     },
-    onActive: ({x, y}) => {
-      if (touchedAppIndex.current === -1) {
+    onActive: ({ x, y }) => {
+      if (touchedAppIndex.value === -1) {
         // drag the screen
-        screensTranslateX.current =
-          screenTranslateStartX.current + x - touchStartPos.current.x;
+        screensTranslateX.value =
+          screenTranslateStartX.value + x - touchStartPos.value.x;
         return;
       }
-      let touchedApp = apps.current[touchedAppIndex.current];
+      let touchedApp = apps.value[touchedAppIndex.value];
 
       // correct x with the screen you're on
-      //x *= Math.round(screensTranslateX.current / screenWidth) + 1;
+      //x *= Math.round(screensTranslateX.value / screenWidth) + 1;
 
       if (
-        moveMode.current ||
-        clock.current - touchClockStart.current > APP_DRAG_START_MS
+        moveMode.value ||
+        clock.value - touchClockStart.value > APP_DRAG_START_MS
       ) {
-        if (draggingAppIndex.current === -1) {
+        if (draggingAppIndex.value === -1) {
           // pickup confirmed - executed once
-          draggingAppIndex.current = touchedAppIndex.current;
+          draggingAppIndex.value = touchedAppIndex.value;
 
-          if (!moveMode.current) {
-            moveMode.current = true;
-            runTiming(
-              touchedApp.x,
-              x - draggingAppPickupPos.current.x,
+          if (!moveMode.value) {
+            moveMode.value = true;
+            touchedApp.x = withTiming(
+              x - draggingAppPickupPos.value.x,
               appSnapAnimationConfig,
               () => {
-                draggingAppSnappedX.current = true;
-              },
+                draggingAppSnappedX.value = true;
+              }
             );
-            runTiming(
-              touchedApp.y,
-              y - draggingAppPickupPos.current.y,
+            touchedApp.y = withTiming(
+              y - draggingAppPickupPos.value.y,
               appSnapAnimationConfig,
               () => {
-                draggingAppSnappedY.current = true;
-              },
+                draggingAppSnappedY.value = true;
+              }
             );
-            touchedApp = apps.current[touchedAppIndex.current];
+            touchedApp = apps.value[touchedAppIndex.value];
             // TODO: refactor with original color
-            touchedApp.backgroundColor.current = lightenDarkenColor(
-              touchedApp.backgroundColor.current,
-              APP_DRAG_START_DARKEN_PERCENTAGE,
+            touchedApp.backgroundColor.value = lightenDarkenColor(
+              touchedApp.backgroundColor.value,
+              APP_DRAG_START_DARKEN_PERCENTAGE
             );
           }
-          runTiming(touchedApp.labelOpacity, 0, appSnapAnimationConfig);
+          touchedApp.labelOpacity = withTiming(0, appSnapAnimationConfig);
         } else if (
-          moveMode.current ||
-          (draggingAppSnappedX.current && draggingAppSnappedY.current)
+          moveMode.value ||
+          (draggingAppSnappedX.value && draggingAppSnappedY.value)
         ) {
           // dragging the app
-          console.log('drag', touchedApp.name);
+          console.log("drag", touchedApp.name);
 
-          touchedApp = apps.current[touchedAppIndex.current];
+          touchedApp = apps.value[touchedAppIndex.value];
 
-          touchedApp.x.current = x - draggingAppPickupPos.current.x;
-          touchedApp.y.current = y - draggingAppPickupPos.current.y;
+          touchedApp.x.value = x - draggingAppPickupPos.value.x;
+          touchedApp.y.value = y - draggingAppPickupPos.value.y;
 
           // check collision to make space.
-          const otherAppUnderDraggingCursorIndex = apps.current.findIndex(
-            a =>
+          const otherAppUnderDraggingCursorIndex = apps.value.findIndex(
+            (a) =>
               a.id !== touchedApp.id &&
-              a.x.current < x &&
-              a.x.current + appIconSize > x &&
-              a.y.current < y &&
-              a.y.current + appIconSize > y,
+              a.x.value < x &&
+              a.x.value + appIconSize > x &&
+              a.y.value < y &&
+              a.y.value + appIconSize > y
           );
           if (otherAppUnderDraggingCursorIndex > -1) {
             // found collision
             const otherAppUnderDraggingCursor =
-              apps.current[otherAppUnderDraggingCursorIndex];
-            console.log('drag collision', otherAppUnderDraggingCursor.name);
+              apps.value[otherAppUnderDraggingCursorIndex];
+            console.log("drag collision", otherAppUnderDraggingCursor.name);
 
             const otherShouldGoRight =
-              otherAppUnderDraggingCursor.x.current <
-              draggingAppOriginalPos.current.x;
+              otherAppUnderDraggingCursor.x.value <
+              draggingAppOriginalPos.value.x;
             let otherNewX: number;
             if (otherShouldGoRight) {
               otherNewX =
-                otherAppUnderDraggingCursor.x.current +
+                otherAppUnderDraggingCursor.x.value +
                 appIconSize +
                 horizontalPadding;
 
               // check if this has gotten offscreen, so we should move it to the next row
               if (otherNewX > screenWidth - horizontalPadding) {
                 // TODO
-                console.log('an app icon should be moved to the next row');
+                console.log("an app icon should be moved to the next row");
               }
             } else {
               otherNewX =
-                otherAppUnderDraggingCursor.x.current -
+                otherAppUnderDraggingCursor.x.value -
                 appIconSize -
                 horizontalPadding;
             }
 
-            if (!otherAppUnderDraggingCursor.isMoving.current) {
-              otherAppUnderDraggingCursor.isMoving.current = true;
+            if (!otherAppUnderDraggingCursor.isMoving.value) {
+              otherAppUnderDraggingCursor.isMoving.value = true;
 
               // swap the dragging-app starting location to the one we now move.
-              draggingAppOriginalPos.current = vec(
-                otherAppUnderDraggingCursor.x.current,
-                otherAppUnderDraggingCursor.y.current,
+              draggingAppOriginalPos.value = vec(
+                otherAppUnderDraggingCursor.x.value,
+                otherAppUnderDraggingCursor.y.value
               );
 
               // move the other app
-              runTiming(
-                otherAppUnderDraggingCursor.x,
+              otherAppUnderDraggingCursor.x = withTiming(
                 otherNewX,
                 appSnapAnimationConfig,
                 () => {
-                  otherAppUnderDraggingCursor.isMoving.current = false;
-                },
+                  otherAppUnderDraggingCursor.isMoving.value = false;
+                }
               );
 
               // check if we're left with a gap
@@ -210,17 +205,17 @@ const useSpringboardTouchHandler = ({
         }
       }
     },
-    onEnd: ({x, y}) => {
-      if (touchedAppIndex.current === -1) {
-        if (screensTranslateX.current !== screenTranslateStartX.current) {
+    onEnd: ({ x, y }) => {
+      if (touchedAppIndex.value === -1) {
+        if (screensTranslateX.value !== screenTranslateStartX.value) {
           // we need to snap to the closest multitude of screenWidth
           // TODO: should actually be based on the amount of horizontal drag travel
           const prevScreenIndex = Math.round(
-            screenTranslateStartX.current / screenWidth,
+            screenTranslateStartX.value / screenWidth
           );
           let newScreensTranslateX = screenWidth;
           const horizontalDragTravel =
-            screensTranslateX.current - screenTranslateStartX.current;
+            screensTranslateX.value - screenTranslateStartX.value;
           if (
             horizontalDragTravel >
               screenWidth * SCREEN_DRAG_SNAP_TO_SCREEN_TRAVEL_THRESHOLD &&
@@ -237,52 +232,49 @@ const useSpringboardTouchHandler = ({
           } else {
             newScreensTranslateX = screenWidth * prevScreenIndex;
           }
-          runTiming(
-            screensTranslateX,
+          screensTranslateX.value = withTiming(
             newScreensTranslateX,
-            appSnapAnimationConfig,
+            appSnapAnimationConfig
           );
         }
       }
-      //if (!moveMode.current) return;
-      let touchedApp = apps.current[touchedAppIndex.current];
+      //if (!moveMode.value) return;
+      let touchedApp = apps.value[touchedAppIndex.value];
       if (!touchedApp) {
         // no app was dragged. Disable move-mode.
         // TODO: actually not correct. Shoud check draggingAppIndex
-        moveMode.current = false;
+        moveMode.value = false;
       }
 
-      if (touchedAppIndex.current > -1 && draggingAppIndex.current === -1) {
+      if (touchedAppIndex.value > -1 && draggingAppIndex.value === -1) {
         // we touched an app, but didn't wait until dragging threshold.
         // abort.
         // TODO: refactor with original color
-        touchedApp.backgroundColor.current = lightenDarkenColor(
-          touchedApp.backgroundColor.current,
-          APP_DRAG_START_DARKEN_PERCENTAGE,
+        touchedApp.backgroundColor.value = lightenDarkenColor(
+          touchedApp.backgroundColor.value,
+          APP_DRAG_START_DARKEN_PERCENTAGE
         );
       }
 
       if (touchedApp) {
-        runTiming(
-          touchedApp.x,
-          draggingAppOriginalPos.current.x,
-          appSnapAnimationConfig,
+        touchedApp.x = withTiming(
+          draggingAppOriginalPos.value.x,
+          appSnapAnimationConfig
         );
-        runTiming(
-          touchedApp.y,
-          draggingAppOriginalPos.current.y,
-          appSnapAnimationConfig,
+        touchedApp.y = withTiming(
+          draggingAppOriginalPos.value.y,
+          appSnapAnimationConfig
         );
-        runTiming(touchedApp.labelOpacity, 1, appSnapAnimationConfig);
+        touchedApp.labelOpacity = withTiming(1, appSnapAnimationConfig);
       }
       // reset
-      touchedAppIndex.current = -1;
-      draggingAppIndex.current = -1;
-      draggingAppPickupPos.current = vec(0, 0);
-      draggingAppOriginalPos.current = vec(0, 0);
-      draggingAppSnappedX.current = false;
-      draggingAppSnappedY.current = false;
-      touchClockStart.current = 0;
+      touchedAppIndex.value = -1;
+      draggingAppIndex.value = -1;
+      draggingAppPickupPos.value = vec(0, 0);
+      draggingAppOriginalPos.value = vec(0, 0);
+      draggingAppSnappedX.value = false;
+      draggingAppSnappedY.value = false;
+      touchClockStart.value = 0;
     },
   });
   return touchHandler;
