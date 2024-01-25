@@ -2,6 +2,7 @@ import {
   Group,
   RadialGradient,
   Shadow,
+  SkMatrix,
   Skia,
   Circle as SkiaCircle,
   vec,
@@ -17,12 +18,12 @@ import {
 } from "react-native-reanimated";
 import { coordinateToXY } from "../helpers/Geo";
 import { useLoop, useTiming } from "../../../hooks/animations";
+import { getMarkerMatrixBasedOnGestureMatrix } from "../helpers/MatrixHelpers";
 
 const SIZE = 18;
 const CANVAS_SIZE_WITH_MARGIN = SIZE * 6;
 const MARGIN = (CANVAS_SIZE_WITH_MARGIN - SIZE) / 2;
 const CENTER = MARGIN + SIZE / 2;
-
 const CORRECTION_FOR_NORTH = Math.PI / 4;
 const NARROWING_VALUE = 16;
 
@@ -31,6 +32,7 @@ const UserLocationIndicator = ({
   accuracy,
   mapHeading,
   initialRegion,
+  matrix,
 }: {
   coordinates?: { latitude: number; longitude: number };
   accuracy?: number;
@@ -41,6 +43,7 @@ const UserLocationIndicator = ({
     latitudeDelta: number;
     longitudeDelta: number;
   };
+  matrix: SharedValue<SkMatrix>;
 }) => {
   const isAccurate = true; //(accuracy || 999) < USER_LOCATION_ACCURACY_THRESHOLD; // TODO
 
@@ -116,32 +119,49 @@ const UserLocationIndicator = ({
   clippingPath.lineTo(0, 0);
   clippingPath.close();
 
+  const userLocationIndicatorMatrix = useDerivedValue(() => {
+    return getMarkerMatrixBasedOnGestureMatrix({
+      coordinateXY: {
+        x: coordinateXY.x - CENTER,
+        y: coordinateXY.y - CENTER,
+      },
+      matrix,
+      width: SIZE,
+      height: SIZE,
+    });
+  }, [matrix.value, coordinateXY.x, coordinateXY.y]);
+
   /* Our neutral rotation is exactly pointing to north. */
   return (
-    <Group transform={compassWrapperTransform} origin={vec(CENTER, CENTER)}>
-      <Group transform={compassRotationTransform} origin={vec(CENTER, CENTER)}>
-        <SkiaCircle
-          cx={CENTER}
-          cy={CENTER}
-          r={CANVAS_SIZE_WITH_MARGIN / 2}
-          clip={clippingPath}
-          opacity={bearingOpacity}
+    <Group matrix={userLocationIndicatorMatrix}>
+      <Group transform={compassWrapperTransform} origin={vec(CENTER, CENTER)}>
+        <Group
+          transform={compassRotationTransform}
+          origin={vec(CENTER, CENTER)}
         >
-          <RadialGradient
-            c={vec(CENTER, CENTER)}
+          <SkiaCircle
+            cx={CENTER}
+            cy={CENTER}
             r={CANVAS_SIZE_WITH_MARGIN / 2}
-            colors={["#00FFFF", "#00FFFF60", "#00FFFF00"]}
+            clip={clippingPath}
+            opacity={bearingOpacity}
+          >
+            <RadialGradient
+              c={vec(CENTER, CENTER)}
+              r={CANVAS_SIZE_WITH_MARGIN / 2}
+              colors={["#00FFFF", "#00FFFF60", "#00FFFF00"]}
+            />
+          </SkiaCircle>
+          <SkiaCircle cx={CENTER} cy={CENTER} r={SIZE / 2} color="white">
+            <Shadow dx={0} dy={3} blur={3} color={"rgba(0,0,0,0.1)"} />
+          </SkiaCircle>
+          <SkiaCircle
+            cx={CENTER}
+            cy={CENTER}
+            r={innerCircleRadius}
+            color={innerCircleColor}
           />
-        </SkiaCircle>
-        <SkiaCircle cx={CENTER} cy={CENTER} r={SIZE / 2} color="white">
-          <Shadow dx={0} dy={3} blur={3} color={"rgba(0,0,0,0.1)"} />
-        </SkiaCircle>
-        <SkiaCircle
-          cx={CENTER}
-          cy={CENTER}
-          r={innerCircleRadius}
-          color={innerCircleColor}
-        />
+        </Group>
       </Group>
     </Group>
   );

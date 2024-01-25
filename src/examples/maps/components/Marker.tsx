@@ -1,23 +1,30 @@
-import { Circle, Group } from "@shopify/react-native-skia";
+import { Circle, Group, SkMatrix, vec } from "@shopify/react-native-skia";
 import React from "react";
 import { coordinateToXY } from "../helpers/Geo";
 import { MarkerType } from "../types/MarkerType";
-import { useDerivedValue, useSharedValue } from "react-native-reanimated";
+import {
+  SharedValue,
+  useDerivedValue,
+  useSharedValue,
+} from "react-native-reanimated";
+import { getMarkerMatrixBasedOnGestureMatrix } from "../helpers/MatrixHelpers";
 
 interface Props {
   marker: MarkerType;
-  initialRegion: {
+  region: {
     latitude: number;
     longitude: number;
     latitudeDelta: number;
     longitudeDelta: number;
   };
+  matrix: SharedValue<SkMatrix>;
 }
 
 export const CANVAS_SIZE = 60;
+const CENTER = CANVAS_SIZE / 2;
 export const MIN_SIZE = 40;
 
-const CustomMarker = ({ marker, initialRegion }: Props) => {
+const CustomMarker = ({ marker, region, matrix }: Props) => {
   const size = useSharedValue(20);
   const r = useDerivedValue(() => size.value / 2, [size]);
   const rBorderShrunk = useSharedValue(size.value / 4);
@@ -25,19 +32,26 @@ const CustomMarker = ({ marker, initialRegion }: Props) => {
   const coordinateXY = coordinateToXY({
     latitude: marker.latitude,
     longitude: marker.longitude,
-    mapLatitude: initialRegion.latitude,
-    mapLongitude: initialRegion.longitude,
-    mapLatitudeDelta: initialRegion.latitudeDelta,
-    mapLongitudeDelta: initialRegion.longitudeDelta,
+    mapLatitude: region.latitude,
+    mapLongitude: region.longitude,
+    mapLatitudeDelta: region.latitudeDelta,
+    mapLongitudeDelta: region.longitudeDelta,
   });
 
+  const markerMatrix = useDerivedValue(() => {
+    return getMarkerMatrixBasedOnGestureMatrix({
+      coordinateXY: {
+        x: coordinateXY.x - CENTER,
+        y: coordinateXY.y - CENTER,
+      },
+      matrix,
+      width: size.value,
+      height: size.value,
+    });
+  }, [matrix.value, coordinateXY.x, coordinateXY.y]);
+
   return (
-    <Group
-      transform={[
-        { translateX: coordinateXY.x },
-        { translateY: coordinateXY.y },
-      ]}
-    >
+    <Group matrix={markerMatrix}>
       {/* marker border */}
       <Circle cx={CANVAS_SIZE / 2} cy={CANVAS_SIZE / 2} r={r} color={"#444"} />
       <Group>

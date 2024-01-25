@@ -1,9 +1,5 @@
-import type {
-  SkiaMutableValue,
-  SkMatrix,
-  SkRect,
-} from "@shopify/react-native-skia";
-import { Skia, useSharedValueEffect } from "@shopify/react-native-skia";
+import type { SkMatrix, SkRect } from "@shopify/react-native-skia";
+import { Skia } from "@shopify/react-native-skia";
 import React from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -16,6 +12,7 @@ import Animated, {
 import { Matrix4, multiply4, toMatrix3, identity4 } from "react-native-redash";
 
 import { concat, vec3 } from "./MatrixHelpers";
+import { useWindowDimensions } from "react-native";
 
 type Region = {
   latitude: number;
@@ -28,17 +25,16 @@ interface GestureHandlerProps {
   matrix: SharedValue<SkMatrix>;
   dimensions: SkRect;
   debug?: boolean;
-  onRegionChange: (newRegion: Region) => void;
 }
 
 export const GestureHandler = ({
   matrix: skMatrix,
   dimensions,
   debug,
-  onRegionChange,
 }: GestureHandlerProps) => {
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
   const { x, y, width, height } = dimensions;
-  const origin = useSharedValue(vec3(0, 0, 0));
+  const origin = useSharedValue(vec3(screenWidth / 2, screenHeight / 2, 0));
   const matrix = useSharedValue(identity4);
   const offset = useSharedValue(identity4);
 
@@ -49,16 +45,25 @@ export const GestureHandler = ({
     }
   );
 
-  const pan = Gesture.Pan().onChange((e) => {
-    matrix.value = multiply4(
-      Matrix4.translate(e.changeX, e.changeY, 0),
-      matrix.value
-    );
-  });
+  const pan = Gesture.Pan()
+    .onBegin((e) => {
+      offset.value = matrix.value;
+    })
+    .onChange((e) => {
+      matrix.value = multiply4(
+        Matrix4.translate(e.changeX, e.changeY, 0),
+        matrix.value
+      );
+
+      origin.value = [
+        e.absoluteX + screenWidth / 2,
+        e.absoluteY + screenHeight / 2,
+        0,
+      ];
+    });
 
   const rotate = Gesture.Rotation()
     .onBegin((e) => {
-      origin.value = [e.anchorX, e.anchorY, 0];
       offset.value = matrix.value;
     })
     .onChange((e) => {
@@ -67,15 +72,14 @@ export const GestureHandler = ({
       ]);
     });
 
-  const FACTOR = 0.1;
-
   const scale = Gesture.Pinch()
     .onBegin((e) => {
-      origin.value = [e.focalX, e.focalY, 0];
       offset.value = matrix.value;
     })
     .onChange((e) => {
       matrix.value = concat(offset.value, origin.value, [{ scale: e.scale }]);
+      /* 
+      const FACTOR = 0.1;
       const topLeft = { x: e.focalX, y: e.focalY };
       const bottomRight = {
         x: e.focalX + width * e.scale * FACTOR,
@@ -87,7 +91,8 @@ export const GestureHandler = ({
       const longitudeDelta = Math.abs(topLeft.x - bottomRight.x);
       const region = { latitude, longitude, latitudeDelta, longitudeDelta };
 
-      runOnJS(onRegionChange)(region);
+      runOnJS(onRegionChange)(region); 
+      */
     });
 
   const style = useAnimatedStyle(() => ({
@@ -97,16 +102,9 @@ export const GestureHandler = ({
     width,
     height,
     backgroundColor: debug ? "rgba(100, 200, 300, 0.1)" : "transparent",
-    /*     transform: [
-      { translateX: -width / 2 },
-      { translateY: -height / 2 },
-      { matrix: matrix.value as any },
-      { translateX: width / 2 },
-      { translateY: height / 2 },
-    ], */
   }));
   return (
-    <GestureDetector gesture={Gesture.Simultaneous(scale, rotate, pan)}>
+    <GestureDetector gesture={Gesture.Simultaneous(scale, pan /* rotate */)}>
       <Animated.View style={style} />
     </GestureDetector>
   );

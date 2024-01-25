@@ -33,8 +33,8 @@ const MapTiler = ({ matrix, zoom, region }: MapTilerProps) => {
 
   const startX = -5;
   const startY = -5;
-  const numberOfTilesX = 8;
-  const numberOfTilesY = 20;
+  const numberOfTilesX = Math.min(Math.ceil(region.latitudeDelta * 10000), 10); // TODO: change based on different tilesizes
+  const numberOfTilesY = Math.min(Math.ceil(region.longitudeDelta * 10000), 10); // TODO: change based on different tilesizes
 
   const tiles = useMemo(() => {
     const innerTiles = [];
@@ -44,11 +44,14 @@ const MapTiler = ({ matrix, zoom, region }: MapTilerProps) => {
           tileX + x
         }/${tileY + y}@2x.png?key=TL6hjPsDz7ATlQ8mLI6n`;
 
+        const MAGIC_NUMBER_X = -68;
+        const MAGIC_NUMBER_Y = -4;
+
         innerTiles.push(
           <MapTile
             key={x + "|" + y}
-            x={x * TILE_SIZE}
-            y={y * TILE_SIZE}
+            x={x * TILE_SIZE - TILE_SIZE / 2 + MAGIC_NUMBER_X}
+            y={y * TILE_SIZE - TILE_SIZE / 2 + MAGIC_NUMBER_Y}
             tileURL={tileURL}
           />
         );

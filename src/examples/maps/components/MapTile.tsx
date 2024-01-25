@@ -1,6 +1,6 @@
 import React from "react";
 import { Image, useImage } from "@shopify/react-native-skia";
-import { TILE_SIZE } from "./MapTiler";
+import { TILE_SIZE } from "../config";
 
 interface Props {
   x: number;

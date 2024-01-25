@@ -1,7 +1,6 @@
-import { Dimensions } from 'react-native';
-import { TILE_SIZE } from '../components/MapTiler';
+import { Dimensions } from "react-native";
+const { width, height } = Dimensions.get("window");
 
-const FACTOR = 650; // TODO: magic number
 export const coordinateToXY = ({
   latitude,
   longitude,
@@ -17,16 +16,21 @@ export const coordinateToXY = ({
   mapLongitude: number;
   mapLongitudeDelta: number;
 }) => {
-  const { width, height } = Dimensions.get('window');
-  const aspectRatio = width / height;
+  // Calculate the scale of the map based on the range of the latitude and longitude
+  const scale = Math.max(mapLatitudeDelta, mapLongitudeDelta);
 
-  const xOffset = TILE_SIZE / 2; // TODO: not correct
-  const yOffset = TILE_SIZE / 2; // TODO: not correct
+  // Calculate the factors based on the scale of the map
+  const xFactor = width / scale;
+  const yFactor = height / scale;
 
-  const xFactor = FACTOR / (aspectRatio * 1.3); // dunno, magic number here, should be based on latitude, latitudedelta etc.
-  const yFactor = FACTOR;
-  const x = (longitude - mapLongitude) / mapLongitudeDelta;
-  const y = -(latitude - mapLatitude) / mapLatitudeDelta;
+  // Convert the latitude to radians and apply the Mercator projection
+  const latRad = (latitude * Math.PI) / 180;
+  const mapLatRad = (mapLatitude * Math.PI) / 180;
+  const mercN = Math.log(Math.tan(Math.PI / 4 + latRad / 2));
+  const mapMercN = Math.log(Math.tan(Math.PI / 4 + mapLatRad / 2));
 
-  return { x: x * xFactor, y: y * yFactor + yOffset };
+  const x = (longitude - mapLongitude) * xFactor;
+  const y = (mapMercN - mercN) * yFactor;
+
+  return { x, y };
 };
