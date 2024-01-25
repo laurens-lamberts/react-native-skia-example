@@ -3,8 +3,8 @@ import { Group, SkMatrix } from "@shopify/react-native-skia";
 import { translate } from "../../helpers/MatrixHelpers";
 import Ball from "./Ball";
 import { useWindowDimensions } from "react-native";
-import { DEFAULT_BALL_RADIUS, TRAPEZIUM_EFFECT } from "./FloatingBalls";
 import { SharedValue, useDerivedValue } from "react-native-reanimated";
+import { DEFAULT_BALL_RADIUS, TRAPEZIUM_EFFECT } from "./config";
 
 interface Props {
   offsetY: SharedValue<number>;

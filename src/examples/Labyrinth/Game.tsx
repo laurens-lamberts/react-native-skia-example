@@ -11,7 +11,6 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { FIXED_MENU_HEIGHT, FULL_SCREEN } from "../../../AppActual";
 import Ball from "./Ball";
 import {
   BALL_SPEED_FACTOR,
@@ -24,6 +23,7 @@ import Floor from "./Floor";
 import GameBox from "./GameBox";
 import { useObstacle } from "./hooks/useObstacle";
 import { runSpring } from "../../hooks/animations";
+import { FIXED_MENU_HEIGHT, FULL_SCREEN } from "../../config";
 
 const MAGIC_NUMBER_VERTICAL_COLLISION = 10; // Unsure why, but this value is necessary to get a correct collision detection vertically with the bounds of the game box.
 const AROUND_GAMEBOX_MARGIN = 10;

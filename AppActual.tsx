@@ -31,6 +31,7 @@ import Fire from "./src/examples/fire/Fire";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import FloatingBalls from "./src/examples/floating-balls/FloatingBalls";
 import SkiaMaps from "./src/examples/maps/SkiaMap";
+import { FIXED_MENU_HEIGHT, FULL_SCREEN } from "./src/config";
 
 const SHOW_SNAPSHOT_BUTTON = false;
 
@@ -46,9 +47,6 @@ const examples = [
   { name: "Fire", component: Fire },
   { name: "Maps", component: SkiaMaps },
 ];
-
-export const FULL_SCREEN = false;
-export const FIXED_MENU_HEIGHT = 40;
 
 interface ExampleProps {
   activeExample: number;

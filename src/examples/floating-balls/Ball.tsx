@@ -7,7 +7,6 @@ import {
   vec,
   TwoPointConicalGradient,
 } from "@shopify/react-native-skia";
-import { DEFAULT_BALL_RADIUS } from "./FloatingBalls";
 import {
   Easing,
   SharedValue,
@@ -15,6 +14,7 @@ import {
   useSharedValue,
 } from "react-native-reanimated";
 import { useLoop } from "../../hooks/animations";
+import { DEFAULT_BALL_RADIUS } from "./config";
 
 interface Props {
   x: number;

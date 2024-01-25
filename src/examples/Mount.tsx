@@ -1,17 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {Canvas, RoundedRect, Shadow} from '@shopify/react-native-skia';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-
-const Tab = createBottomTabNavigator();
+import React, { useEffect, useState } from "react";
+import { Canvas, RoundedRect, Shadow } from "@shopify/react-native-skia";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const NUMBER_OF_ITEMS = 100;
 
 const getRandomColor = () => {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
+  var letters = "0123456789ABCDEF";
+  var color = "#";
   for (var i = 0; i < 6; i++) {
     color += letters[Math.floor(Math.random() * 16)];
   }
@@ -24,7 +21,7 @@ const Screen = () => {
   const [randomColor, setRandomColor] = useState(getRandomColor());
 
   const onPress = () => {
-    setShow(_show => !show);
+    setShow((_show) => !show);
     setRandomColor(getRandomColor());
   };
 
@@ -33,18 +30,19 @@ const Screen = () => {
   }, []);
 
   return (
-    <View style={{backgroundColor: 'black', flex: 1}}>
+    <View style={{ backgroundColor: "black", flex: 1 }}>
       <TouchableOpacity
         style={{
           backgroundColor: randomColor,
-          alignItems: 'center',
+          alignItems: "center",
           marginHorizontal: 20,
           paddingVertical: 20,
           marginTop: 20,
         }}
         activeOpacity={0.8}
-        onPress={onPress}>
-        <Text style={{color: 'white'}}>{show ? 'Hide' : 'Show'}</Text>
+        onPress={onPress}
+      >
+        <Text style={{ color: "white" }}>{show ? "Hide" : "Show"}</Text>
       </TouchableOpacity>
       {show && (
         <View style={styles.container}>
@@ -54,20 +52,22 @@ const Screen = () => {
                 key={index}
                 style={{
                   margin: 2,
-                }}>
-                <Canvas style={{width: 30, height: 40}}>
+                }}
+              >
+                <Canvas style={{ width: 30, height: 40 }}>
                   <RoundedRect
                     x={0}
                     y={0}
                     width={30}
                     height={40}
                     r={8}
-                    color={randomColor}>
+                    color={randomColor}
+                  >
                     <Shadow
                       dx={0}
                       dy={10}
                       blur={10}
-                      color={'rgba(11,34,46,0.20)'}
+                      color={"rgba(11,34,46,0.20)"}
                     />
                   </RoundedRect>
                 </Canvas>
@@ -101,10 +101,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
     margin: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    flexWrap: "wrap",
   },
 });
 

@@ -19,12 +19,12 @@ const Springboard = () => {
   const horizontalPadding = (screenWidth - appIconSize * 4) / 5;
 
   const { apps } = useApps();
-  const { widgets } = useWidgets();
+  // const { widgets } = useWidgets();
 
   const screensTranslateX = useSharedValue(0);
   const moveMode = useSharedValue(false);
 
-  useSetInitialAppPositions({ apps, horizontalPadding, appIconSize });
+  // useSetInitialAppPositions({ apps, horizontalPadding, appIconSize });
   const touchHandler = useSpringboardTouchHandler({
     apps,
     horizontalPadding,

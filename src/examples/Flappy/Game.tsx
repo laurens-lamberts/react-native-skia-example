@@ -25,7 +25,6 @@ import {
 } from "./Config";
 import Bird from "./Bird";
 import Obstacle from "./Obstacle";
-import { FULL_SCREEN } from "../../../AppActual";
 import {
   SharedValue,
   runOnJS,
@@ -33,6 +32,7 @@ import {
   useDerivedValue,
   useSharedValue,
 } from "react-native-reanimated";
+import { FULL_SCREEN } from "../../config";
 
 interface CanvasContentProps {
   translateY: SharedValue<number>;
