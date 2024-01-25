@@ -53,8 +53,8 @@ export const GestureHandler = ({
       offset.value = matrix.value;
     })
     .onChange((e) => {
-      const centerX = screenWidth / 2;
-      const centerY = screenHeight / 2;
+      const centerX = e.anchorX;
+      const centerY = e.anchorY;
 
       const translateToCenter = Matrix4.translate(centerX, centerY, 0);
       const rotateMatrix = Matrix4.rotateZ(e.rotation);
@@ -71,8 +71,8 @@ export const GestureHandler = ({
       offset.value = matrix.value;
     })
     .onChange((e) => {
-      const centerX = screenWidth / 2;
-      const centerY = screenHeight / 2;
+      const centerX = e.focalX;
+      const centerY = e.focalY;
 
       const translateToCenter = Matrix4.translate(centerX, centerY, 0);
       const scaleMatrix = Matrix4.scale(e.scale, e.scale, 1);
