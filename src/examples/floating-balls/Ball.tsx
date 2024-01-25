@@ -72,6 +72,7 @@ export default function Ball({
     to: 1,
     duration: 2000,
     easing: Easing.bezier(0.5, 0.01, 0.5, 1),
+    reverse: true,
   });
 
   const ballStringTransform = useDerivedValue(() => {

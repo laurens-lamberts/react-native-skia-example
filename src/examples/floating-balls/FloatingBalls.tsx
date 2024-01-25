@@ -37,7 +37,6 @@ export default function FloatingBalls() {
     to: 1,
     duration: 2000,
     easing: Easing.linear,
-    reverse: true,
   });
 
   const amplitude = useSharedValue(DEFAULT_AMPLITUDE);
