@@ -24,7 +24,7 @@ export const useLoop = ({
   duration: number;
   from?: number;
   to?: number;
-  easing: EasingFunction | EasingFunctionFactory | undefined;
+  easing?: EasingFunction | EasingFunctionFactory | undefined;
   reverse?: boolean;
 }) => {
   const progress = useSharedValue(from || 0);

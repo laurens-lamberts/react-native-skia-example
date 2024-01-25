@@ -2,11 +2,8 @@ import {
   Group,
   RoundedRect,
   Shadow,
-  SkiaMutableValue,
   Text,
-  useDerivedValue,
   useFont,
-  useLoop,
 } from "@shopify/react-native-skia";
 import React from "react";
 import {
@@ -14,6 +11,8 @@ import {
   APP_WIGGLE_ROTATION_DISTANCE,
 } from "../Config";
 import { AppType } from "../types/AppType";
+import { SharedValue, useDerivedValue } from "react-native-reanimated";
+import { useLoop } from "../../../hooks/animations";
 
 interface Props {
   item: AppType;

@@ -1,9 +1,10 @@
-import { SkiaMutableValue, vec } from "@shopify/react-native-skia";
+import { vec } from "@shopify/react-native-skia";
 import { useEffect, useRef } from "react";
 import { useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { APP_VERTICAL_PADDING_FACTOR } from "../Config";
 import { AppType } from "../types/AppType";
+import { SharedValue } from "react-native-reanimated";
 
 interface Props {
   apps: SharedValue<AppType[]>;
@@ -25,7 +26,7 @@ const useSetInitialAppPositions = ({
 
   useEffect(() => {
     // set app positions
-    if (appsPositioned.value) return;
+    if (appsPositioned.current) return;
     apps.value = apps.value.map((item, index) => {
       const indexOnScreen = apps.value
         .filter((i) => i.screen === item.screen)
@@ -44,7 +45,7 @@ const useSetInitialAppPositions = ({
       item.y.value = y;
       return item;
     });
-    appsPositioned.value = true;
+    appsPositioned.current = true;
   }, [
     appIconSize,
     apps,
