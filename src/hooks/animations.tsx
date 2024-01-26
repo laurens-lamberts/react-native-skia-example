@@ -48,24 +48,14 @@ export const useSpring = (
   value: number,
   userConfig?: SpringConfig,
   callback?: () => void
-) => {
-  const progress = useSharedValue(0);
-  useEffect(() => {
-    progress.value = withTiming(value, userConfig, () => {
-      if (callback) runOnJS(callback)();
-    });
-    return () => {
-      cancelAnimation(progress);
-    };
-  }, [progress, value, callback, userConfig]);
-  return progress;
-};
+) => runSpring(value, userConfig, callback);
 
 export const useTiming = (
   value: number | AnimatableValue,
   userConfig?: WithTimingConfig,
   callback?: () => void
 ) => {
+  "worklet";
   const progress = useSharedValue(0);
   useEffect(() => {
     progress.value = withTiming(value, userConfig, () => {
@@ -83,6 +73,7 @@ export const runSpring = (
   userConfig?: SpringConfig,
   callback?: () => void
 ) => {
+  "worklet";
   const progress = useSharedValue(0);
   progress.value = withSpring(value, userConfig, () => {
     if (callback) runOnJS(callback)();
