@@ -100,7 +100,7 @@ const LabyrinthGame = () => {
     "worklet";
     falling.value = true;
     runOnJS(setFellDown)(true);
-    runSpring(ballRadius.value * 0.85, {
+    runOnJS(runSpring)(ballRadius.value * 0.85, {
       mass: 2,
       velocity: 100,
       damping: 10,
