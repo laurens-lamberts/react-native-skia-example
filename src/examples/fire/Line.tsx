@@ -7,7 +7,7 @@ import {
   vec,
   Group,
 } from "@shopify/react-native-skia";
-import { useTiming } from "../../hooks/animations";
+import { useLoop, useTiming } from "../../hooks/animations";
 import { Easing, useDerivedValue } from "react-native-reanimated";
 
 const MAX_GRADIENT_REPETITIONS = 5;
@@ -51,14 +51,12 @@ export default function Line({ lineObject, index }: Props) {
     return completeGradient;
   }, [lineObject.height, screenHeight]);
 
-  const loopAnimation = useTiming(
-    { from: 1, to: 0, duration: 2000, easing: Easing.ease },
-    {}
-  );
+  const loopAnimation = useLoop({});
 
   const deviatedHeight = useDerivedValue(() => {
     return lineObject.height * (Math.random() * 0.2 + 0.85);
   }, [lineObject, loopAnimation]);
+
   const deviatedBox = useDerivedValue(() => {
     return rect(
       0 + index * lineObject.width,
@@ -95,7 +93,7 @@ export default function Line({ lineObject, index }: Props) {
 
   return (
     <Group transform={deviatedTransform}>
-      <Box color={"#FF6F00"} box={deviatedBox}>
+      <Box color="#FF6F00" box={deviatedBox}>
         <LinearGradient
           start={vec(0, 0)}
           end={deviatedGradientEnd}

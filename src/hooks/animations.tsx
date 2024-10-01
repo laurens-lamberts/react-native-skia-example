@@ -21,7 +21,7 @@ export const useLoop = ({
   easing,
   reverse,
 }: {
-  duration: number;
+  duration?: number;
   from?: number;
   to?: number;
   easing?: EasingFunction | EasingFunctionFactory | undefined;
@@ -51,12 +51,12 @@ export const useSpring = (
 ) => runSpring(value, userConfig, callback);
 
 export const useTiming = (
-  value: number | AnimatableValue,
+  value: number,
   userConfig?: WithTimingConfig,
   callback?: () => void
 ) => {
   "worklet";
-  const progress = useSharedValue(0);
+  const progress = useSharedValue<number>(0);
   useEffect(() => {
     progress.value = withTiming(value, userConfig, () => {
       if (callback) runOnJS(callback)();
