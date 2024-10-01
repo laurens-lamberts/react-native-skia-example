@@ -11,8 +11,8 @@ const SkiaMaps = () => {
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
 
   const [region, setRegion] = useState({
-    latitude: 51.8011955,
-    longitude: 5.3303856,
+    latitude: 51.6534,
+    longitude: 5.1318,
     latitudeDelta: 0.001,
     longitudeDelta: 0.001,
   });
@@ -26,8 +26,8 @@ const SkiaMaps = () => {
     return [
       {
         id: "1",
-        latitude: 51.8011955,
-        longitude: 5.3303856,
+        latitude: 51.6534,
+        longitude: 5.1318,
       },
       /* {
         id: "2",

@@ -7,7 +7,7 @@ import { WithSkiaWeb } from "@shopify/react-native-skia/lib/module/web";
 export default function App() {
   return (
     <WithSkiaWeb
-      getComponent={() => import("./AppActual")}
+      getComponent={() => import("./App")}
       fallback={<Text>Loading Skia...</Text>}
     />
   );
