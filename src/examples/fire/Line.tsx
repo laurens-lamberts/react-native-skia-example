@@ -54,7 +54,9 @@ export default function Line({ lineObject, index }: Props) {
   const loopAnimation = useLoop({});
 
   const deviatedHeight = useDerivedValue(() => {
-    return lineObject.height * (Math.random() * 0.2 + 0.85);
+    return (
+      lineObject.height * (Math.random() * 0.2 + 0.85) * loopAnimation.value
+    );
   }, [lineObject, loopAnimation]);
 
   const deviatedBox = useDerivedValue(() => {
