@@ -2,36 +2,36 @@ import {
   Canvas,
   Circle,
   Group,
-  useComputedValue,
-  useSharedValueEffect,
-  useValue,
   vec,
   Text as SkiaText,
   useFont,
-  runSpring,
-} from '@shopify/react-native-skia';
-import React, {useCallback, useEffect, useState} from 'react';
+} from "@shopify/react-native-skia";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Alert,
   Text,
   TouchableOpacity,
   useWindowDimensions,
   View,
-} from 'react-native';
+} from "react-native";
 import {
   IOSReferenceFrame,
   SensorType,
+  useAnimatedReaction,
   useAnimatedSensor,
-} from 'react-native-reanimated';
+  useDerivedValue,
+  useSharedValue,
+} from "react-native-reanimated";
 import {
   bearing,
   generateLocation,
   getDistanceFromLatLonInKm,
-} from './helpers/geo';
+} from "./helpers/geo";
 import Geolocation, {
   GeolocationResponse,
-} from '@react-native-community/geolocation';
-import Arrow from './components/Arrow';
+} from "@react-native-community/geolocation";
+import Arrow from "./components/Arrow";
+import { runSpring } from "../../hooks/animations";
 
 const MARGIN = 20;
 const ARROW_HEIGHT = 160;
@@ -43,14 +43,14 @@ const CALIBRATION_COUNTDOWN_INITIAL_VALUE =
   CALIBRATION_INTERVAL * CALIBRATION_INTERVALS; */
 
 const Compass = () => {
-  const {height, width} = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
   //const {sensor} = useAnimatedSensor(SensorType.ROTATION, {interval: 'auto'});
-  const {sensor: magnet} = useAnimatedSensor(SensorType.MAGNETIC_FIELD, {
-    interval: 'auto',
+  const { sensor: magnet } = useAnimatedSensor(SensorType.MAGNETIC_FIELD, {
+    interval: "auto",
     iosReferenceFrame: IOSReferenceFrame.XTrueNorthZVertical,
   });
-  const {sensor: rotationSensor} = useAnimatedSensor(SensorType.ROTATION, {
-    interval: 'auto',
+  const { sensor: rotationSensor } = useAnimatedSensor(SensorType.ROTATION, {
+    interval: "auto",
     iosReferenceFrame: IOSReferenceFrame.XTrueNorthZVertical,
   });
 
@@ -59,51 +59,51 @@ const Compass = () => {
   const middleY = height / 2 - compassRadius / 2;
   const origin = vec(middleX, middleY);
 
-  const enableCompass = useValue(true);
+  const enableCompass = useSharedValue(true);
 
-  const compassRotationValue = useValue(Math.PI);
-  const compassRotationTransform = useComputedValue(
-    () => [{rotate: compassRotationValue.current}],
-    [compassRotationValue],
+  const compassRotationValue = useSharedValue(Math.PI);
+  const compassRotationTransform = useDerivedValue(
+    () => [{ rotate: compassRotationValue.value }],
+    [compassRotationValue]
   );
-  const destinationRotationValue = useValue(0);
-  const destinationRotationTransform = useComputedValue(
-    () => [{rotate: destinationRotationValue.current}],
-    [destinationRotationValue],
+  const destinationRotationValue = useSharedValue(0);
+  const destinationRotationTransform = useDerivedValue(
+    () => [{ rotate: destinationRotationValue.value }],
+    [destinationRotationValue]
   );
 
-  /* const calibrationX = useValue(0);
-  const calibrationY = useValue(0);
-  const calibrationZ = useValue(0); */
+  /* const calibrationX = useSharedValue(0);
+  const calibrationY = useSharedValue(0);
+  const calibrationZ = useSharedValue(0); */
 
-  const currentLat = useValue(0);
-  const currentLong = useValue(0);
-  const currentlocationUpdateDateTime = useValue('');
+  const currentLat = useSharedValue(0);
+  const currentLong = useSharedValue(0);
+  const currentlocationUpdateDateTime = useSharedValue("");
 
-  const destinationLat = useValue(0);
-  const destinationLong = useValue(0);
-  const destinationBearing = useValue(0);
-  const destinationDistance = useValue(0);
+  const destinationLat = useSharedValue(0);
+  const destinationLong = useSharedValue(0);
+  const destinationBearing = useSharedValue(0);
+  const destinationDistance = useSharedValue(0);
 
-  const arrowColor = useComputedValue(() => {
+  const arrowColor = useDerivedValue(() => {
     if (
-      destinationDistance.current < DESTINATION_REACHED_MARGIN_IN_METERS &&
-      destinationBearing.current !== 0
+      destinationDistance.value < DESTINATION_REACHED_MARGIN_IN_METERS &&
+      destinationBearing.value !== 0
     ) {
-      return 'lime';
+      return "lime";
     }
-    return 'white';
+    return "white";
   }, [destinationDistance]);
 
-  const debugText = useValue('no destination yet');
-  const accuracyText = useValue('');
+  const debugText = useSharedValue("no destination yet");
+  const accuracyText = useSharedValue("");
 
-  /* const calibrationCountdownValue = useValue(
+  /* const calibrationCountdownValue = useSharedValue(
     CALIBRATION_COUNTDOWN_INITIAL_VALUE,
   );
   const calibrationInterval = useRef<NodeJS.Timer>();
   const calibrationIntervalsPassed = useRef(0); */
-  const calibrationCountdownText = useValue('');
+  const calibrationCountdownText = useSharedValue("");
 
   const [showCalibrationTexts, setShowCalibrationTexts] = useState(false);
 
@@ -112,33 +112,33 @@ const Compass = () => {
   let zValues = useRef<number[]>([]);
 
   const calibrate = () => {
-    if (calibrationInterval.current) {
+    if (calibrationInterval.value) {
       console.log('calibration already in progress');
       return;
     }
-    calibrationCountdownValue.current = CALIBRATION_COUNTDOWN_INITIAL_VALUE;
+    calibrationCountdownValue.value = CALIBRATION_COUNTDOWN_INITIAL_VALUE;
     console.log('calibration started...');
     setShowCalibrationTexts(true);
 
-    calibrationInterval.current = setInterval(() => {
-      if (calibrationIntervalsPassed.current >= CALIBRATION_INTERVALS) {
+    calibrationInterval.value = setInterval(() => {
+      if (calibrationIntervalsPassed.value >= CALIBRATION_INTERVALS) {
         console.log('calibration done.');
         setShowCalibrationTexts(false);
-        calibrationIntervalsPassed.current = 0;
+        calibrationIntervalsPassed.value = 0;
 
-        !!calibrationInterval.current &&
-          clearInterval(calibrationInterval.current);
-        calibrationInterval.current = undefined;
-        calibrationCountdownValue.current = 0;
+        !!calibrationInterval.value &&
+          clearInterval(calibrationInterval.value);
+        calibrationInterval.value = undefined;
+        calibrationCountdownValue.value = 0;
 
         // 2. take the average of this data for each axis
-        const xAverage = getAverage(xValues.current);
-        const yAverage = getAverage(yValues.current);
-        const zAverage = getAverage(zValues.current);
+        const xAverage = getAverage(xValues.value);
+        const yAverage = getAverage(yValues.value);
+        const zAverage = getAverage(zValues.value);
 
-        calibrationX.current = xAverage;
-        calibrationY.current = yAverage;
-        calibrationZ.current = zAverage;
+        calibrationX.value = xAverage;
+        calibrationY.value = yAverage;
+        calibrationZ.value = zAverage;
 
         // 3. subtract the average from the current value as correction
         // this is done within the useSharedValueEffect
@@ -147,61 +147,63 @@ const Compass = () => {
 
       // 1. record the min and max values of the magnetometer over a period of time
       let {x, y, z} = magnet.value;
-      xValues.current = [...xValues.current, x];
-      yValues.current = [...yValues.current, y];
-      zValues.current = [...zValues.current, z];
+      xValues.value = [...xValues.value, x];
+      yValues.value = [...yValues.value, y];
+      zValues.value = [...zValues.value, z];
 
       const remainingCalibrationDuration =
-        calibrationCountdownValue.current - CALIBRATION_INTERVAL;
+        calibrationCountdownValue.value - CALIBRATION_INTERVAL;
 
-      calibrationCountdownValue.current = remainingCalibrationDuration;
-      calibrationCountdownText.current =
+      calibrationCountdownValue.value = remainingCalibrationDuration;
+      calibrationCountdownText.value =
         remainingCalibrationDuration.toString();
 
-      calibrationIntervalsPassed.current += 1;
+      calibrationIntervalsPassed.value += 1;
     }, CALIBRATION_INTERVAL);
   }; */
 
   const generateRandomDestination = useCallback(async () => {
-    if (!currentLat.current || !currentLong.current) {
-      Alert.alert('', 'no current location');
+    if (!currentLat.value || !currentLong.value) {
+      Alert.alert("", "no current location");
       return;
     }
     const maxDistanceInMeters = 80;
     const minDistanceInMeters = 5;
     const randomLatLong = generateLocation(
-      currentLat.current,
-      currentLong.current,
+      currentLat.value,
+      currentLong.value,
       maxDistanceInMeters,
-      minDistanceInMeters,
+      minDistanceInMeters
     );
-    destinationLat.current = randomLatLong.latitude;
-    destinationLong.current = randomLatLong.longitude;
+    destinationLat.value = randomLatLong.latitude;
+    destinationLong.value = randomLatLong.longitude;
     console.log(
-      'random destination',
+      "random destination",
       randomLatLong.latitude,
-      randomLatLong.longitude,
+      randomLatLong.longitude
     );
   }, [currentLat, currentLong, destinationLat, destinationLong]);
 
-  useSharedValueEffect(() => {
-    if (!enableCompass.current) return;
-    //const {yaw} = sensor.value;
+  useAnimatedReaction(
+    () => magnet.value,
+    (value) => {
+      if (!enableCompass.value) return;
+      //const {yaw} = sensor.value;
 
-    /* let {x, y, z} = magnet.value; */
-    const {yaw} = rotationSensor.value;
+      /* let {x, y, z} = magnet.value; */
+      const { yaw } = rotationSensor.value;
 
-    /* if (!calibrationX.current) {
+      /* if (!calibrationX.value) {
       // auto calibrate
-      if (!calibrationInterval.current) {
+      if (!calibrationInterval.value) {
         calibrate();
       }
       return;
     } */
 
-    /* const correctionX = calibrationX.current || x;
-    const correctionY = calibrationY.current || y;
-    const correctionZ = calibrationZ.current || z;
+      /* const correctionX = calibrationX.value || x;
+    const correctionY = calibrationY.value || y;
+    const correctionZ = calibrationZ.value || z;
     x -= correctionX;
     y -= correctionY;
     z -= correctionZ;
@@ -217,42 +219,44 @@ const Compass = () => {
 
     console.log(headingInRadians); */
 
-    // rotation scale: -PI to PI
-    //console.log(headingInRotationValue);
-    compassRotationValue.current = yaw - Math.PI / 2;
-  }, magnet);
+      // rotation scale: -PI to PI
+      //console.log(headingInRotationValue);
+      compassRotationValue.value = yaw - Math.PI / 2;
+    },
+    [enableCompass]
+  );
 
   const calculateBearingToDestination = useCallback(() => {
-    if (!enableCompass.current) return;
+    if (!enableCompass.value) return;
     // calculate the bearing from the current location to the destination
     const newBearing = bearing(
-      currentLat.current,
-      currentLong.current,
-      destinationLat.current,
-      destinationLong.current,
+      currentLat.value,
+      currentLong.value,
+      destinationLat.value,
+      destinationLong.value
     );
 
     const distance = getDistanceFromLatLonInKm(
-      currentLat.current,
-      currentLong.current,
-      destinationLat.current,
-      destinationLong.current,
+      currentLat.value,
+      currentLong.value,
+      destinationLat.value,
+      destinationLong.value
     );
 
-    if (newBearing !== destinationBearing.current) {
+    if (newBearing !== destinationBearing.value) {
       const text =
-        'head ' +
+        "head " +
         Math.round(newBearing) +
-        ' degrees to destination. distance: ' +
+        " degrees to destination. distance: " +
         Math.round(distance * 1000) +
-        ' m';
-      debugText.current = text;
+        " m";
+      debugText.value = text;
     }
-    destinationDistance.current = distance * 1000;
-    destinationBearing.current = newBearing;
+    destinationDistance.value = distance * 1000;
+    destinationBearing.value = newBearing;
 
     const newDestinationRotationValue = (newBearing * Math.PI) / 180;
-    if (destinationRotationValue.current !== newDestinationRotationValue) {
+    if (destinationRotationValue.value !== newDestinationRotationValue) {
       runSpring(destinationRotationValue, newDestinationRotationValue);
     }
   }, [
@@ -270,14 +274,14 @@ const Compass = () => {
   const processCurrentLocation = useCallback(
     (pos: GeolocationResponse) => {
       // get current location
-      const {latitude, longitude, accuracy} = pos.coords;
-      currentLat.current = latitude;
-      currentLong.current = longitude;
+      const { latitude, longitude, accuracy } = pos.coords;
+      currentLat.value = latitude;
+      currentLong.value = longitude;
 
-      accuracyText.current =
-        'current location accuracy: ' + Math.round(accuracy) + ' m';
+      accuracyText.value =
+        "current location accuracy: " + Math.round(accuracy) + " m";
 
-      if (destinationLat.current === 0) {
+      if (destinationLat.value === 0) {
         // generate a random destination
         generateRandomDestination();
       }
@@ -293,50 +297,50 @@ const Compass = () => {
       currentLong,
       destinationLat,
       generateRandomDestination,
-    ],
+    ]
   );
 
   const forceGetCurrentLocation = useCallback(() => {
     Geolocation.getCurrentPosition(
-      pos => {
-        currentlocationUpdateDateTime.current =
-          'location updated at ' + new Date().toLocaleTimeString();
+      (pos) => {
+        currentlocationUpdateDateTime.value =
+          "location updated at " + new Date().toLocaleTimeString();
         processCurrentLocation(pos);
       },
-      error => {
-        alert('woops');
+      (error) => {
+        alert("woops");
       },
       {
         maximumAge: 0,
         // enableHighAccuracy: true, // does not work
-      },
+      }
     );
   }, [currentlocationUpdateDateTime, processCurrentLocation]);
 
   const watchPosition = useCallback(() => {
     Geolocation.watchPosition(
-      pos => {
-        currentlocationUpdateDateTime.current =
-          'location updated at ' + new Date().toLocaleTimeString();
+      (pos) => {
+        currentlocationUpdateDateTime.value =
+          "location updated at " + new Date().toLocaleTimeString();
         processCurrentLocation(pos);
       },
       () => {
-        alert('error');
+        alert("error");
       },
       {
         enableHighAccuracy: true,
         distanceFilter: 0,
         maximumAge: 0,
-      },
+      }
     );
   }, [currentlocationUpdateDateTime, processCurrentLocation]);
 
   const init = useCallback(() => {
     Geolocation.requestAuthorization(
-      success => {},
-      error => {
+      (success) => {},
+      (error) => {
         alert(error);
-      },
+      }
     );
 
     // 1. determine a random radius between 5 and 100 meters
@@ -354,15 +358,15 @@ const Compass = () => {
   }, [init, watchPosition]);
 
   const font = useFont(
-    require('../../assets/fonts/SFPRODISPLAYREGULAR.otf'),
-    14,
+    require("../../assets/fonts/SFPRODISPLAYREGULAR.otf"),
+    14
   );
 
   if (!font) return null;
 
   return (
-    <View style={{flex: 1, backgroundColor: 'black'}}>
-      <Canvas style={{flex: 1}}>
+    <View style={{ flex: 1, backgroundColor: "black" }}>
+      <Canvas style={{ flex: 1 }}>
         <Circle
           cx={middleX}
           cy={middleY}
@@ -378,8 +382,8 @@ const Compass = () => {
             y={middleY + compassRadius + 10}
             font={font}
             color="red"
-            text={'N'}
-            transform={[{rotate: Math.PI}]}
+            text={"N"}
+            transform={[{ rotate: Math.PI }]}
             origin={vec(middleX, middleY + compassRadius - 10)}
           />
           {/* <Rect
@@ -391,7 +395,8 @@ const Compass = () => {
           /> */}
           <Group
             transform={destinationRotationTransform}
-            origin={vec(middleX, middleY)}>
+            origin={vec(middleX, middleY)}
+          >
             {/* This group points towards the destination. Relative to north. */}
 
             <Arrow
@@ -411,8 +416,8 @@ const Compass = () => {
               y={middleY + compassRadius + 10}
               font={font}
               color="lime"
-              text={'DEST'}
-              transform={[{rotate: Math.PI}]}
+              text={"DEST"}
+              transform={[{ rotate: Math.PI }]}
               origin={vec(middleX, middleY + compassRadius - 10)}
             />
           </Group>
@@ -434,7 +439,7 @@ const Compass = () => {
               y={120}
               font={font}
               color="white"
-              text={'Calibrating... Move the device over all axes. '}
+              text={"Calibrating... Move the device over all axes. "}
             />
             <SkiaText
               x={40}
@@ -448,13 +453,15 @@ const Compass = () => {
       </Canvas>
       <View
         style={{
-          alignSelf: 'center',
+          alignSelf: "center",
           bottom: MARGIN * 4,
-        }}>
+        }}
+      >
         <View
           style={{
-            flexDirection: 'row',
-          }}>
+            flexDirection: "row",
+          }}
+        >
           {/* <TouchableOpacity
             style={{
               backgroundColor: 'tomato',
@@ -467,49 +474,53 @@ const Compass = () => {
           </TouchableOpacity> */}
           <TouchableOpacity
             style={{
-              backgroundColor: 'tomato',
+              backgroundColor: "tomato",
               padding: 8,
               borderRadius: 4,
             }}
             onPress={() => {
               generateRandomDestination();
               calculateBearingToDestination();
-            }}>
-            <Text style={{textAlign: 'center'}}>New dest</Text>
+            }}
+          >
+            <Text style={{ textAlign: "center" }}>New dest</Text>
           </TouchableOpacity>
         </View>
         <View
           style={{
-            flexDirection: 'row',
-          }}>
+            flexDirection: "row",
+          }}
+        >
           <TouchableOpacity
             style={{
-              backgroundColor: 'tomato',
+              backgroundColor: "tomato",
               padding: 8,
               borderRadius: 4,
               marginTop: 8,
               marginRight: 8,
             }}
             onPress={() => {
-              if (!enableCompass.current) {
+              if (!enableCompass.value) {
                 init();
                 forceGetCurrentLocation();
               }
 
-              enableCompass.current = !enableCompass.current;
-            }}>
-            <Text style={{textAlign: 'center'}}>start/stop</Text>
+              enableCompass.value = !enableCompass.value;
+            }}
+          >
+            <Text style={{ textAlign: "center" }}>start/stop</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={{
-              backgroundColor: 'tomato',
+              backgroundColor: "tomato",
               padding: 8,
               borderRadius: 4,
               marginTop: 8,
             }}
-            onPress={forceGetCurrentLocation}>
-            <Text style={{textAlign: 'center'}}>force get pos</Text>
+            onPress={forceGetCurrentLocation}
+          >
+            <Text style={{ textAlign: "center" }}>force get pos</Text>
           </TouchableOpacity>
         </View>
       </View>

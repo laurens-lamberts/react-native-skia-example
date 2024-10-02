@@ -1,5 +1,5 @@
-import React from 'react';
-import {Path, Skia, SkiaValue, vec} from '@shopify/react-native-skia';
+import React from "react";
+import { Path, Skia, SkiaValue, vec } from "@shopify/react-native-skia";
 
 const ARROW_THICKNESS = 32;
 
@@ -12,7 +12,7 @@ const Arrow = ({
   height: number;
   translateX: number;
   translateY: number;
-  color: SkiaValue<string>;
+  color: SharedValue<string>;
 }) => {
   const width = height * 0.7;
   const headStart = height * 0.6;
@@ -32,7 +32,7 @@ const Arrow = ({
   }, Skia.Path.Make());
   return (
     <Path
-      transform={[{translateX}, {translateY}]}
+      transform={[{ translateX }, { translateY }]}
       origin={vec(0, height / 2)}
       path={path}
       style="stroke"

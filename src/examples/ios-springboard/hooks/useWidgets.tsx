@@ -1,9 +1,9 @@
-import {useValue} from '@shopify/react-native-skia';
-import {WidgetType} from '../types/AppType';
+import { WidgetType } from "../types/AppType";
+import { useSharedValue } from "react-native-reanimated";
 
 const useWidgets = () => {
-  const widgets = useValue<WidgetType[]>([{name: 'clock'}]);
-  return {widgets};
+  const widgets = useSharedValue<WidgetType[]>([{ name: "clock" }]);
+  return { widgets };
 };
 
 export default useWidgets;

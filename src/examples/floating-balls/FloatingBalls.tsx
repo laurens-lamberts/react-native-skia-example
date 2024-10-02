@@ -3,23 +3,21 @@ import { Text, View, useWindowDimensions } from "react-native";
 import {
   BlurMask,
   Canvas,
-  Easing,
   RoundedRect,
   Skia,
   rect,
   rrect,
-  useTiming,
 } from "@shopify/react-native-skia";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useSharedValue } from "react-native-reanimated";
+import { Easing, useSharedValue } from "react-native-reanimated";
 import LineOfBalls from "./LineOfBalls";
 import { GestureDetector, Gesture } from "react-native-gesture-handler";
+import { useLoop } from "../../hooks/animations";
+import { DEFAULT_BALL_RADIUS } from "./config";
 
 const STATIC_NUMBER_OF_BALLS_HORIZONTALLY = 8;
 const USE_DYNAMIC_NUMBER_OF_BALLS_HORIZONTALLY = true;
 const DEFAULT_AMPLITUDE = 10;
-export const DEFAULT_BALL_RADIUS = 20;
-export const TRAPEZIUM_EFFECT = 1.2; // lower value is more depth
 const NUMBER_OF_DEPTH_ROWS = 7;
 const VIEWING_ANGLE_VERTICAL = 45; // in degrees
 const VIEWING_ANGLE_HORIZONTAL = -7; // in degrees
@@ -34,10 +32,12 @@ export default function FloatingBalls() {
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
   const insets = useSafeAreaInsets();
 
-  const offsetY = useTiming(
-    { from: 0, to: 1, loop: true, yoyo: false },
-    { duration: 2000, easing: Easing.linear }
-  );
+  const offsetY = useLoop({
+    from: 0,
+    to: 1,
+    duration: 2000,
+    easing: Easing.linear,
+  });
 
   const amplitude = useSharedValue(DEFAULT_AMPLITUDE);
 

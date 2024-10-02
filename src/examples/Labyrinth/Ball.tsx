@@ -3,30 +3,32 @@ import {
   interpolate,
   RadialGradient,
   Shadow,
-  SkiaMutableValue,
-  SkiaValue,
-  useComputedValue,
-  useValue,
-  useValueEffect,
   Vector,
-} from '@shopify/react-native-skia';
-import React from 'react';
-import {Extrapolate} from 'react-native-reanimated';
+} from "@shopify/react-native-skia";
+import React from "react";
+import {
+  Extrapolate,
+  Extrapolation,
+  SharedValue,
+  useAnimatedReaction,
+  useDerivedValue,
+  useSharedValue,
+} from "react-native-reanimated";
 import {
   BALL_GLARE_FACTOR,
   BALL_RADIUS,
   BALL_SHADOW_OFFSET_FACTOR,
-} from './Config';
+} from "./Config";
 
 interface BallInterface {
-  x: SkiaValue<number>;
-  y: SkiaValue<number>;
-  shadowX: SkiaValue<number>;
-  shadowY: SkiaValue<number>;
+  x: SharedValue<number>;
+  y: SharedValue<number>;
+  shadowX: SharedValue<number>;
+  shadowY: SharedValue<number>;
   gameBoxWidth: number;
   gameBoxHeight: number;
   gameBoxY: number;
-  ballRadius: SkiaValue<number>;
+  ballRadius: SharedValue<number>;
 }
 
 const Ball = ({
@@ -39,49 +41,52 @@ const Ball = ({
   gameBoxHeight,
   gameBoxY,
 }: BallInterface) => {
-  const ballShadowX = useValue(0);
-  const ballShadowY = useValue(0);
+  const ballShadowX = useSharedValue(0);
+  const ballShadowY = useSharedValue(0);
 
-  useComputedValue(() => {
-    ballShadowX.current = shadowX.current * BALL_SHADOW_OFFSET_FACTOR;
-    ballShadowY.current = shadowY.current * BALL_SHADOW_OFFSET_FACTOR;
+  useDerivedValue(() => {
+    ballShadowX.value = shadowX.value * BALL_SHADOW_OFFSET_FACTOR;
+    ballShadowY.value = shadowY.value * BALL_SHADOW_OFFSET_FACTOR;
   }, [ballShadowX, ballShadowY, shadowX, shadowY]);
 
-  const positionKey = useComputedValue(() => x.current + y.current, [x, y]);
+  const positionKey = useDerivedValue(() => x.value + y.value, [x, y]);
 
-  /* const ballColor = useComputedValue(
+  /* const ballColor = useDerivedValue(
     () =>
       interpolateColors(
-        ballRadius.current,
+        ballRadius.value,
         [BALL_RADIUS * 0.7, BALL_RADIUS],
         ['#444', '#888'],
       ),
     [ballRadius],
   ); */
 
-  const glareVector: SkiaMutableValue<Vector> = useValue({
-    x: x.current,
-    y: y.current,
+  const glareVector: SharedValue<Vector> = useSharedValue({
+    x: x.value,
+    y: y.value,
   });
 
-  useValueEffect(positionKey, () => {
-    const glareOffsetHorizontal = interpolate(
-      x.current,
-      [0, gameBoxWidth],
-      [BALL_RADIUS * BALL_GLARE_FACTOR, -BALL_RADIUS * BALL_GLARE_FACTOR],
-      Extrapolate.CLAMP,
-    );
-    const glareOffsetVertical = interpolate(
-      y.current - gameBoxY,
-      [0, gameBoxHeight],
-      [BALL_RADIUS * BALL_GLARE_FACTOR, -BALL_RADIUS * BALL_GLARE_FACTOR],
-      Extrapolate.CLAMP,
-    );
-    glareVector.current = {
-      x: x.current + glareOffsetHorizontal,
-      y: y.current + glareOffsetVertical,
-    };
-  });
+  useAnimatedReaction(
+    () => positionKey.value,
+    () => {
+      const glareOffsetHorizontal = interpolate(
+        x.value,
+        [0, gameBoxWidth],
+        [BALL_RADIUS * BALL_GLARE_FACTOR, -BALL_RADIUS * BALL_GLARE_FACTOR],
+        Extrapolation.CLAMP
+      );
+      const glareOffsetVertical = interpolate(
+        y.value - gameBoxY,
+        [0, gameBoxHeight],
+        [BALL_RADIUS * BALL_GLARE_FACTOR, -BALL_RADIUS * BALL_GLARE_FACTOR],
+        Extrapolation.CLAMP
+      );
+      glareVector.value = {
+        x: x.value + glareOffsetHorizontal,
+        y: y.value + glareOffsetVertical,
+      };
+    }
+  );
 
   return (
     <>
@@ -90,17 +95,17 @@ const Ball = ({
           dx={ballShadowX}
           dy={ballShadowY}
           blur={1}
-          color={'rgba(106,81,64,1)'}
+          color={"rgba(106,81,64,1)"}
         />
         <RadialGradient // The light glare on the ball
           // TODO: set the origin to center
           c={glareVector}
           r={ballRadius}
-          colors={['#AAA', '#444']}
+          colors={["#AAA", "#444"]}
         />
         {/* <RadialGradient
             c={vec(0, 0)}
-            r={ballRadius.current}
+            r={ballRadius.value}
             colors={['#00ff87', '#60efff']}
           /> */}
       </Circle>

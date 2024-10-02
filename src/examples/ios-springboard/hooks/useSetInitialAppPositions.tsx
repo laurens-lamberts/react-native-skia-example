@@ -1,12 +1,13 @@
-import {SkiaMutableValue, vec} from '@shopify/react-native-skia';
-import {useEffect, useRef} from 'react';
-import {useWindowDimensions} from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {APP_VERTICAL_PADDING_FACTOR} from '../Config';
-import {AppType} from '../types/AppType';
+import { vec } from "@shopify/react-native-skia";
+import { useEffect, useRef } from "react";
+import { useWindowDimensions } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { APP_VERTICAL_PADDING_FACTOR } from "../Config";
+import { AppType } from "../types/AppType";
+import { SharedValue } from "react-native-reanimated";
 
 interface Props {
-  apps: SkiaMutableValue<AppType[]>;
+  apps: SharedValue<AppType[]>;
   horizontalPadding: number;
   appIconSize: number;
 }
@@ -18,7 +19,7 @@ const useSetInitialAppPositions = ({
 }: Props) => {
   const appsPositioned = useRef(false);
   const insets = useSafeAreaInsets();
-  const {width: screenWidth} = useWindowDimensions();
+  const { width: screenWidth } = useWindowDimensions();
 
   const verticalPadding = horizontalPadding * APP_VERTICAL_PADDING_FACTOR;
   const startPos = vec(horizontalPadding, insets.top + horizontalPadding); // this last property is also the horizontalpadding, as we'd like to keep the bounding padding similar
@@ -26,10 +27,10 @@ const useSetInitialAppPositions = ({
   useEffect(() => {
     // set app positions
     if (appsPositioned.current) return;
-    apps.current = apps.current.map((item, index) => {
-      const indexOnScreen = apps.current
-        .filter(i => i.screen === item.screen)
-        .findIndex(a => a.id === item.id);
+    apps.value = apps.value.map((item, index) => {
+      const indexOnScreen = apps.value
+        .filter((i) => i.screen === item.screen)
+        .findIndex((a) => a.id === item.id);
 
       let x =
         startPos.x + (indexOnScreen % 4) * (appIconSize + horizontalPadding);
@@ -40,8 +41,8 @@ const useSetInitialAppPositions = ({
       // increase the x position depending on the screen
       x += screenWidth * item.screen;
 
-      item.x.current = x;
-      item.y.current = y;
+      item.x.value = x;
+      item.y.value = y;
       return item;
     });
     appsPositioned.current = true;

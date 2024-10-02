@@ -1,28 +1,13 @@
-import React, { useEffect } from "react";
-import {
-  Group,
-  SkMatrix,
-  Skia,
-  SkiaMutableValue,
-  SkiaValue,
-  processTransform2d,
-  useComputedValue,
-  useSharedValueEffect,
-  useValue,
-} from "@shopify/react-native-skia";
+import React from "react";
+import { Group, SkMatrix } from "@shopify/react-native-skia";
 import { translate } from "../../helpers/MatrixHelpers";
 import Ball from "./Ball";
 import { useWindowDimensions } from "react-native";
-import { DEFAULT_BALL_RADIUS, TRAPEZIUM_EFFECT } from "./FloatingBalls";
-import {
-  SharedValue,
-  useAnimatedProps,
-  useAnimatedStyle,
-  useDerivedValue,
-} from "react-native-reanimated";
+import { SharedValue, useDerivedValue } from "react-native-reanimated";
+import { DEFAULT_BALL_RADIUS, TRAPEZIUM_EFFECT } from "./config";
 
 interface Props {
-  offsetY: SkiaValue<number>;
+  offsetY: SharedValue<number>;
   amplitude: SharedValue<number>;
   yStart: number;
   xStart: number;
@@ -81,7 +66,7 @@ const LineOfBalls = ({
       ),
     [xStart, viewingAngleHorizontal, matrix]
   );
-  /* const groupTransform = useComputedValue(
+  /* const groupTransform = useDerivedValue(
     () => [
       {
         translateX:
