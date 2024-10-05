@@ -1,6 +1,6 @@
 import React from "react";
 import { Group, SkMatrix } from "@shopify/react-native-skia";
-import { translate } from "../../helpers/MatrixHelpers";
+import { translate } from "@app/helpers/MatrixHelpers";
 import Ball from "./Ball";
 import { useWindowDimensions } from "react-native";
 import { SharedValue, useDerivedValue } from "react-native-reanimated";

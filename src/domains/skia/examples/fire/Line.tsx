@@ -7,7 +7,7 @@ import {
   vec,
   Group,
 } from "@shopify/react-native-skia";
-import { useLoop, useTiming } from "../../hooks/animations";
+import { useLoop, useTiming } from "@app/hooks/animations";
 import { Easing, useDerivedValue } from "react-native-reanimated";
 
 const MAX_GRADIENT_REPETITIONS = 5;

@@ -1,12 +1,12 @@
-import React from 'react';
+import React from "react";
 import {
   BackdropBlur,
   Canvas,
   Fill,
   Image,
   useImage,
-} from '@shopify/react-native-skia';
-import {Text, useWindowDimensions, View} from 'react-native';
+} from "@shopify/react-native-skia";
+import { Text, useWindowDimensions, View } from "react-native";
 
 const BADGE_HEIGHT = 26;
 
@@ -16,27 +16,29 @@ const ExampleBackdropBlur = () => {
 
   const badgeBorderRadius = 6;
 
-  const {width: screenWidth} = useWindowDimensions();
+  const { width: screenWidth } = useWindowDimensions();
   const width = Math.min(screenWidth * FACTOR, 200);
   const imageSize = width - PADDING * 2;
 
-  const skiaImage = useImage(require('../assets/images/exampleImage.jpg'));
+  const skiaImage = useImage(require("@app/assets/images/exampleImage.jpg"));
 
   return (
-    <View style={{margin: PADDING}}>
+    <View style={{ margin: PADDING }}>
       <View
         style={{
           width: imageSize,
           height: imageSize,
           borderRadius: 8,
-          overflow: 'hidden',
+          overflow: "hidden",
           flex: 0,
-        }}>
+        }}
+      >
         <Canvas
           style={{
             width: imageSize,
             height: imageSize,
-          }}>
+          }}
+        >
           {!!skiaImage && (
             <>
               <Image
@@ -58,20 +60,22 @@ const ExampleBackdropBlur = () => {
                   },
                   rx: badgeBorderRadius,
                   ry: badgeBorderRadius,
-                }}>
-                <Fill color={'rgba(11,34,46,0.20)'} />
+                }}
+              >
+                <Fill color={"rgba(11,34,46,0.20)"} />
               </BackdropBlur>
             </>
           )}
         </Canvas>
         <Text
           style={{
-            position: 'absolute',
+            position: "absolute",
             bottom: BADGE_HEIGHT / 2 - 6,
             left: 12,
-            color: 'white',
+            color: "white",
             lineHeight: BADGE_HEIGHT,
-          }}>
+          }}
+        >
           Test
         </Text>
       </View>

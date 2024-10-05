@@ -3,7 +3,7 @@ import { getRandomColor } from "../helpers/color";
 import { AppType } from "../types/AppType";
 
 const useApps = () => {
-  const apps = useSharedValue<AppType[]>([
+  const apps: AppType[] = [
     {
       id: "com.app.mail",
       screen: 0,
@@ -134,7 +134,7 @@ const useApps = () => {
       backgroundColor: useSharedValue(getRandomColor()),
       isMoving: useSharedValue(false),
     },
-  ]);
+  ];
   return { apps };
 };
 

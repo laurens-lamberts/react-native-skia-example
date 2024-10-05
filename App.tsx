@@ -11,13 +11,13 @@ import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
-import BackdropBlur from "./src/examples/BackdropBlur";
-import Mount from "./src/examples/Mount";
-import Game from "./src/examples/Flappy/Game";
-import LabyrinthGame from "./src/examples/Labyrinth/Game";
-import CanvasResizeAnimation from "./src/examples/CanvasResizeAnimation";
-import Springboard from "./src/examples/ios-springboard/Springboard";
-import Compass from "./src/examples/compass";
+import BackdropBlur from "./src/domains/skia/examples/BackdropBlur";
+import Mount from "./src/domains/skia/examples/Mount";
+import Game from "./src/domains/skia/examples/Flappy/Game";
+import LabyrinthGame from "./src/domains/skia/examples/Labyrinth/Game";
+import CanvasResizeAnimation from "./src/domains/skia/examples/CanvasResizeAnimation";
+import Springboard from "./src/domains/skia/examples/ios-springboard/Springboard";
+import Compass from "./src/domains/skia/examples/compass";
 import { LogBox } from "react-native";
 LogBox.ignoreAllLogs();
 
@@ -27,11 +27,11 @@ import {
   SkImage,
   makeImageFromView,
 } from "@shopify/react-native-skia";
-import Fire from "./src/examples/fire/Fire";
+import Fire from "./src/domains/skia/examples/fire/Fire";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import FloatingBalls from "./src/examples/floating-balls/FloatingBalls";
-import SkiaMaps from "./src/examples/maps/SkiaMap";
-import { FIXED_MENU_HEIGHT, FULL_SCREEN } from "./src/config";
+import FloatingBalls from "./src/domains/skia/examples/floating-balls/FloatingBalls";
+import SkiaMaps from "./src/domains/skia/examples/maps/SkiaMap";
+import { FIXED_MENU_HEIGHT, FULL_SCREEN } from "./src/app/config";
 
 const SHOW_SNAPSHOT_BUTTON = false;
 
@@ -40,7 +40,7 @@ const examples = [
   { name: "Compass", component: Compass },
   { name: "Maze", component: LabyrinthGame },
   { name: "Flappy", component: Game },
-  { name: "Springboard", component: Springboard },
+  // { name: "Springboard", component: Springboard },
   { name: "Mount", component: Mount },
   { name: "Blur", component: BackdropBlur },
   { name: "Resize", component: CanvasResizeAnimation },

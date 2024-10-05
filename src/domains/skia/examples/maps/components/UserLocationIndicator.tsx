@@ -17,7 +17,7 @@ import {
   useDerivedValue,
 } from "react-native-reanimated";
 import { coordinateToXY } from "../helpers/Geo";
-import { useLoop, useTiming } from "../../../hooks/animations";
+import { useLoop, useTiming } from "@app/hooks/animations";
 import { getMarkerMatrixBasedOnGestureMatrix } from "../helpers/MatrixHelpers";
 
 const SIZE = 18;

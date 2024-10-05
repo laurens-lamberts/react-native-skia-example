@@ -39,11 +39,7 @@ const Springboard = () => {
   );
 
   return (
-    <View
-      style={{
-        flex: 1,
-      }}
-    >
+    <View style={{ flex: 1 }}>
       <View style={{ flex: 1 }}>
         <Canvas
           style={{
@@ -54,7 +50,7 @@ const Springboard = () => {
         >
           <Wallpaper />
           <Group transform={transform}>
-            {apps.value.map((item) => (
+            {apps.map((item) => (
               <AppComponent
                 item={item}
                 appIconSize={appIconSize}

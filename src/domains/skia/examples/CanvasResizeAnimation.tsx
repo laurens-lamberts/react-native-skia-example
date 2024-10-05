@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {Canvas, Image, useImage} from '@shopify/react-native-skia';
-import {View} from 'react-native';
+import React, { useEffect, useState } from "react";
+import { Canvas, Image, useImage } from "@shopify/react-native-skia";
+import { View } from "react-native";
 
 const START_SIZE = 200;
 
@@ -16,15 +16,16 @@ const CanvasResizeAnimation = () => {
     };
   }, []);
 
-  const skiaImage = useImage(require('../assets/images/exampleImage.jpg'));
+  const skiaImage = useImage(require("@app/assets/images/exampleImage.jpg"));
 
   return (
-    <View style={{margin: 12}}>
+    <View style={{ margin: 12 }}>
       <Canvas
         style={{
           width: imageSize,
           height: imageSize,
-        }}>
+        }}
+      >
         {!!skiaImage && (
           <Image
             x={0}

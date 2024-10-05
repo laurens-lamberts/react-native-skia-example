@@ -32,7 +32,7 @@ import {
   useDerivedValue,
   useSharedValue,
 } from "react-native-reanimated";
-import { FULL_SCREEN } from "../../config";
+import { FULL_SCREEN } from "@app/config";
 
 interface CanvasContentProps {
   translateY: SharedValue<number>;
@@ -51,11 +51,11 @@ const CanvasContent = ({
   const canvasWidth = size.value.width;
   const canvasHeight = size.value.height;
 
-  const font = useFont(require("../../assets/fonts/SFPRODISPLAYBOLD.otf"), 40);
+  const font = useFont(require("@app/assets/fonts/SFPRODISPLAYBOLD.otf"), 40);
 
   const birdY = useSharedValue(0);
   const bottom = useDerivedValue(
-    () => canvasHeight - BIRD_HEIGHT - FLOOR_HEIGHT ?? 0,
+    () => canvasHeight - BIRD_HEIGHT - FLOOR_HEIGHT,
     [canvasHeight]
   );
 
@@ -148,7 +148,7 @@ const Flappy = () => {
   };
 
   const font = useFont(
-    require("../../assets/fonts/SFPRODISPLAYREGULAR.otf"),
+    require("@app/assets/fonts/SFPRODISPLAYREGULAR.otf"),
     16
   );
 

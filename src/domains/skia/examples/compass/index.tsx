@@ -31,7 +31,7 @@ import Geolocation, {
   GeolocationResponse,
 } from "@react-native-community/geolocation";
 import Arrow from "./components/Arrow";
-import { runSpring } from "../../hooks/animations";
+import { runSpring } from "@app/hooks/animations";
 
 const MARGIN = 20;
 const ARROW_HEIGHT = 160;
@@ -257,7 +257,7 @@ const Compass = () => {
 
     const newDestinationRotationValue = (newBearing * Math.PI) / 180;
     if (destinationRotationValue.value !== newDestinationRotationValue) {
-      runSpring(destinationRotationValue, newDestinationRotationValue);
+      // runSpring(destinationRotationValue.value, newDestinationRotationValue);
     }
   }, [
     currentLat,
@@ -337,7 +337,7 @@ const Compass = () => {
 
   const init = useCallback(() => {
     Geolocation.requestAuthorization(
-      (success) => {},
+      () => {},
       (error) => {
         alert(error);
       }
@@ -358,7 +358,7 @@ const Compass = () => {
   }, [init, watchPosition]);
 
   const font = useFont(
-    require("../../assets/fonts/SFPRODISPLAYREGULAR.otf"),
+    require("@app/assets/fonts/SFPRODISPLAYREGULAR.otf"),
     14
   );
 

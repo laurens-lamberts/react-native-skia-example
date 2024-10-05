@@ -141,7 +141,7 @@ const Obstacle = ({
   ];
 
   const font = useFont(
-    require("../../assets/fonts/SFPRODISPLAYREGULAR.otf"),
+    require("@app/assets/fonts/SFPRODISPLAYREGULAR.otf"),
     16
   );
 

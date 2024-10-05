@@ -7,7 +7,7 @@ import { AppType } from "../types/AppType";
 import { SharedValue } from "react-native-reanimated";
 
 interface Props {
-  apps: SharedValue<AppType[]>;
+  apps: AppType[];
   horizontalPadding: number;
   appIconSize: number;
 }
@@ -27,8 +27,8 @@ const useSetInitialAppPositions = ({
   useEffect(() => {
     // set app positions
     if (appsPositioned.current) return;
-    apps.value = apps.value.map((item, index) => {
-      const indexOnScreen = apps.value
+    apps = apps.map((item, index) => {
+      const indexOnScreen = apps
         .filter((i) => i.screen === item.screen)
         .findIndex((a) => a.id === item.id);
 

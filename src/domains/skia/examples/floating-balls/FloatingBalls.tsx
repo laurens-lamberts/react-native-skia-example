@@ -12,7 +12,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Easing, useSharedValue } from "react-native-reanimated";
 import LineOfBalls from "./LineOfBalls";
 import { GestureDetector, Gesture } from "react-native-gesture-handler";
-import { useLoop } from "../../hooks/animations";
+import { useLoop } from "@app/hooks/animations";
 import { DEFAULT_BALL_RADIUS } from "./config";
 
 const STATIC_NUMBER_OF_BALLS_HORIZONTALLY = 8;

@@ -1,7 +1,7 @@
 import { useClock, useTouchHandler, vec } from "@shopify/react-native-skia";
 import { TimingConfig } from "@shopify/react-native-skia/lib/typescript/src/animation/types";
 import { useWindowDimensions } from "react-native";
-import { lightenDarkenColor } from "../../../utils/color";
+import { lightenDarkenColor } from "../../../../../utils/color";
 import {
   APP_DRAG_START_DARKEN_PERCENTAGE,
   APP_DRAG_START_MS,
@@ -21,7 +21,7 @@ const appSnapAnimationConfig: TimingConfig = {
 };
 
 interface Props {
-  apps: SharedValue<AppType[]>;
+  apps: AppType[];
   horizontalPadding: number;
   appIconSize: number;
   screensTranslateX: SharedValue<number>;
@@ -55,7 +55,7 @@ const useSpringboardTouchHandler = ({
 
       touchStartPos.value = vec(x, y);
       screenTranslateStartX.value = screensTranslateX.value;
-      const newTouchedAppIndex = apps.value.findIndex(
+      const newTouchedAppIndex = apps.findIndex(
         (a) =>
           a.x.value < x &&
           a.x.value + appIconSize > x &&
@@ -65,7 +65,7 @@ const useSpringboardTouchHandler = ({
 
       if (newTouchedAppIndex > -1) {
         touchedAppIndex.value = newTouchedAppIndex;
-        let touchedApp = apps.value[touchedAppIndex.value];
+        let touchedApp = apps[touchedAppIndex.value];
 
         draggingAppOriginalPos.value = vec(
           touchedApp.x.value,
@@ -94,7 +94,7 @@ const useSpringboardTouchHandler = ({
           screenTranslateStartX.value + x - touchStartPos.value.x;
         return;
       }
-      let touchedApp = apps.value[touchedAppIndex.value];
+      let touchedApp = apps[touchedAppIndex.value];
 
       // correct x with the screen you're on
       //x *= Math.round(screensTranslateX.value / screenWidth) + 1;
@@ -123,7 +123,7 @@ const useSpringboardTouchHandler = ({
                 draggingAppSnappedY.value = true;
               }
             );
-            touchedApp = apps.value[touchedAppIndex.value];
+            touchedApp = apps[touchedAppIndex.value];
             // TODO: refactor with original color
             touchedApp.backgroundColor.value = lightenDarkenColor(
               touchedApp.backgroundColor.value,
@@ -138,13 +138,13 @@ const useSpringboardTouchHandler = ({
           // dragging the app
           console.log("drag", touchedApp.name);
 
-          touchedApp = apps.value[touchedAppIndex.value];
+          touchedApp = apps[touchedAppIndex.value];
 
           touchedApp.x.value = x - draggingAppPickupPos.value.x;
           touchedApp.y.value = y - draggingAppPickupPos.value.y;
 
           // check collision to make space.
-          const otherAppUnderDraggingCursorIndex = apps.value.findIndex(
+          const otherAppUnderDraggingCursorIndex = apps.findIndex(
             (a) =>
               a.id !== touchedApp.id &&
               a.x.value < x &&
@@ -155,7 +155,7 @@ const useSpringboardTouchHandler = ({
           if (otherAppUnderDraggingCursorIndex > -1) {
             // found collision
             const otherAppUnderDraggingCursor =
-              apps.value[otherAppUnderDraggingCursorIndex];
+              apps[otherAppUnderDraggingCursorIndex];
             console.log("drag collision", otherAppUnderDraggingCursor.name);
 
             const otherShouldGoRight =
@@ -239,7 +239,7 @@ const useSpringboardTouchHandler = ({
         }
       }
       //if (!moveMode.value) return;
-      let touchedApp = apps.value[touchedAppIndex.value];
+      let touchedApp = apps[touchedAppIndex.value];
       if (!touchedApp) {
         // no app was dragged. Disable move-mode.
         // TODO: actually not correct. Shoud check draggingAppIndex

@@ -11,8 +11,8 @@ import {
   APP_WIGGLE_ROTATION_DISTANCE,
 } from "../Config";
 import { AppType } from "../types/AppType";
+import { useLoop } from "@app/hooks/animations";
 import { SharedValue, useDerivedValue } from "react-native-reanimated";
-import { useLoop } from "../../../hooks/animations";
 
 interface Props {
   item: AppType;
@@ -25,17 +25,19 @@ const AppComponent = ({ item, appIconSize, moveMode }: Props) => {
   const LABEL_MARGIN = 4;
 
   const font = useFont(
-    require("../../../assets/fonts/SFPRODISPLAYREGULAR.otf"),
+    require("@app/assets/fonts/SFPRODISPLAYREGULAR.otf"),
     FONT_SIZE
   );
-  const labelWidth = font?.getTextWidth(item.name);
+
+  const labelWidth = font?.measureText(item.name)?.width;
 
   const textX = useDerivedValue(() => {
     return item.x.value + (appIconSize - (labelWidth || 0)) / 2;
-  }, [appIconSize, item.x, labelWidth]);
+  }, [item.x, appIconSize, labelWidth]);
+
   const textY = useDerivedValue(() => {
     return item.y.value + appIconSize + FONT_SIZE + LABEL_MARGIN;
-  }, [appIconSize, item.y]);
+  }, [item.y, appIconSize]);
 
   //const clock = useClockValue();
   const rotateAnimation = useLoop({ duration: APP_WIGGLE_CYCLE_DURATION });

@@ -13,7 +13,7 @@ import {
   useDerivedValue,
   useSharedValue,
 } from "react-native-reanimated";
-import { useLoop } from "../../hooks/animations";
+import { useLoop } from "@app/hooks/animations";
 import { DEFAULT_BALL_RADIUS } from "./config";
 
 interface Props {
