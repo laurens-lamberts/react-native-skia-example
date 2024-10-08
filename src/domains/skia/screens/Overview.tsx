@@ -22,7 +22,7 @@ import {
 import Fire from "@domains/skia/examples/fire/Fire";
 import FloatingBalls from "@domains/skia/examples/floating-balls/FloatingBalls";
 import SkiaMaps from "@domains/skia/examples/maps/SkiaMap";
-import { FIXED_MENU_HEIGHT, FULL_SCREEN } from "@app/config/general";
+import { FIXED_MENU_HEIGHT } from "@app/config/general";
 
 const SHOW_SNAPSHOT_BUTTON = false;
 
@@ -67,38 +67,36 @@ const SkiaOverview = () => {
   };
 
   return (
-    <View ref={viewRef} style={{ flex: 1, backgroundColor: "black" }}>
-      {!FULL_SCREEN && (
-        <ScrollView
-          horizontal
-          style={{
-            width: "100%",
-            maxHeight: FIXED_MENU_HEIGHT,
-          }}
-        >
-          {examples.map((e, index) => (
-            <View
-              key={e.name}
+    <View ref={viewRef} style={{ flex: 1, backgroundColor: "#FFF" }}>
+      <ScrollView
+        horizontal
+        style={{
+          width: "100%",
+          maxHeight: FIXED_MENU_HEIGHT,
+        }}
+      >
+        {examples.map((e, index) => (
+          <View
+            key={e.name}
+            style={{
+              borderRightWidth: 1,
+              borderColor: "rgba(255, 255, 255, 0.2)",
+              paddingHorizontal: 8,
+            }}
+          >
+            <TouchableOpacity
               style={{
-                borderRightWidth: 1,
-                borderColor: "rgba(255, 255, 255, 0.2)",
-                paddingHorizontal: 8,
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
               }}
+              onPress={() => setActiveExample(index)}
             >
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-                onPress={() => setActiveExample(index)}
-              >
-                <Text style={{ color: "white" }}>{e.name}</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
-        </ScrollView>
-      )}
+              <Text style={{ color: "#666" }}>{e.name}</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </ScrollView>
 
       <Example activeExample={activeExample} />
       {SHOW_SNAPSHOT_BUTTON && (

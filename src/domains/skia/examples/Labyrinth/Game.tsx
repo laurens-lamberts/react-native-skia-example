@@ -23,7 +23,7 @@ import Floor from "./Floor";
 import GameBox from "./GameBox";
 import { useObstacle } from "./hooks/useObstacle";
 import { runSpring } from "@app/hooks/animations";
-import { FIXED_MENU_HEIGHT, FULL_SCREEN } from "@app/config/general";
+import { FIXED_MENU_HEIGHT } from "@app/config/general";
 
 const MAGIC_NUMBER_VERTICAL_COLLISION = 10; // Unsure why, but this value is necessary to get a correct collision detection vertically with the bounds of the game box.
 const AROUND_GAMEBOX_MARGIN = 10;
@@ -36,9 +36,7 @@ const LabyrinthGame = () => {
   }); // <- initialization
   const [fellDown, setFellDown] = useState(false);
 
-  const effectiveScreenHeight = FULL_SCREEN
-    ? screenHeight
-    : screenHeight - FIXED_MENU_HEIGHT;
+  const effectiveScreenHeight = screenHeight - FIXED_MENU_HEIGHT;
 
   const BALL_RADIUS = BALL_SIZE / 2;
   const ballRadius = useSharedValue(BALL_RADIUS);
@@ -46,7 +44,7 @@ const LabyrinthGame = () => {
   const startY =
     effectiveScreenHeight / 2 -
     BALL_SIZE / 2 -
-    (FULL_SCREEN ? BALL_SIZE * 2 : FIXED_MENU_HEIGHT + insets.top);
+    (FIXED_MENU_HEIGHT + insets.top); // TODO: correct with where the view starts (onlayout y)
   const ballX = useSharedValue(startX + BALL_RADIUS);
   const ballY = useSharedValue(startY + BALL_RADIUS);
   const shadowX = useSharedValue(startX);

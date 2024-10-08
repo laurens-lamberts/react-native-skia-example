@@ -32,7 +32,6 @@ import {
   useDerivedValue,
   useSharedValue,
 } from "react-native-reanimated";
-import { FULL_SCREEN } from "@app/config/general";
 
 interface CanvasContentProps {
   translateY: SharedValue<number>;
@@ -200,10 +199,7 @@ const Flappy = () => {
   const size = useSharedValue({ width: 0, height: 0 });
 
   return (
-    <SafeAreaView
-      style={{ flex: 1 }}
-      edges={FULL_SCREEN ? ["left"] : ["bottom"]}
-    >
+    <SafeAreaView style={{ flex: 1 }} edges={["bottom"]}>
       <Canvas
         style={{
           flex: 1,
