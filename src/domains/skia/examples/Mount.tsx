@@ -16,7 +16,7 @@ const getRandomColor = () => {
 };
 
 const Screen = () => {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<number[]>([]);
   const [show, setShow] = useState(true);
   const [randomColor, setRandomColor] = useState(getRandomColor());
 
@@ -30,7 +30,7 @@ const Screen = () => {
   }, []);
 
   return (
-    <View style={{ backgroundColor: "black", flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <TouchableOpacity
         style={{
           backgroundColor: randomColor,

@@ -1,5 +1,17 @@
 import type { SkMatrix, Vector } from "@shopify/react-native-skia";
-import { Skia, MatrixIndex } from "@shopify/react-native-skia";
+import { Skia } from "@shopify/react-native-skia";
+
+const MatrixIndex = {
+  ScaleX: 0,
+  SkewX: 1,
+  TransX: 2,
+  SkewY: 3,
+  ScaleY: 4,
+  TransY: 5,
+  Persp0: 6,
+  Persp1: 7,
+  Persp2: 8,
+};
 
 export const scale = (matrix: SkMatrix, s: number, origin: Vector) => {
   "worklet";

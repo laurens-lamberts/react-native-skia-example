@@ -1,6 +1,7 @@
-import { Oval, Shadow, SkiaValue } from "@shopify/react-native-skia";
+import { Oval, Shadow } from "@shopify/react-native-skia";
 import React from "react";
 import { HOLE_SIZE } from "./Config";
+import { SharedValue } from "react-native-reanimated";
 
 interface HoleInterface {
   x: number;

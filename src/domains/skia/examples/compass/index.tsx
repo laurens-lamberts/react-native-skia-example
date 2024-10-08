@@ -32,6 +32,7 @@ import Geolocation, {
 } from "@react-native-community/geolocation";
 import Arrow from "./components/Arrow";
 import { runSpring } from "@app/hooks/animations";
+import useTheme from "@app/hooks/useTheme";
 
 const MARGIN = 20;
 const ARROW_HEIGHT = 160;
@@ -43,6 +44,7 @@ const CALIBRATION_COUNTDOWN_INITIAL_VALUE =
   CALIBRATION_INTERVAL * CALIBRATION_INTERVALS; */
 
 const Compass = () => {
+  const theme = useTheme();
   const { height, width } = useWindowDimensions();
   //const {sensor} = useAnimatedSensor(SensorType.ROTATION, {interval: 'auto'});
   const { sensor: magnet } = useAnimatedSensor(SensorType.MAGNETIC_FIELD, {
@@ -92,7 +94,7 @@ const Compass = () => {
     ) {
       return "lime";
     }
-    return "white";
+    return "black";
   }, [destinationDistance]);
 
   const debugText = useSharedValue("no destination yet");
@@ -365,13 +367,13 @@ const Compass = () => {
   if (!font) return null;
 
   return (
-    <View style={{ flex: 1, backgroundColor: "black" }}>
+    <View style={{ flex: 1 }}>
       <Canvas style={{ flex: 1 }}>
         <Circle
           cx={middleX}
           cy={middleY}
           r={compassRadius}
-          color="white"
+          color="black"
           style="stroke"
           strokeWidth={4}
         />
@@ -391,7 +393,7 @@ const Compass = () => {
             y={middleY}
             width={NEEDLE_WIDTH}
             height={NEEDLE_HEIGHT}
-            color="white"
+            color="black"
           /> */}
           <Group
             transform={destinationRotationTransform}
@@ -423,13 +425,13 @@ const Compass = () => {
           </Group>
         </Group>
         {/* <Circle cx={middleX} cy={middleY} r={12} color="red" /> */}
-        <SkiaText x={40} y={40} font={font} color="white" text={debugText} />
-        <SkiaText x={40} y={60} font={font} color="white" text={accuracyText} />
+        <SkiaText x={40} y={40} font={font} color="black" text={debugText} />
+        <SkiaText x={40} y={60} font={font} color="black" text={accuracyText} />
         <SkiaText
           x={40}
           y={80}
           font={font}
-          color="white"
+          color="black"
           text={currentlocationUpdateDateTime}
         />
         {showCalibrationTexts && (
@@ -438,14 +440,14 @@ const Compass = () => {
               x={40}
               y={120}
               font={font}
-              color="white"
+              color="black"
               text={"Calibrating... Move the device over all axes. "}
             />
             <SkiaText
               x={40}
               y={140}
               font={font}
-              color="white"
+              color="black"
               text={calibrationCountdownText}
             />
           </>
@@ -453,76 +455,51 @@ const Compass = () => {
       </Canvas>
       <View
         style={{
+          flexDirection: "row",
+          gap: theme.space.m,
           alignSelf: "center",
-          bottom: MARGIN * 4,
+          bottom: MARGIN * 2,
         }}
       >
-        <View
+        <TouchableOpacity
           style={{
-            flexDirection: "row",
+            backgroundColor: "#ccc",
+            padding: 8,
+            borderRadius: 4,
+          }}
+          onPress={() => {
+            generateRandomDestination();
+            calculateBearingToDestination();
           }}
         >
-          {/* <TouchableOpacity
-            style={{
-              backgroundColor: 'tomato',
-              padding: 8,
-              borderRadius: 4,
-              marginRight: 8,
-            }}
-            onPress={calibrate}>
-            <Text style={{textAlign: 'center'}}>Calibrate</Text>
-          </TouchableOpacity> */}
-          <TouchableOpacity
-            style={{
-              backgroundColor: "tomato",
-              padding: 8,
-              borderRadius: 4,
-            }}
-            onPress={() => {
-              generateRandomDestination();
-              calculateBearingToDestination();
-            }}
-          >
-            <Text style={{ textAlign: "center" }}>New dest</Text>
-          </TouchableOpacity>
-        </View>
-        <View
+          <Text style={{ textAlign: "center" }}>New dest</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
           style={{
-            flexDirection: "row",
+            backgroundColor: "#ccc",
+            padding: 8,
+            borderRadius: 4,
+          }}
+          onPress={() => {
+            if (!enableCompass.value) {
+              init();
+              forceGetCurrentLocation();
+            }
+
+            enableCompass.value = !enableCompass.value;
           }}
         >
-          <TouchableOpacity
-            style={{
-              backgroundColor: "tomato",
-              padding: 8,
-              borderRadius: 4,
-              marginTop: 8,
-              marginRight: 8,
-            }}
-            onPress={() => {
-              if (!enableCompass.value) {
-                init();
-                forceGetCurrentLocation();
-              }
-
-              enableCompass.value = !enableCompass.value;
-            }}
-          >
-            <Text style={{ textAlign: "center" }}>start/stop</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={{
-              backgroundColor: "tomato",
-              padding: 8,
-              borderRadius: 4,
-              marginTop: 8,
-            }}
-            onPress={forceGetCurrentLocation}
-          >
-            <Text style={{ textAlign: "center" }}>force get pos</Text>
-          </TouchableOpacity>
-        </View>
+          <Text style={{ textAlign: "center" }}>start/stop</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            backgroundColor: "#ccc",
+            padding: 8,
+          }}
+          onPress={forceGetCurrentLocation}
+        >
+          <Text style={{ textAlign: "center" }}>force get pos</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

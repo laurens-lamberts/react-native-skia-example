@@ -1,5 +1,5 @@
 import React from "react";
-import { Path, Skia, SkiaValue, vec } from "@shopify/react-native-skia";
+import { Path, Skia, vec } from "@shopify/react-native-skia";
 
 const ARROW_THICKNESS = 32;
 

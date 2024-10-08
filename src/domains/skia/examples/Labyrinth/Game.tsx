@@ -224,7 +224,7 @@ const LabyrinthGame = () => {
 
   return (
     <>
-      <Canvas style={{ flex: 1, backgroundColor: "tomato" }}>
+      <Canvas style={{ flex: 1 }}>
         <Group>
           <Floor
             startY={startY}

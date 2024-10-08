@@ -1,14 +1,9 @@
-import {
-  Group,
-  Rect,
-  Shadow,
-  SkiaValue,
-  Vertices,
-} from "@shopify/react-native-skia";
+import { Group, Rect, Shadow, Vertices } from "@shopify/react-native-skia";
 import React, { PropsWithChildren } from "react";
 import { WALL_WIDTH } from "./Config";
 import Hole from "./Hole";
 import { useObstacle } from "./hooks/useObstacle";
+import { SharedValue } from "react-native-reanimated";
 
 interface GameBoxInterface {
   x: number;

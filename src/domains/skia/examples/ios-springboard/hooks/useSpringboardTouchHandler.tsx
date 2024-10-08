@@ -1,5 +1,4 @@
 import { useClock, useTouchHandler, vec } from "@shopify/react-native-skia";
-import { TimingConfig } from "@shopify/react-native-skia/lib/typescript/src/animation/types";
 import { useWindowDimensions } from "react-native";
 import { lightenDarkenColor } from "../../../../../utils/color";
 import {
@@ -13,9 +12,10 @@ import {
   SharedValue,
   useSharedValue,
   withTiming,
+  WithTimingConfig,
 } from "react-native-reanimated";
 
-const appSnapAnimationConfig: TimingConfig = {
+const appSnapAnimationConfig: WithTimingConfig = {
   easing: Easing.out(Easing.exp),
   duration: 620,
 };

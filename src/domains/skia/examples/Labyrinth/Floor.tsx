@@ -1,6 +1,6 @@
-import {Rect} from '@shopify/react-native-skia';
-import React from 'react';
-import {BALL_SIZE, WALL_WIDTH} from './Config';
+import { Rect } from "@shopify/react-native-skia";
+import React from "react";
+import { BALL_SIZE, WALL_WIDTH } from "./Config";
 
 interface FloorInterface {
   startY: number;

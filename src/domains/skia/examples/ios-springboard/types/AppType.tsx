@@ -1,4 +1,4 @@
-import { SkiaMutableValue } from "@shopify/react-native-skia";
+import { SharedValue } from "react-native-reanimated";
 
 export interface AppType {
   id: string;
