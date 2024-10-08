@@ -7,8 +7,11 @@ import {
   vec,
   Group,
 } from "@shopify/react-native-skia";
-import { useLoop, useTiming } from "@app/hooks/animations";
-import { Easing, useDerivedValue } from "react-native-reanimated";
+import {
+  SharedValue,
+  useDerivedValue,
+  useSharedValue,
+} from "react-native-reanimated";
 
 const MAX_GRADIENT_REPETITIONS = 5;
 const FIRE_COLORS = [
@@ -27,9 +30,10 @@ interface Props {
     height: number;
   };
   index: number;
+  loopAnimation: SharedValue<number>;
 }
 
-export default function Line({ lineObject, index }: Props) {
+export default function Line({ lineObject, index, loopAnimation }: Props) {
   const { height: screenHeight } = useWindowDimensions();
 
   const gradient = useMemo(() => {
@@ -50,8 +54,6 @@ export default function Line({ lineObject, index }: Props) {
     }
     return completeGradient;
   }, [lineObject.height, screenHeight]);
-
-  const loopAnimation = useLoop({});
 
   const deviatedHeight = useDerivedValue(() => {
     return (
@@ -88,7 +90,7 @@ export default function Line({ lineObject, index }: Props) {
     ); */
     return gradient.map((v, _index) => {
       return Math.abs(
-        loopAnimation.value * _index * Math.max(Math.random(), 0.7)
+        loopAnimation.value * _index * Math.max(Math.random(), 0.4)
       );
     });
   }, [gradient, loopAnimation]);
@@ -101,7 +103,7 @@ export default function Line({ lineObject, index }: Props) {
           end={deviatedGradientEnd}
           colors={gradient}
           positions={gradientPositions}
-          //mode={'repeat'}
+          // mode={"repeat"}
           /* positions={gradient.map(() => {
             return Math.random() * 0.3 + 0.15;
           })} */
