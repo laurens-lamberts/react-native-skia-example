@@ -8,10 +8,11 @@ const ListsOverview = () => {
     <View
       style={{
         padding: theme.space.m,
+        gap: theme.space.m,
       }}
     >
-      <Text>ListsOverview</Text>
-      <Text>ListsOverview2</Text>
+      <Text>Item1</Text>
+      <Text>Item2</Text>
     </View>
   );
 };

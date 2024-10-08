@@ -73,7 +73,6 @@ const SkiaOverview = () => {
           horizontal
           style={{
             width: "100%",
-            marginTop: insets.top,
             maxHeight: FIXED_MENU_HEIGHT,
           }}
         >

@@ -1,12 +1,18 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Platform } from "react-native";
+import {
+  Horse,
+  Heart,
+  Cube,
+  List,
+  ListBullets,
+  ListNumbers,
+} from "phosphor-react-native";
 
 const Tab = createBottomTabNavigator();
 
 import SkiaOverview from "@domains/skia/screens/Overview";
 import ListsOverview from "@domains/lists/screens/Overview";
-import TabBarIcon from "./components/TabBarIcon";
 
 const BottomTabs = () => {
   return (
@@ -23,24 +29,18 @@ const BottomTabs = () => {
         name="Skia"
         component={SkiaOverview}
         options={{
-          tabBarIcon: ({ focused }) =>
-            TabBarIcon({
-              focused,
-              iconFocused: "start-active",
-              iconUnfocused: "start-inactive",
-            }),
+          tabBarIcon: ({ focused }) => (
+            <Heart size={24} weight={focused ? "fill" : "regular"} />
+          ),
         }}
       />
       <Tab.Screen
         name="Lists"
         component={ListsOverview}
         options={{
-          tabBarIcon: ({ focused }) =>
-            TabBarIcon({
-              focused,
-              iconFocused: "start-active",
-              iconUnfocused: "start-inactive",
-            }),
+          tabBarIcon: ({ focused }) => (
+            <List size={24} weight={focused ? "fill" : "regular"} />
+          ),
         }}
       />
     </Tab.Navigator>

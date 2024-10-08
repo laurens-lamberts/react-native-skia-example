@@ -3,7 +3,7 @@ import React from "react";
 import { LogBox } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import Navigation from "@app/navigation/main";
+import Navigation from "@app/navigation/Main";
 import * as SplashScreen from "expo-splash-screen";
 import { ThemeProvider } from "@app/context/ThemeProvider";
 

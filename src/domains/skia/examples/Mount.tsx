@@ -82,21 +82,11 @@ const Screen = () => {
 
 const ExampleMount = () => {
   const insets = useSafeAreaInsets();
-  return (
-    <NavigationContainer>
-      {/* <Tab.Navigator sceneContainerStyle={{marginTop: -insets.top}}>
-        <Tab.Screen name="One" component={Screen} />
-        <Tab.Screen name="Two" component={Screen} />
-      </Tab.Navigator> */}
-      <Screen />
-    </NavigationContainer>
-  );
+  return <Screen />;
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: { flex: 1 },
   mode: {
     paddingHorizontal: 10,
     paddingVertical: 4,
