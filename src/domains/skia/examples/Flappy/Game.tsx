@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Group,
   Rect,
   Text,
-  useClock,
   useFont,
+  Canvas,
+  Fill,
+  useTouchHandler,
 } from "@shopify/react-native-skia";
-import { Canvas, Fill, useTouchHandler } from "@shopify/react-native-skia";
 import {
   SafeAreaView,
   useSafeAreaInsets,
@@ -31,6 +32,9 @@ import {
   useAnimatedReaction,
   useDerivedValue,
   useSharedValue,
+  withTiming,
+  Easing,
+  cancelAnimation,
 } from "react-native-reanimated";
 
 interface CanvasContentProps {
@@ -78,16 +82,6 @@ const CanvasContent = ({
         size={size}
         minimumGapSize={OBSTACLE_MINIMUM_GAP_SIZE} // TODO: decrease over time
       />
-      {/* <Obstacle
-        canvasWidth={canvasWidth}
-        canvasHeight={canvasHeight}
-        birdY={birdY}
-        clock={clock}
-        gameOver={gameOver}
-        initialX={600}
-        points={points}
-        minimumGapSize={OBSTACLE_MINIMUM_GAP_SIZE} // TODO: decrease over time
-      /> */}
       <Rect
         x={0}
         y={canvasHeight - FLOOR_HEIGHT}
@@ -132,17 +126,29 @@ const Flappy = () => {
   const taps = useSharedValue(0);
   const points = useSharedValue(0);
 
-  const clock = useClock();
+  const clock = useSharedValue(0);
+
+  const startClock = () => {
+    clock.value = withTiming(Number.MAX_SAFE_INTEGER, {
+      duration: Number.MAX_SAFE_INTEGER,
+      easing: Easing.linear,
+    });
+  };
+  useEffect(() => {
+    startClock();
+  }, []);
 
   const reset = () => {
     "worklet";
+    clock.value = 0; // Stop the clock
     resetOnNextTap.value = 0;
     points.value = 0;
-    // clock.start(); // TODO: fix
+    startClock();
   };
+
   const gameOver = () => {
     "worklet";
-    // clock.stop(); // TODO: fix
+    cancelAnimation(clock);
     resetOnNextTap.value = 1;
   };
 
