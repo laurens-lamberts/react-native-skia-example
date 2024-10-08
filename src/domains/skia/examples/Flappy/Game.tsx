@@ -32,7 +32,7 @@ import {
   useDerivedValue,
   useSharedValue,
 } from "react-native-reanimated";
-import { FULL_SCREEN } from "@app/config";
+import { FULL_SCREEN } from "@app/config/general";
 
 interface CanvasContentProps {
   translateY: SharedValue<number>;

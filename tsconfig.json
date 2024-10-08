@@ -9,9 +9,6 @@
     "strict": true,
     "jsx": "react",
     "paths": {
-      "@/*": [
-        "./*"
-      ],
       "@app/*": [
         "app/*"
       ],
@@ -23,5 +20,5 @@
   "include": [
     "**/*.ts",
     "**/*.tsx"
-  ]
+, "eslint.config.js"  ]
 }
