@@ -28,7 +28,7 @@ import { FIXED_MENU_HEIGHT } from "@app/config/general";
 const MAGIC_NUMBER_VERTICAL_COLLISION = 10; // Unsure why, but this value is necessary to get a correct collision detection vertically with the bounds of the game box.
 const AROUND_GAMEBOX_MARGIN = 10;
 
-const LabyrinthGame = () => {
+const Maze = () => {
   const insets = useSafeAreaInsets();
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
   const animatedSensor = useAnimatedSensor(SensorType.ROTATION, {
@@ -281,4 +281,4 @@ const LabyrinthGame = () => {
   );
 };
 
-export default LabyrinthGame;
+export default Maze;

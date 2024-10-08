@@ -1,48 +1,42 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import {
-  Horse,
-  Heart,
-  Cube,
-  List,
-  ListBullets,
-  ListNumbers,
-} from "phosphor-react-native";
+import { Heart, List } from "phosphor-react-native";
 
 const Tab = createBottomTabNavigator();
 
-import SkiaOverview from "@domains/skia/screens/Overview";
 import ListsOverview from "@domains/lists/screens/Overview";
+import Stack from "@domains/skia/navigation/Stack";
 
 const BottomTabs = () => {
   return (
     <Tab.Navigator
-      screenOptions={
-        {
-          // headerShown: false,
-          // tabBarInactiveTintColor: theme.colors.gray,
-          // tabBarActiveTintColor: theme.colors.primary,
-        }
-      }
+      tabBar={() => <></>} // Maybe later
+      screenOptions={{
+        headerShown: false,
+      }}
     >
       <Tab.Screen
         name="Skia"
-        component={SkiaOverview}
+        component={Stack}
         options={{
+          tabBarLabel: "Skia",
+          headerTitle: "Skia examples",
           tabBarIcon: ({ focused }) => (
             <Heart size={24} weight={focused ? "fill" : "regular"} />
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Lists"
         component={ListsOverview}
         options={{
+          tabBarLabel: "List",
+          headerTitle: "List examples",
           tabBarIcon: ({ focused }) => (
             <List size={24} weight={focused ? "fill" : "regular"} />
           ),
         }}
-      />
+      /> */}
     </Tab.Navigator>
   );
 };

@@ -166,7 +166,8 @@ const Compass = () => {
 
   const generateRandomDestination = useCallback(async () => {
     if (!currentLat.value || !currentLong.value) {
-      Alert.alert("", "no current location");
+      console.error("no current location");
+      // Alert.alert("", "no current location");
       return;
     }
     const maxDistanceInMeters = 80;
